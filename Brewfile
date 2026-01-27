@@ -29,12 +29,6 @@ brew "postgresql@15"
 brew "rabbitmq"
 brew "awscli"
 
-# Applications
-cask "ghostty"
-cask "visual-studio-code"
-cask "docker"
-cask "rectangle"
-
 # Fonts
 cask "font-jetbrains-mono-nerd-font"
 cask "font-fira-code-nerd-font"
