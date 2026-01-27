@@ -30,7 +30,6 @@ declare -a files=(
 # Directories to backup
 declare -a dirs=(
     ".config/nvim"
-    ".config/ghostty"
 )
 
 # Backup files
@@ -77,11 +76,6 @@ if [[ -d "$BACKUP_DIR/.config/nvim" ]]; then
     echo "✓ Restored .config/nvim"
 fi
 
-if [[ -d "$BACKUP_DIR/.config/ghostty" ]]; then
-    mkdir -p "$HOME/.config"
-    cp -r "$BACKUP_DIR/.config/ghostty" "$HOME/.config/"
-    echo "✓ Restored .config/ghostty"
-fi
 
 echo "Restore complete!"
 EOF

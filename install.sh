@@ -33,9 +33,6 @@ echo -e "${YELLOW}Creating symlinks...${NC}"
 # Neovim
 ln -sf ~/.zdotfiles/nvim ~/.config/nvim
 
-# Ghostty
-ln -sf ~/.zdotfiles/ghostty ~/.config/ghostty
-
 # Zsh
 ln -sf ~/.zdotfiles/zsh/.zshrc ~/.zshrc
 ln -sf ~/.zdotfiles/zsh/.zshenv ~/.zshenv

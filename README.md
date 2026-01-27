@@ -1,6 +1,6 @@
 # macOS Dotfiles
 
-Streamlined dotfiles configuration for macOS with Neovim, Ghostty, Homebrew, and essential development tools.
+Streamlined dotfiles configuration for macOS with Neovim, Homebrew, and essential development tools.
 
 ## Quick Start
 
@@ -21,7 +21,6 @@ exec zsh
 
 **Core Tools:**
 - Neovim - Modern text editor with LSP support
-- Ghostty - Fast native macOS terminal
 - Homebrew - Package manager with Brewfile
 - Zsh with Starship - Enhanced shell with modern prompt and Git integration
 - Git - Version control with useful aliases
@@ -49,7 +48,6 @@ All configurations use symlinks, so editing files in `~/.zdotfiles/` immediately
 
 **Key locations:**
 - Neovim: `~/.config/nvim` → `~/.zdotfiles/nvim/`
-- Ghostty: `~/.config/ghostty` → `~/.zdotfiles/ghostty/`
 - Zsh: `~/.zshrc` → `~/.zdotfiles/zsh/.zshrc`
 - Git: `~/.gitconfig` → `~/.zdotfiles/git/.gitconfig`
 - Tmux: `~/.tmux.conf` → `~/.zdotfiles/tmux/.tmux.conf`
