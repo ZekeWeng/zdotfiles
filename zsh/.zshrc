@@ -12,7 +12,7 @@ if command -v fzf &> /dev/null; then
 
     # Configure fzf for history search (Ctrl+R) - compact display
     export FZF_CTRL_R_OPTS="
-        --height=6
+        --height=10
         --layout=reverse
         --border
         --no-info
