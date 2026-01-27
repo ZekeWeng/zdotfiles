@@ -35,16 +35,15 @@ conflicted = "≠"      # Merge conflicts
 typechanged = "⚡"     # Type changes
 disabled = false
 
-# Show sync count for ahead/behind (shows numbers like oh-my-zsh)
-show_sync_count = true
+# ahead/behind will show counts automatically
 
 [git_metrics]
-# Show added/deleted line counts
+# Show number of files changed instead of line counts
 added_style = "bold green"
 deleted_style = "bold red"
 only_nonzero_diffs = true
-format = "([+$added]($added_style) )([-$deleted]($deleted_style) )"
-disabled = false
+format = "([+$added files]($added_style) )([-$deleted files]($deleted_style) )"
+disabled = true
 ignore_submodules = false
 
 [git_commit]
@@ -81,8 +80,30 @@ style = "bold yellow"
 format = '\([$state( $progress_current/$progress_total)]($style)\) '
 disabled = false
 
-# Custom git info command (like oh-my-zsh detailed info)
-[custom.git_info]
+# Custom git file changes (shows number of files, not lines)
+[custom.git_files]
+command = '''
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  added=$(git diff --cached --name-only 2>/dev/null | wc -l | tr -d ' ')
+  modified=$(git diff --name-only 2>/dev/null | wc -l | tr -d ' ')
+  output=""
+  if [ "$added" -gt 0 ]; then
+    output="$output+$added"
+  fi
+  if [ "$modified" -gt 0 ]; then
+    if [ -n "$output" ]; then output="$output "; fi
+    output="$output~$modified"
+  fi
+  echo "$output"
+fi
+'''
+when = "git rev-parse --is-inside-work-tree"
+style = "green bold"
+format = "[$output]($style) "
+description = "Show number of files added/modified"
+
+# Custom git stash count
+[custom.git_stash]
 command = '''
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   stash_count=$(git stash list 2>/dev/null | wc -l | tr -d ' ')
