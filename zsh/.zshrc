@@ -12,13 +12,13 @@ if command -v fzf &> /dev/null; then
 
     # Configure fzf for history search (Ctrl+R) - compact display
     export FZF_CTRL_R_OPTS="
-        --height=10
+        --height=5
         --layout=reverse
         --border
         --no-info
         --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'"
 
-    export FZF_DEFAULT_OPTS="--height 6 --layout=reverse --border --no-info"
+    export FZF_DEFAULT_OPTS="--height 5 --layout=reverse --border --no-info"
 fi
 
 # Load additional config files
