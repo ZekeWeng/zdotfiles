@@ -1,0 +1,92 @@
+# Starship configuration with enhanced git information
+
+# Global timeout setting to prevent hanging
+command_timeout = 5000
+
+# Disable modules that might cause timeouts
+[bun]
+disabled = true
+
+[git_status]
+# Enhanced git status with detailed symbols
+format = '([\[$all_status$ahead_behind\]]($style) )'
+style = "red bold"
+
+# Show staged files (files ready to commit)
+staged = "●"          # Clear indicator for staged files
+# Show modified (unstaged) files
+modified = "!"        # Files changed but not staged
+# Show untracked files
+untracked = "?"       # Files not tracked by git
+# Show deleted files
+deleted = "✗"         # Files deleted
+# Show renamed files
+renamed = "→"         # Files renamed
+# Show stashed changes (very important!)
+stashed = "📦"        # Visual indicator for stashes
+# Show ahead/behind remote
+ahead = "↑"           # Commits ahead of remote
+behind = "↓"          # Commits behind remote
+up_to_date = "✓"      # Show when up to date
+diverged = "↕"        # When both ahead and behind
+# Show conflicted files
+conflicted = "≠"      # Merge conflicts
+# Show type changed files (permissions/file type)
+typechanged = "⚡"     # Type changes
+disabled = false
+
+# Count indicators - show actual numbers
+count_enabled = true
+show_sync_count = true
+
+[git_metrics]
+# Show added/deleted line counts
+added_style = "bold green"
+deleted_style = "bold red"
+only_nonzero_diffs = true
+format = "([+$added]($added_style) )([-$deleted]($deleted_style) )"
+disabled = false
+ignore_submodules = false
+
+[git_commit]
+# Show commit hash when in detached HEAD
+commit_hash_length = 7
+format = '[\($hash$tag\)]($style) '
+style = "green bold"
+only_detached = true
+disabled = false
+tag_symbol = " 🏷  "
+tag_disabled = true
+
+[git_branch]
+# Show current branch and remote tracking
+format = "on [$symbol$branch(:$remote_branch)]($style) "
+symbol = " "
+style = "bold purple"
+truncation_length = 9223372036854775807
+truncation_symbol = "…"
+only_attached = false
+always_show_remote = false
+disabled = false
+
+[git_state]
+# Show current git operation state
+rebase = "REBASING"
+merge = "MERGING"
+revert = "REVERTING"
+cherry_pick = "CHERRY-PICKING"
+bisect = "BISECTING"
+am = "AM"
+am_or_rebase = "AM/REBASE"
+style = "bold yellow"
+format = '\([$state( $progress_current/$progress_total)]($style)\) '
+disabled = false
+
+# Additional git information modules
+[package]
+# Show package version if in a project
+format = "is [$symbol$version]($style) "
+symbol = "📦 "
+style = "208 bold"
+display_private = false
+disabled = false

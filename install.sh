@@ -47,6 +47,9 @@ ln -sf ~/.zdotfiles/git/.gitignore_global ~/.gitignore_global
 # Tmux
 ln -sf ~/.zdotfiles/tmux/.tmux.conf ~/.tmux.conf
 
+# Starship
+ln -sf ~/.zdotfiles/starship.toml ~/.config/starship.toml
+
 # Install Homebrew packages
 if [ "$INSTALL_BREW" = true ]; then
     if command -v brew &> /dev/null; then
