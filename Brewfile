@@ -1,6 +1,3 @@
-tap "homebrew/bundle"
-tap "homebrew/cask-fonts"
-
 # Essential tools
 brew "neovim"
 brew "git"
@@ -16,7 +13,6 @@ brew "gh"
 brew "starship"
 
 # AI Tools
-brew "convex"
 cask "claude"
 
 # Development
