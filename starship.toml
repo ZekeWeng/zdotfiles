@@ -8,35 +8,34 @@ command_timeout = 5000
 disabled = true
 
 [git_status]
-# Enhanced git status with detailed symbols
+# Enhanced git status with counts (oh-my-zsh style)
 format = '([\[$all_status$ahead_behind\]]($style) )'
 style = "red bold"
 
-# Show staged files (files ready to commit)
-staged = "●"          # Clear indicator for staged files
-# Show modified (unstaged) files
+# Show staged files with count
+staged = "●"          # Files ready to commit
+# Show modified files with count
 modified = "!"        # Files changed but not staged
-# Show untracked files
+# Show untracked files with count
 untracked = "?"       # Files not tracked by git
-# Show deleted files
+# Show deleted files with count
 deleted = "✗"         # Files deleted
-# Show renamed files
+# Show renamed files with count
 renamed = "→"         # Files renamed
-# Show stashed changes (very important!)
-stashed = "📦"        # Visual indicator for stashes
-# Show ahead/behind remote
+# Show stashed changes with count (like oh-my-zsh)
+stashed = "⚑"         # Stash indicator with count
+# Show ahead/behind remote with counts
 ahead = "↑"           # Commits ahead of remote
 behind = "↓"          # Commits behind remote
-up_to_date = "✓"      # Show when up to date
-diverged = "↕"        # When both ahead and behind
-# Show conflicted files
+up_to_date = ""       # Clean when up to date
+diverged = "⇕"        # When both ahead and behind
+# Show conflicted files with count
 conflicted = "≠"      # Merge conflicts
-# Show type changed files (permissions/file type)
+# Show type changed files
 typechanged = "⚡"     # Type changes
 disabled = false
 
-# Count indicators - show actual numbers
-count_enabled = true
+# Show sync count for ahead/behind (shows numbers like oh-my-zsh)
 show_sync_count = true
 
 [git_metrics]
@@ -81,6 +80,21 @@ am_or_rebase = "AM/REBASE"
 style = "bold yellow"
 format = '\([$state( $progress_current/$progress_total)]($style)\) '
 disabled = false
+
+# Custom git info command (like oh-my-zsh detailed info)
+[custom.git_info]
+command = '''
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  stash_count=$(git stash list 2>/dev/null | wc -l | tr -d ' ')
+  if [ "$stash_count" -gt 0 ]; then
+    echo "⚑$stash_count"
+  fi
+fi
+'''
+when = "git rev-parse --is-inside-work-tree"
+style = "yellow bold"
+format = "[$output]($style) "
+description = "Show git stash count"
 
 # Additional git information modules
 [package]
