@@ -8,34 +8,24 @@ command_timeout = 5000
 disabled = true
 
 [git_status]
-# Enhanced git status with counts (oh-my-zsh style)
-format = '([\[$all_status$ahead_behind\]]($style) )'
-style = "red bold"
+# Oh-my-zsh style git status
+format = '([$all_status$ahead_behind]($style))'
+style = "red"
 
-# Show staged files with count
-staged = "●"          # Files ready to commit
-# Show modified files with count
-modified = "!"        # Files changed but not staged
-# Show untracked files with count
-untracked = "?"       # Files not tracked by git
-# Show deleted files with count
-deleted = "✗"         # Files deleted
-# Show renamed files with count
-renamed = "→"         # Files renamed
-# Show stashed changes with count (like oh-my-zsh)
-stashed = "⚑"         # Stash indicator with count
-# Show ahead/behind remote with counts
-ahead = "↑"           # Commits ahead of remote
-behind = "↓"          # Commits behind remote
-up_to_date = ""       # Clean when up to date
-diverged = "⇕"        # When both ahead and behind
-# Show conflicted files with count
-conflicted = "≠"      # Merge conflicts
-# Show type changed files
-typechanged = "⚡"     # Type changes
+# Oh-my-zsh symbols
+staged = "+"           # Files ready to commit
+modified = "!"         # Files changed but not staged
+untracked = "?"        # Files not tracked by git
+deleted = "✖"          # Files deleted
+renamed = "➜"          # Files renamed
+stashed = "$"          # Stash indicator
+ahead = "⇡"            # Commits ahead of remote
+behind = "⇣"           # Commits behind remote
+up_to_date = "✓"       # Clean when up to date
+diverged = "⇕"         # When both ahead and behind
+conflicted = "✗"       # Merge conflicts
+typechanged = ""       # Type changes
 disabled = false
-
-# ahead/behind will show counts automatically
 
 [git_metrics]
 # Show number of files changed instead of line counts
@@ -57,10 +47,10 @@ tag_symbol = " 🏷  "
 tag_disabled = true
 
 [git_branch]
-# Show current branch and remote tracking
-format = "on [$symbol$branch(:$remote_branch)]($style) "
+# Oh-my-zsh style branch display
+format = "on [$symbol$branch]($style) "
 symbol = " "
-style = "bold purple"
+style = "blue"
 truncation_length = 9223372036854775807
 truncation_symbol = "…"
 only_attached = false
