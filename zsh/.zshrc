@@ -9,6 +9,21 @@ fi
 # Initialize fzf
 if command -v fzf &> /dev/null; then
     eval "$(fzf --zsh)"
+
+    # Configure fzf for history search (Ctrl+R)
+    export FZF_CTRL_R_OPTS="
+        --height=40%
+        --layout=reverse
+        --border
+        --preview 'echo {}'
+        --preview-window down:3:hidden:wrap
+        --bind '?:toggle-preview'
+        --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
+        --color header:italic
+        --header 'Press ? to toggle preview, Ctrl+Y to copy'"
+
+    # Limit initial display but allow scrolling through all history
+    export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border"
 fi
 
 # Load additional config files
