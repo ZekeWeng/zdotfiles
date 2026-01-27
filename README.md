@@ -32,7 +32,7 @@ exec zsh
 - lazygit, gh - Git workflow tools
 - Node.js, Bun, Python (uv), Go, Rust, Elixir - Development environments
 - PostgreSQL, RabbitMQ, AWS CLI - Backend infrastructure
-- Convex, Claude - Modern development and AI tools
+- Claude - Modern development and AI tools
 
 ## Installation
 
@@ -80,38 +80,6 @@ brew bundle cleanup --file=~/.zdotfiles/Brewfile
 brew update && brew upgrade
 nvim --headless "+Lazy! sync" +qa
 cd ~/.zdotfiles && git pull
-```
-
-## Manual Setup
-
-**Set Ghostty as default terminal:**
-System Settings → Privacy & Security → Developer Tools → Add Ghostty
-
-**Install and set Nerd Font:**
-```bash
-# Install JetBrains Mono Nerd Font (included in Brewfile)
-brew install --cask font-jetbrains-mono-nerd-font
-
-# Set 'JetBrainsMono Nerd Font' as terminal font in preferences
-```
-
-**Configure SSH keys:**
-```bash
-ssh-keygen -t ed25519 -C "your_email@example.com"
-ssh-add ~/.ssh/id_ed25519
-```
-
-**macOS settings:**
-```bash
-# Show hidden files
-defaults write com.apple.finder AppleShowAllFiles -bool true
-
-# Fast key repeat
-defaults write NSGlobalDomain KeyRepeat -int 2
-defaults write NSGlobalDomain InitialKeyRepeat -int 15
-
-# Restart Finder
-killall Finder
 ```
 
 ## Customization
