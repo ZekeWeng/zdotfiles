@@ -8,14 +8,27 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-echo "${GREEN}Starting dotfiles installation...${NC}"
+# Parse arguments
+INSTALL_BREW=true
+for arg in "$@"; do
+    case $arg in
+        --no-brew)
+            INSTALL_BREW=false
+            shift
+            ;;
+        *)
+            ;;
+    esac
+done
+
+echo -e "${GREEN}Starting dotfiles installation...${NC}"
 
 # Create necessary directories
-echo "${YELLOW}Creating directories...${NC}"
+echo -e "${YELLOW}Creating directories...${NC}"
 mkdir -p ~/.config
 
 # Symlink configs
-echo "${YELLOW}Creating symlinks...${NC}"
+echo -e "${YELLOW}Creating symlinks...${NC}"
 
 # Neovim
 ln -sf ~/.zdotfiles/nvim ~/.config/nvim
@@ -35,20 +48,24 @@ ln -sf ~/.zdotfiles/git/.gitignore_global ~/.gitignore_global
 ln -sf ~/.zdotfiles/tmux/.tmux.conf ~/.tmux.conf
 
 # Install Homebrew packages
-if command -v brew &> /dev/null; then
-    echo "${YELLOW}Installing Homebrew packages...${NC}"
-    brew bundle --file=~/.zdotfiles/Brewfile
+if [ "$INSTALL_BREW" = true ]; then
+    if command -v brew &> /dev/null; then
+        echo -e "${YELLOW}Installing Homebrew packages...${NC}"
+        brew bundle --file=~/.zdotfiles/Brewfile
+    else
+        echo -e "${RED}Homebrew not found. Please install Homebrew first.${NC}"
+    fi
 else
-    echo "${RED}Homebrew not found. Please install Homebrew first.${NC}"
+    echo -e "${YELLOW}Skipping Homebrew package installation (--no-brew flag)${NC}"
 fi
 
 # Install Neovim plugin manager (lazy.nvim)
 if [ ! -d ~/.local/share/nvim/lazy/lazy.nvim ]; then
-    echo "${YELLOW}Installing lazy.nvim...${NC}"
+    echo -e "${YELLOW}Installing lazy.nvim...${NC}"
     git clone --filter=blob:none https://github.com/folke/lazy.nvim.git --branch=stable \
         ~/.local/share/nvim/lazy/lazy.nvim
 fi
 
-echo "${GREEN}Installation complete!${NC}"
-echo "${YELLOW}Please restart your terminal or run: exec zsh${NC}"
-echo "${YELLOW}Note: Make sure to set your terminal font to 'JetBrainsMono Nerd Font' for best appearance${NC}"
+echo -e "${GREEN}Installation complete!${NC}"
+echo -e "${YELLOW}Please restart your terminal or run: exec zsh${NC}"
+echo -e "${YELLOW}Note: Make sure to set your terminal font to 'JetBrainsMono Nerd Font' for best appearance${NC}"
