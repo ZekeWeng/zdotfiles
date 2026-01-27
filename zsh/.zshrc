@@ -10,20 +10,15 @@ fi
 if command -v fzf &> /dev/null; then
     eval "$(fzf --zsh)"
 
-    # Configure fzf for history search (Ctrl+R)
+    # Configure fzf for history search (Ctrl+R) - compact display
     export FZF_CTRL_R_OPTS="
-        --height=40%
+        --height=6
         --layout=reverse
         --border
-        --preview 'echo {}'
-        --preview-window down:3:hidden:wrap
-        --bind '?:toggle-preview'
-        --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
-        --color header:italic
-        --header 'Press ? to toggle preview, Ctrl+Y to copy'"
+        --no-info
+        --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'"
 
-    # Limit initial display but allow scrolling through all history
-    export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border"
+    export FZF_DEFAULT_OPTS="--height 6 --layout=reverse --border --no-info"
 fi
 
 # Load additional config files
