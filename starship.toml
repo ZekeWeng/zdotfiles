@@ -39,7 +39,7 @@ modified = "!${count}"
 staged = "+${count}"
 renamed = "»${count}"
 deleted = "✘${count}"
-stashed = "$${count}"
+stashed = "*${count}"
 
 # Character - the prompt symbol
 [character]
@@ -47,9 +47,6 @@ success_symbol = "[❯](bold green)"
 error_symbol = "[❯](bold red)"
 
 # Disable modules we don't need for clean look
-[bun]
-disabled = true
-
 [git_commit]
 disabled = true
 
