@@ -17,7 +17,6 @@ cask "claude"
 
 # Development
 brew "node"
-brew "bun"
 brew "python"
 brew "uv"
 brew "go"
