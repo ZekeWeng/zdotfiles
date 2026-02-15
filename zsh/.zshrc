@@ -39,11 +39,12 @@ setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_REDUCE_BLANKS
 setopt HIST_IGNORE_SPACE
 
+# Enable emacs key bindings
+bindkey -e
+
 # Key bindings - Cmd+Arrow, Option+Arrow, and delete behavior
-bindkey '^[[1;9D' beginning-of-line    # Cmd+Left: move to beginning of line
-bindkey '^[[1;9C' end-of-line          # Cmd+Right: move to end of line
-bindkey '^[[H' beginning-of-line       # Home key (alternate Cmd+Left)
-bindkey '^[[F' end-of-line             # End key (alternate Cmd+Right)
+bindkey '^A' beginning-of-line         # Cmd+Left / Ctrl+A: beginning of line
+bindkey '^E' end-of-line               # Cmd+Right / Ctrl+E: end of line
 bindkey '^[[1;3D' backward-word        # Option+Left: move back one word
 bindkey '^[[1;3C' forward-word         # Option+Right: move forward one word
 bindkey '^[b' backward-word            # Option+B: move back one word (alt)
