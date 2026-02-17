@@ -22,13 +22,13 @@ fish_style_pwd_dir_length = 0
 # Git branch - simple branch name
 [git_branch]
 format = "[$branch]($style) "
-style = "blue"
+style = "purple"
 truncation_length = 9223372036854775807
 
 # Git status with count indicators
 [git_status]
 format = '([$all_status$ahead_behind]($style) )'
-style = "red"
+style = "#2ea043"
 conflicted = "✗"
 ahead = "⇡"
 behind = "⇣"
