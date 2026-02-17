@@ -35,9 +35,9 @@
 	mt = mergetool
 
 	# Log aliases
-	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
-	lga = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --all
-	lgp = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit -p
+	lg = log --graph --pretty=format:'%C(green)%h%Creset -%C(yellow)%d%Creset %s %C(green)(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	lga = log --graph --pretty=format:'%C(green)%h%Creset -%C(yellow)%d%Creset %s %C(green)(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --all
+	lgp = log --graph --pretty=format:'%C(green)%h%Creset -%C(yellow)%d%Creset %s %C(green)(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit -p
 
 	# Stash aliases
 	sl = stash list
@@ -46,7 +46,7 @@
 	sp = stash pop
 
 	# Show aliases
-	last = log -1 HEAD
+	last = log -1 HEAD --pretty=format:'%C(green)%h%Creset %s %C(green)(%cr) %C(bold blue)<%an>%Creset'
 	unstage = reset HEAD --
 	discard = checkout --
 
@@ -57,19 +57,19 @@
 	ui = auto
 
 [color "branch"]
-	current = yellow reverse
-	local = yellow
-	remote = green
+	current = green reverse
+	local = green
+	remote = yellow
 
 [color "diff"]
-	meta = yellow bold
+	meta = green bold
 	frag = magenta bold
 	old = red bold
 	new = green bold
 
 [color "status"]
-	added = yellow
-	changed = green
+	added = green
+	changed = green bold
 	untracked = cyan
 
 [filter "lfs"]
