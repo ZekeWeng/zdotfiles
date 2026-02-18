@@ -76,11 +76,5 @@ cc() {
   echo "Claude config initialized in $(pwd)"
 }
 
-# Claude
-cc() {
-  cp ~/.zdotfiles/claude-config.tar.gz . && tar xzf claude-config.tar.gz && rm claude-config.tar.gz
-  echo "Claude config initialized in $(pwd)"
-}
-
 # Applications
 alias cursor='open -a Cursor'
