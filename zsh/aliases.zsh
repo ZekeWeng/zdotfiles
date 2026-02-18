@@ -20,8 +20,8 @@ alias gc="git commit"
 alias gcm="git commit -m"
 alias gca="git commit --amend"
 alias gp="git push"
-alias gpf="git push --force-with-lease"
-alias gl="git pull"
+alias gpl="git pull"
+alias gl="git log --oneline --graph --all"
 alias gs="git status"
 alias gss="git status -s"
 alias gd="git diff"
@@ -69,6 +69,12 @@ alias e="nvim"
 alias ports="lsof -i -n -P | grep LISTEN"
 alias myip="curl -s ifconfig.me"
 alias week="date +%V"
+
+# Claude
+cc() {
+  cp ~/.zdotfiles/claude-config.tar.gz . && tar xzf claude-config.tar.gz && rm claude-config.tar.gz
+  echo "Claude config initialized in $(pwd)"
+}
 
 # Applications
 alias cursor='open -a Cursor'
