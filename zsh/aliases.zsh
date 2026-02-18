@@ -71,7 +71,7 @@ alias myip="curl -s ifconfig.me"
 alias week="date +%V"
 
 # Claude
-cc() {
+cci() {
   cp ~/.zdotfiles/claude-config.tar.gz . && tar xzf claude-config.tar.gz && rm claude-config.tar.gz
   echo "Claude config initialized in $(pwd)"
 }
