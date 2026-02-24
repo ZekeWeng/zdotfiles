@@ -97,6 +97,37 @@ git add . && git commit -m "Update configs" && git push
 cd ~/.zdotfiles && git pull && ./install.sh
 ```
 
+## Tmux Guide
+
+Tmux is a terminal multiplexer — it lets you create multiple sessions, windows, and panes inside a single terminal. Sessions persist even if you close your terminal.
+
+**Getting started:**
+```bash
+tmux                  # Start a new session
+tmux new -s work      # Start a named session
+tmux attach           # Reattach to an existing session
+tmux ls               # List running sessions
+```
+
+**Prefix key: `Ctrl-a`** (press this first, then the action key)
+
+| Keys | Action |
+|---|---|
+| `Ctrl-a \|` | Split pane horizontally |
+| `Ctrl-a -` | Split pane vertically |
+| `Ctrl-a h/j/k/l` | Navigate panes (vim-style) |
+| `Ctrl-a H/J/K/L` | Resize panes |
+| `Ctrl-a c` | New window |
+| `Ctrl-a 1-9` | Switch to window N |
+| `Ctrl-a Ctrl-h/Ctrl-l` | Previous/next window |
+| `Ctrl-a d` | Detach (session keeps running) |
+| `Ctrl-a v` | Enter copy mode (vi keys) |
+| `Ctrl-a r` | Reload config |
+
+**Copy mode (vi keys):** press `Ctrl-a v` to enter, then `v` to select, `y` to yank (copies to macOS clipboard via pbcopy).
+
+**Ghostty + Tmux:** Tmux runs inside Ghostty with true color and undercurl support configured. No special setup needed — just run `tmux` in Ghostty. If you close Ghostty, `tmux attach` brings everything back.
+
 ## Troubleshooting
 
 **Broken symlinks:**
