@@ -8,11 +8,12 @@ fi
 
 # Initialize fzf
 if command -v fzf &> /dev/null; then
-    if fzf --zsh &> /dev/null; then
+    FZF_VERSION=$(fzf --version | awk '{print $1}')
+    if [[ "$(printf '%s\n0.48.0\n' "$FZF_VERSION" | sort -V | head -1)" == "0.48.0" ]]; then
         eval "$(fzf --zsh)"
     elif [[ -f /usr/share/doc/fzf/examples/key-bindings.zsh ]]; then
         source /usr/share/doc/fzf/examples/key-bindings.zsh
-        source /usr/share/doc/fzf/examples/completion.zsh
+        [[ -f /usr/share/doc/fzf/examples/completion.zsh ]] && source /usr/share/doc/fzf/examples/completion.zsh
     fi
 
     # Configure fzf for history search (Ctrl+R) - compact display
