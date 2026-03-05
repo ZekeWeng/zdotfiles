@@ -38,6 +38,11 @@ echo -e "${YELLOW}Installing essential packages...${NC}"
 install_packages() {
     case $PKG_MANAGER in
         apt)
+            # Remove system npm if present (conflicts with NodeSource nodejs)
+            if dpkg -l npm &> /dev/null; then
+                echo -e "${YELLOW}Removing conflicting system npm package...${NC}"
+                sudo apt-get remove -y npm &> /dev/null || true
+            fi
             $PKG_INSTALL \
                 neovim git zsh tmux fzf ripgrep fd-find bat \
                 python3 python3-pip python3-venv \
@@ -78,6 +83,10 @@ if ! command -v node &> /dev/null; then
     echo -e "${YELLOW}Installing Node.js via NodeSource...${NC}"
     case $PKG_MANAGER in
         apt)
+            # Remove conflicting system npm package if present
+            if dpkg -l npm &> /dev/null; then
+                sudo apt-get remove -y npm &> /dev/null || true
+            fi
             curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
             sudo apt-get install -y nodejs
             ;;
