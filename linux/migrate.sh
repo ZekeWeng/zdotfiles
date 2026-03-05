@@ -65,10 +65,7 @@ install_packages() {
             $PKG_INSTALL \
                 neovim git zsh tmux fzf ripgrep fd-find bat \
                 python3 python3-pip python3-venv \
-                golang rustc cargo elixir \
-                postgresql rabbitmq-server awscli \
-                xclip curl wget unzip fontconfig \
-                npm-
+                xclip curl wget unzip fontconfig
             # fd and bat have different binary names on Debian/Ubuntu
             if ! command -v fd &> /dev/null && command -v fdfind &> /dev/null; then
                 sudo ln -sf "$(which fdfind)" /usr/local/bin/fd
@@ -81,16 +78,12 @@ install_packages() {
             $PKG_INSTALL \
                 neovim git zsh tmux fzf ripgrep fd-find bat \
                 python3 python3-pip \
-                golang rust cargo elixir \
-                postgresql-server rabbitmq-server awscli \
                 xclip curl wget unzip fontconfig
             ;;
         pacman)
             $PKG_INSTALL \
                 neovim git zsh tmux fzf ripgrep fd bat \
                 python python-pip \
-                go rust elixir \
-                postgresql rabbitmq aws-cli-v2 \
                 xclip curl wget unzip fontconfig
             ;;
     esac
