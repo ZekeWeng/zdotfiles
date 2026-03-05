@@ -67,7 +67,8 @@ install_packages() {
                 python3 python3-pip python3-venv \
                 golang rustc cargo elixir \
                 postgresql rabbitmq-server awscli \
-                xclip curl wget unzip fontconfig
+                xclip curl wget unzip fontconfig \
+                npm-
             # fd and bat have different binary names on Debian/Ubuntu
             if ! command -v fd &> /dev/null && command -v fdfind &> /dev/null; then
                 sudo ln -sf "$(which fdfind)" /usr/local/bin/fd
