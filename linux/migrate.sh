@@ -40,7 +40,7 @@ install_packages() {
         apt)
             $PKG_INSTALL \
                 neovim git zsh tmux fzf ripgrep fd-find bat \
-                nodejs npm python3 python3-pip python3-venv \
+                python3 python3-pip python3-venv \
                 golang rustc cargo elixir \
                 postgresql rabbitmq-server awscli \
                 xclip curl wget unzip fontconfig
@@ -72,6 +72,23 @@ install_packages() {
 }
 
 install_packages
+
+# Install Node.js via NodeSource (avoids apt nodejs/npm dependency conflicts)
+if ! command -v node &> /dev/null; then
+    echo -e "${YELLOW}Installing Node.js via NodeSource...${NC}"
+    case $PKG_MANAGER in
+        apt)
+            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+            sudo apt-get install -y nodejs
+            ;;
+        dnf)
+            # nodejs already installed via dnf in install_packages
+            ;;
+        pacman)
+            # nodejs already installed via pacman in install_packages
+            ;;
+    esac
+fi
 
 # Install eza (not in most default repos)
 if ! command -v eza &> /dev/null; then
@@ -163,6 +180,9 @@ fi
 
 # Use xdg-open instead of macOS open
 alias open='xdg-open'
+
+# Fix Delete key to actually delete forward (not send ~)
+bindkey '\e[3~' delete-char
 ZSHEOF
 
 # Set zsh as default shell if it isn't already
