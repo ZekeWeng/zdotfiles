@@ -32,3 +32,5 @@ if ! grep -qF "linux/linux.zsh" "$DOTFILES_DIR/zsh/.zshrc"; then
 fi
 
 echo -e "${GREEN}Linux installation complete!${NC}"
+echo -e "${YELLOW}Reloading shell...${NC}"
+exec zsh -l

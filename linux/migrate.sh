@@ -35,30 +35,6 @@ $PKG_UPDATE
 # Install essential tools
 echo -e "${YELLOW}Installing essential packages...${NC}"
 
-install_node() {
-    case $PKG_MANAGER in
-        apt)
-            # Purge system nodejs/npm to avoid conflicts with NodeSource
-            if dpkg -s npm &> /dev/null 2>&1; then
-                echo -e "${YELLOW}Removing conflicting system npm package...${NC}"
-                sudo apt-get purge -y npm node-gyp nodejs &> /dev/null || true
-                sudo apt-get autoremove -y &> /dev/null || true
-            fi
-            if ! command -v node &> /dev/null; then
-                echo -e "${YELLOW}Installing Node.js via NodeSource...${NC}"
-                curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-                sudo apt-get install -y nodejs
-            fi
-            ;;
-        dnf)
-            $PKG_INSTALL nodejs
-            ;;
-        pacman)
-            $PKG_INSTALL nodejs npm
-            ;;
-    esac
-}
-
 install_packages() {
     case $PKG_MANAGER in
         apt)
@@ -88,9 +64,6 @@ install_packages() {
             ;;
     esac
 }
-
-# Install Node.js first (must happen before bulk install to avoid npm conflicts)
-install_node
 
 install_packages
 
