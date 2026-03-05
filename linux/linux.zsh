@@ -1,5 +1,10 @@
 # Linux-specific shell configuration
 
+# Fix terminal type for SSH sessions from Ghostty
+if [[ "$TERM" == "xterm-ghostty" ]] && ! infocmp xterm-ghostty &> /dev/null; then
+    export TERM=xterm-256color
+fi
+
 # Clipboard support (replaces macOS pbcopy/pbpaste)
 if command -v xclip &> /dev/null; then
     alias pbcopy='xclip -selection clipboard'
