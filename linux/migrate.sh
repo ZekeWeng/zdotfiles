@@ -20,7 +20,7 @@ elif command -v dnf &> /dev/null; then
     PKG_INSTALL="sudo dnf install -y"
     PKG_UPDATE="sudo dnf check-update || true"
 elif command -v pacman &> /dev/null; then
-    PKG_MANAGER="pacman"ex
+    PKG_MANAGER="pacman"
     PKG_INSTALL="sudo pacman -S --noconfirm"
     PKG_UPDATE="sudo pacman -Sy"
 else
@@ -35,15 +35,33 @@ $PKG_UPDATE
 # Install essential tools
 echo -e "${YELLOW}Installing essential packages...${NC}"
 
+install_node() {
+    case $PKG_MANAGER in
+        apt)
+            # Purge system nodejs/npm to avoid conflicts with NodeSource
+            if dpkg -s npm &> /dev/null 2>&1; then
+                echo -e "${YELLOW}Removing conflicting system npm package...${NC}"
+                sudo apt-get purge -y npm node-gyp nodejs &> /dev/null || true
+                sudo apt-get autoremove -y &> /dev/null || true
+            fi
+            if ! command -v node &> /dev/null; then
+                echo -e "${YELLOW}Installing Node.js via NodeSource...${NC}"
+                curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+                sudo apt-get install -y nodejs
+            fi
+            ;;
+        dnf)
+            $PKG_INSTALL nodejs
+            ;;
+        pacman)
+            $PKG_INSTALL nodejs npm
+            ;;
+    esac
+}
+
 install_packages() {
     case $PKG_MANAGER in
         apt)
-            # Purge system npm if present (conflicts with NodeSource nodejs)
-            if dpkg -s npm &> /dev/null 2>&1; then
-                echo -e "${YELLOW}Removing conflicting system npm package...${NC}"
-                sudo apt-get purge -y npm node-gyp &> /dev/null || true
-                sudo apt-get autoremove -y &> /dev/null || true
-            fi
             $PKG_INSTALL \
                 neovim git zsh tmux fzf ripgrep fd-find bat \
                 python3 python3-pip python3-venv \
@@ -61,7 +79,7 @@ install_packages() {
         dnf)
             $PKG_INSTALL \
                 neovim git zsh tmux fzf ripgrep fd-find bat \
-                nodejs python3 python3-pip \
+                python3 python3-pip \
                 golang rust cargo elixir \
                 postgresql-server rabbitmq-server awscli \
                 xclip curl wget unzip fontconfig
@@ -69,7 +87,7 @@ install_packages() {
         pacman)
             $PKG_INSTALL \
                 neovim git zsh tmux fzf ripgrep fd bat \
-                nodejs npm python python-pip \
+                python python-pip \
                 go rust elixir \
                 postgresql rabbitmq aws-cli-v2 \
                 xclip curl wget unzip fontconfig
@@ -77,28 +95,10 @@ install_packages() {
     esac
 }
 
-install_packages
+# Install Node.js first (must happen before bulk install to avoid npm conflicts)
+install_node
 
-# Install Node.js via NodeSource (avoids apt nodejs/npm dependency conflicts)
-if ! command -v node &> /dev/null; then
-    echo -e "${YELLOW}Installing Node.js via NodeSource...${NC}"
-    case $PKG_MANAGER in
-        apt)
-            # Remove conflicting system npm package if present
-            if dpkg -l npm &> /dev/null; then
-                sudo apt-get remove -y npm &> /dev/null || true
-            fi
-            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-            sudo apt-get install -y nodejs
-            ;;
-        dnf)
-            # nodejs already installed via dnf in install_packages
-            ;;
-        pacman)
-            # nodejs already installed via pacman in install_packages
-            ;;
-    esac
-fi
+install_packages
 
 # Install eza (not in most default repos)
 if ! command -v eza &> /dev/null; then
@@ -191,8 +191,25 @@ fi
 # Use xdg-open instead of macOS open
 alias open='xdg-open'
 
-# Fix Delete key to actually delete forward (not send ~)
-bindkey '\e[3~' delete-char
+# Key bindings (fix keys that misbehave on Linux terminals)
+bindkey '\e[3~' delete-char        # Delete key
+bindkey '\e[H'  beginning-of-line  # Home key
+bindkey '\e[F'  end-of-line        # End key
+bindkey '\e[1~' beginning-of-line  # Home key (alt)
+bindkey '\e[4~' end-of-line        # End key (alt)
+bindkey '\e[5~' up-line-or-history   # Page Up
+bindkey '\e[6~' down-line-or-history # Page Down
+bindkey '\e[2~' overwrite-mode     # Insert key
+bindkey '\e[A'  up-line-or-history   # Up arrow
+bindkey '\e[B'  down-line-or-history # Down arrow
+bindkey '\e[C'  forward-char       # Right arrow
+bindkey '\e[D'  backward-char      # Left arrow
+bindkey '\eOA'  up-line-or-history   # Up arrow (application mode)
+bindkey '\eOB'  down-line-or-history # Down arrow (application mode)
+bindkey '\eOC'  forward-char       # Right arrow (application mode)
+bindkey '\eOD'  backward-char      # Left arrow (application mode)
+bindkey '\e[1;5C' forward-word     # Ctrl+Right
+bindkey '\e[1;5D' backward-word    # Ctrl+Left
 ZSHEOF
 
 # Set zsh as default shell if it isn't already
