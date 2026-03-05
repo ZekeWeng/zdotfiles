@@ -39,7 +39,7 @@ install_packages() {
     case $PKG_MANAGER in
         apt)
             $PKG_INSTALL \
-                neovim git zsh tmux fzf ripgrep fd-find bat \
+                git zsh tmux fzf ripgrep fd-find bat \
                 python3 python3-pip python3-venv \
                 xclip curl wget unzip fontconfig
             # fd and bat have different binary names on Debian/Ubuntu
@@ -66,6 +66,22 @@ install_packages() {
 }
 
 install_packages
+
+# Install neovim (latest via AppImage, apt version is too old for plugins)
+NVIM_MIN_VERSION="0.9.0"
+install_nvim=false
+if ! command -v nvim &> /dev/null; then
+    install_nvim=true
+elif [[ "$(printf '%s\n%s\n' "$NVIM_MIN_VERSION" "$(nvim --version | head -1 | grep -oP '\d+\.\d+\.\d+')" | sort -V | head -1)" != "$NVIM_MIN_VERSION" ]]; then
+    install_nvim=true
+fi
+if [ "$install_nvim" = true ]; then
+    echo -e "${YELLOW}Installing latest Neovim via AppImage...${NC}"
+    sudo apt-get remove -y neovim &> /dev/null || true
+    curl -Lo /tmp/nvim.appimage https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+    chmod u+x /tmp/nvim.appimage
+    sudo mv /tmp/nvim.appimage /usr/local/bin/nvim
+fi
 
 # Install eza (not in most default repos)
 if ! command -v eza &> /dev/null; then
