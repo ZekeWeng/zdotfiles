@@ -13,14 +13,14 @@ echo -e "${GREEN}Starting Linux migration...${NC}"
 # Detect package manager
 if command -v apt-get &> /dev/null; then
     PKG_MANAGER="apt"
-    PKG_INSTALL="sudo apt-get install -y"
+    PKG_INSTALL="sudo apt-get install -y --no-install-recommends"
     PKG_UPDATE="sudo apt-get update"
 elif command -v dnf &> /dev/null; then
     PKG_MANAGER="dnf"
     PKG_INSTALL="sudo dnf install -y"
     PKG_UPDATE="sudo dnf check-update || true"
 elif command -v pacman &> /dev/null; then
-    PKG_MANAGER="pacman"
+    PKG_MANAGER="pacman"ex
     PKG_INSTALL="sudo pacman -S --noconfirm"
     PKG_UPDATE="sudo pacman -Sy"
 else
@@ -38,10 +38,11 @@ echo -e "${YELLOW}Installing essential packages...${NC}"
 install_packages() {
     case $PKG_MANAGER in
         apt)
-            # Remove system npm if present (conflicts with NodeSource nodejs)
-            if dpkg -l npm &> /dev/null; then
+            # Purge system npm if present (conflicts with NodeSource nodejs)
+            if dpkg -s npm &> /dev/null 2>&1; then
                 echo -e "${YELLOW}Removing conflicting system npm package...${NC}"
-                sudo apt-get remove -y npm &> /dev/null || true
+                sudo apt-get purge -y npm node-gyp &> /dev/null || true
+                sudo apt-get autoremove -y &> /dev/null || true
             fi
             $PKG_INSTALL \
                 neovim git zsh tmux fzf ripgrep fd-find bat \
