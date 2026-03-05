@@ -8,7 +8,12 @@ fi
 
 # Initialize fzf
 if command -v fzf &> /dev/null; then
-    eval "$(fzf --zsh)"
+    if fzf --zsh &> /dev/null; then
+        eval "$(fzf --zsh)"
+    elif [[ -f /usr/share/doc/fzf/examples/key-bindings.zsh ]]; then
+        source /usr/share/doc/fzf/examples/key-bindings.zsh
+        source /usr/share/doc/fzf/examples/completion.zsh
+    fi
 
     # Configure fzf for history search (Ctrl+R) - compact display
     export FZF_CTRL_R_OPTS="
