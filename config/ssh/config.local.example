@@ -1,0 +1,7 @@
+# SSH hosts for this computer only. Git does not track config/ssh/config.local.
+# ~/.ssh/config.local links to it. config/ssh/config reads it first, so its values win.
+
+# Host myserver
+#   HostName 192.0.2.10
+#   User myuser
+#   IdentityFile ~/.ssh/id_ed25519

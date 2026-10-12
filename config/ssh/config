@@ -1,0 +1,26 @@
+# SSH config for each computer. ~/.ssh/config links to this file.
+# ssh_config has no comments at the end of a line. Put each comment on its own line.
+
+# Local overrides
+# ssh uses the first value that it finds for each option. This Include is first, so its values win.
+Include ~/.ssh/config.local
+
+# Host * below gives the key and the agent settings. This block adds only the macOS Keychain.
+Host github.com
+  UseKeychain yes
+
+Host *
+  AddKeysToAgent yes
+  IdentityFile ~/.ssh/id_ed25519
+  # Offer only the key in this file. Do not offer each key in the agent.
+  IdentitiesOnly yes
+  # Hash the host names in known_hosts, so that a copy of the file does not show your hosts.
+  HashKnownHosts yes
+  # Find a dead connection in approximately 3 minutes.
+  ServerAliveInterval 60
+  ServerAliveCountMax 3
+  # Show the key of a new host, and ask before ssh adds it. Refuse a changed key.
+  # "accept-new" adds new keys with no question, so it does not find an attack on the first connection.
+  StrictHostKeyChecking ask
+  # Use SSHFP records in DNS when they exist.
+  VerifyHostKeyDNS yes
