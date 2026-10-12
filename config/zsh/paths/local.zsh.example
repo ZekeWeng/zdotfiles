@@ -1,0 +1,7 @@
+# Paths for this computer only. Git does not track config/zsh/paths/local.zsh.
+# .zprofile loads it after config/zsh/paths/paths.zsh.
+
+# Path
+# zdotfiles_path_prepend puts a folder first. zdotfiles_path_append puts a folder last.
+# zdotfiles_path_prepend "$HOME/work/bin"
+# zdotfiles_path_append "/opt/tools/bin"

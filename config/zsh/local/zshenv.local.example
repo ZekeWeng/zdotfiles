@@ -1,0 +1,14 @@
+# Environment for this computer only. Git does not track config/zsh/zshenv.local. ~/.zshenv.local links to it.
+
+# Settings
+# zdot_brew_kegs=(node@22 postgresql@15 rustup)
+# zdot_zsh_modules=(history keybinds completions aliases fzf)
+# zdot_history_days=120
+
+# Company
+# Set the company of this laptop. .zshenv then loads config/zsh/private/COMPANY.secrets.zsh
+# and config/zsh/companies/COMPANY/env.zsh. .zshrc loads config/zsh/companies/COMPANY/aliases.zsh.
+# zdot_company=COMPANY
+
+# Secrets
+# Put secrets in config/zsh/private/secrets.zsh, not here.

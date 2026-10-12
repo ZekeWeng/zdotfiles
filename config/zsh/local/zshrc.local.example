@@ -1,0 +1,5 @@
+# Interactive setup for this computer only. Git does not track config/zsh/zshrc.local. ~/.zshrc.local links to it.
+# Put PATH folders in config/zsh/paths/local.zsh, so that scripts also get them.
+
+# Aliases
+# alias work="cd ~/work"
