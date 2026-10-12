@@ -1,0 +1,4 @@
+# tmux config for this computer only. Git does not track config/tmux/local.conf.
+# ~/.config/tmux/local.conf links to it. tmux.conf loads it last, so its values win.
+
+# set -g status-position bottom
