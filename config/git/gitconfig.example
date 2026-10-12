@@ -1,0 +1,7 @@
+# Git config for this computer only. Git does not track config/git/gitconfig.local.
+# ~/.gitconfig links to it. Git reads it after config/git/config, so its values win.
+
+[user]
+	name =
+	email =
+	# signingKey =

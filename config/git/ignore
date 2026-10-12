@@ -1,0 +1,33 @@
+# Files that git ignores in each repo. ~/.config/git/ignore links to this file.
+# Keep only the patterns of the OS, the editors, and secrets here.
+# Put the patterns of a language in the .gitignore of each repo, so that other people get them too.
+
+# OS-generated files
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor files
+*~
+*.swp
+*.swo
+.vscode/
+.idea/
+**/.claude/settings.local.json
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+.secret
+credentials.json
+service-account*.json
+.git-credentials

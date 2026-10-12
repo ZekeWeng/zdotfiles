@@ -1,0 +1,91 @@
+# Git config for each computer.
+# Your name, email, and signing key go in config/git/gitconfig.local. ~/.gitconfig links to it.
+# Git reads ~/.gitconfig after this file, so its values win. "git config --global" also writes there.
+
+[core]
+	autocrlf = input
+	pager = delta
+
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	# n and N go to the next and the previous file.
+	navigate = true
+	line-numbers = true
+	syntax-theme = Catppuccin Mocha
+
+[init]
+	defaultBranch = main
+
+[pull]
+	rebase = true
+
+[push]
+	autoSetupRemote = true
+
+# Check each object that git sends or receives. Git refuses a damaged object.
+# transfer.fsckObjects applies to fetch and to receive.
+# Some old repos have objects that fsck refuses. To clone one, run:
+#   git -c transfer.fsckObjects=false clone URL
+[transfer]
+	fsckObjects = true
+
+[merge]
+	tool = nvimdiff
+	conflictStyle = zdiff3
+
+[diff]
+	tool = nvimdiff
+
+[alias]
+	# Short names
+	st = status
+	co = checkout
+	br = branch
+	ci = commit
+	ca = commit --amend
+	dt = difftool
+	mt = mergetool
+
+	# Log as a graph. lga shows all branches. lgp also shows each diff.
+	lg = log --graph --pretty=format:'%C(green)%h%Creset -%C(yellow)%d%Creset %s %C(green)(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	lga = log --graph --pretty=format:'%C(green)%h%Creset -%C(yellow)%d%Creset %s %C(green)(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --all
+	lgp = log --graph --pretty=format:'%C(green)%h%Creset -%C(yellow)%d%Creset %s %C(green)(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit -p
+
+	# Stash
+	sl = stash list
+	sa = stash apply
+	ss = stash push
+	sp = stash pop
+
+	# Last commit, unstage, and discard
+	last = log -1 HEAD --pretty=format:'%C(green)%h%Creset %s %C(green)(%cr) %C(bold blue)<%an>%Creset'
+	unstage = reset HEAD --
+	discard = checkout --
+
+	# Delete the local branches that are merged, but keep main, master, develop, and the current branch.
+	# The format prints an empty line for the current branch. grep removes empty lines.
+	cleanup = "!git branch --format='%(if)%(HEAD)%(then)%(else)%(refname:short)%(end)' --merged | grep -vxE '(main|master|develop)?' | while IFS= read -r b; do git branch -d \"$b\"; done"
+
+[color "branch"]
+	current = green reverse
+	local = green
+	remote = yellow
+
+[color "diff"]
+	meta = green bold
+	frag = magenta bold
+	old = red bold
+	new = green bold
+
+[color "status"]
+	added = green
+	changed = green bold
+	untracked = cyan
+
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
