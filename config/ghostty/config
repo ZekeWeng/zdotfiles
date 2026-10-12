@@ -1,0 +1,28 @@
+# Ghostty config for each computer.
+
+# Theme
+theme = Catppuccin Mocha
+font-family = JetBrainsMono Nerd Font
+font-size = 14
+
+# Window
+window-padding-x = 10
+window-padding-y = 10
+
+macos-titlebar-style = tabs
+macos-option-as-alt = true
+
+# Cursor and mouse
+cursor-style = block
+shell-integration-features = no-cursor
+
+copy-on-select = clipboard
+clipboard-write = allow
+
+# Keys
+# Cmd+Delete sends Ctrl+u, like the default of Cmd+Backspace. zsh deletes the text to the left of the cursor.
+keybind = super+delete=text:\x15
+
+# Local overrides
+# The "?" makes the file optional. Ghostty reads it last, so its values win.
+config-file = ?~/.config/ghostty/local

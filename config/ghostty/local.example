@@ -1,0 +1,4 @@
+# Ghostty config for this computer only. Git does not track config/ghostty/local.
+# ~/.config/ghostty/local links to it. Ghostty reads it last, so its values win.
+
+# font-size = 16
