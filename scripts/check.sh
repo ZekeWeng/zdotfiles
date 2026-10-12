@@ -42,7 +42,8 @@ run_home() { env -i HOME="$home" PATH="$PATH" TERM="${TERM:-dumb}" "$@"; }
 # Return 0 if git ignores the path in $2 in the repo in $1.
 is_ignored() { run_home git -C "$1" check-ignore -q "$2"; }
 
-shell_scripts="scripts/install-dotfiles.sh scripts/install-brew.sh agents/install-agents.sh scripts/check.sh"
+shell_scripts="scripts/install-dotfiles.sh scripts/install-brew.sh agents/install-agents.sh scripts/check.sh
+    config/ghostty/weather.sh"
 manual_files="config/zsh/zshenv.local config/zsh/zshrc.local config/zsh/paths/local.zsh config/zsh/private/secrets.zsh
     config/ssh/config.local config/git/gitconfig.local brew/Brewfile.local config/ghostty/local config/tmux/local.conf"
 
