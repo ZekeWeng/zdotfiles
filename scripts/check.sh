@@ -116,7 +116,7 @@ while IFS= read -r f; do
         *)
             first="$(sed -n '1{/^#!/d;p;};2p' "$f" | head -n 1)"
             case "$first" in
-                "# "* | "-- "*) ;;
+                "# "* | "-- "* | "// "*) ;;
                 *) echo "$f: no header comment" >>"$format_errors" ;;
             esac
             ;;
