@@ -1,0 +1,9 @@
+# Homebrew packages for this computer only. Git does not track brew/Brewfile.local.
+# ~/.config/brew/Brewfile.local links to it. install-brew.sh installs it after the groups in brew/.
+# On a work computer, put the company packages here.
+
+# Kubernetes and containers
+# brew "kubectl"
+# brew "helm"
+# cask "aptakube"
+# cask "orbstack"
