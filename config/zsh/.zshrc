@@ -6,7 +6,7 @@ setopt AUTO_CD GLOB_DOTS EXTENDED_GLOB CORRECT INTERACTIVE_COMMENTS
 # Modules
 zsh_config_dir="${${(%):-%x}:A:h}"
 if [ -z "${zdot_zsh_modules+set}" ]; then
-    zdot_zsh_modules=(history keybinds completions aliases fzf)
+    zdot_zsh_modules=(history keybinds completions aliases fzf weather)
 fi
 for module in $zdot_zsh_modules; do
     . "$zsh_config_dir/modules/$module.zsh"
