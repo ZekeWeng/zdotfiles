@@ -1,0 +1,125 @@
+# Starship prompt for each computer. ~/.config/starship.toml links to this file.
+
+add_newline = false
+command_timeout = 1000
+palette = 'zdot'
+
+format = """
+$directory\
+$git_branch\
+$git_commit\
+$git_state\
+$git_status\
+${custom.gitparent}\
+$git_metrics\
+$cmd_duration\
+$character"""
+
+# Each style uses one of these names, so each color has one meaning in the prompt.
+[palettes.zdot]
+# Each color answers one question.
+info = 'cyan'      # Where am I? The folder, and the counts against the parent branch.
+pending = 'yellow' # What must I do? Unstaged and untracked files, stash, push or pull, rebase or merge, slow command.
+success = 'green'  # What is ready? Staged changes, added lines, a passed command.
+failure = 'red'    # What is wrong? Conflicts, deleted lines, a failed command.
+ref = 'purple'     # Which commit? The branch, and the commit and tag on a detached HEAD.
+
+[character]
+format = '$symbol '
+success_symbol = '[❯](bold success)'
+error_symbol = '[❯](bold failure)'
+vimcmd_symbol = '[❮](bold pending)'
+
+[directory]
+format = '[$path]($style) '
+style = 'bold info'
+truncation_length = 3
+truncate_to_repo = false
+truncation_symbol = '…/'
+fish_style_pwd_dir_length = 0
+
+[git_branch]
+format = '[$branch](bold ref) '
+symbol = ''
+only_attached = true
+
+# The hash shows only on a detached HEAD.
+[git_commit]
+format = '[@$hash$tag](bold ref) '
+commit_hash_length = 8
+only_detached = true
+tag_disabled = false
+tag_symbol = ' '
+
+[git_state]
+format = '[$state( $progress_current/$progress_total)](bold pending) '
+rebase = 'REBASE'
+merge = 'MERGE'
+revert = 'REVERT'
+cherry_pick = 'CHERRY'
+bisect = 'BISECT'
+
+[git_metrics]
+disabled = false
+only_nonzero_diffs = true
+added_style = 'bold success'
+deleted_style = 'bold failure'
+format = '([+$added]($added_style) )([-$deleted]($deleted_style) )'
+
+[git_status]
+# Each group shows only when it has a count.
+# Order: ahead and behind the upstream, stash, conflicts, index, worktree, untracked.
+format = """\
+($ahead_behind )\
+($stashed )\
+($conflicted )\
+($index_added$index_modified$index_deleted$renamed$index_typechanged )\
+($worktree_added$worktree_modified$worktree_deleted$worktree_typechanged )\
+($untracked )"""
+# Ahead and behind the upstream branch, such as origin/feat: what to push and what to pull.
+ahead = '[⇡${count}](bold pending)'
+behind = '[⇣${count}](bold pending)'
+diverged = '[⇡${ahead_count}⇣${behind_count}](bold pending)'
+up_to_date = ''
+stashed = '[*${count}](bold pending)'
+conflicted = '[✗${count}](bold failure)'
+
+# Index (staged): success
+index_added = '[+${count}](bold success)'
+index_modified = '[~${count}](bold success)'
+index_deleted = '[-${count}](bold success)'
+renamed = '[»${count}](bold success)'
+index_typechanged = '[⇄${count}](bold success)'
+
+# Worktree (not staged): pending
+worktree_added = '[+${count}](bold pending)'
+worktree_modified = '[!${count}](bold pending)'
+worktree_deleted = '[✘${count}](bold pending)'
+worktree_typechanged = '[⇄${count}](bold pending)'
+
+untracked = '[?${count}](bold pending)'
+
+# Ahead and behind the parent branch: the default branch of origin, or main if origin has no default.
+# The output names the parent, such as (main ⇡2⇣1). It shows nothing on the parent branch.
+[custom.gitparent]
+description = 'Ahead/behind vs parent branch'
+when = true
+require_repo = true
+shell = ['sh']
+command = '''
+base=$(git symbolic-ref -q --short refs/remotes/origin/HEAD 2>/dev/null) || base=main
+[ "$(git rev-parse --abbrev-ref HEAD 2>/dev/null)" = "${base#origin/}" ] && exit 0
+set -- $(git rev-list --left-right --count "$base...HEAD" 2>/dev/null)
+[ "$#" -eq 2 ] || exit 0
+[ "$1" -eq 0 ] && [ "$2" -eq 0 ] && exit 0
+out="${base#origin/} "
+[ "$2" -gt 0 ] && out="${out}⇡$2"
+[ "$1" -gt 0 ] && out="${out}⇣$1"
+printf '%s' "$out"
+'''
+format = '([\($output\)](bold info) )'
+
+[cmd_duration]
+min_time = 2000
+format = '[took $duration](bold pending) '
+show_milliseconds = true
