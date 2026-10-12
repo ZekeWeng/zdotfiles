@@ -1,0 +1,26 @@
+# Format rules for each file in this repo. shfmt, stylua, and many editors read this file.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+max_line_length = 120
+
+# Git writes its config with tabs.
+[{config/git/config,config/git/gitconfig.example}]
+indent_style = tab
+
+# Generated files and data files keep the format of their tools.
+[{*.json,*.yaml,*.yml}]
+indent_size = 2
+
+[*.md]
+max_line_length = off
+
+[*.sh]
+shell_variant = posix
+switch_case_indent = true

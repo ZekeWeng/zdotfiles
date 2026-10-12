@@ -1,0 +1,21 @@
+# Files that git ignores in this repo.
+
+# Manual files for one computer
+*.local
+config/zsh/paths/local.zsh
+config/ghostty/local
+config/tmux/local.conf
+config/zsh/private/*
+!config/zsh/private/secrets.example
+!config/zsh/private/company.secrets.example
+config/zsh/companies/*
+!config/zsh/companies/_template/
+agents/companies/*
+!agents/companies/_template/
+
+# SSH keys
+id_*
+*.pem
+
+# macOS
+.DS_Store
