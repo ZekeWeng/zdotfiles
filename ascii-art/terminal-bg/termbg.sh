@@ -13,7 +13,7 @@
 # Ghostty has no reload command for scripts. Press Cmd+Shift+, in Ghostty to see a change.
 set -eu
 
-root="$(cd "$(dirname "$0")" && pwd)"
+root="$(CDPATH='' cd -P -- "$(dirname -- "$(realpath -- "$0")")" && pwd -P)"
 state="${XDG_STATE_HOME:-$HOME/.local/state}/ghostty"
 out="$state/termbg.glsl"
 mode_file="$state/termbg.mode"
@@ -21,9 +21,8 @@ overlays_file="$state/termbg.overlays"
 stamp="$state/termbg.stamp"
 weather_cache="$state/termbg.weather.glsl"
 lock="$state/termbg.lock"
-# Each run has its own temporary files, so runs at the same time do not write into the same file.
+# Each run has its own temporary files, so that runs at the same time do not write into the same file.
 tmp="$out.tmp.$$"
-# apply_overlays reads the overlays from this file. The overlay command sets a new list here before it saves the list.
 overlays_src="$overlays_file"
 use_weather_cache=no
 
@@ -163,9 +162,8 @@ set_mode() {
     echo "mode: $new"
 }
 
-# Take the lock, so that only one run changes the state at a time.
-# Wait up to 30 seconds. The weather request stops after 20 seconds.
-# A lock that is older than 1 minute is from a run that stopped. Remove it.
+# Wait up to 30 seconds for the lock, because the weather request can take 20 seconds.
+# A lock that is older than 1 minute is from a run that stopped.
 take_lock() {
     tries=0
     until mkdir "$lock" 2>/dev/null; do

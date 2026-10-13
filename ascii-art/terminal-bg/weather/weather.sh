@@ -13,7 +13,7 @@ set -eu
 lat="${WEATHER_LAT:-37.7749}"
 lon="${WEATHER_LON:--122.4194}"
 name="${WEATHER_NAME:-San Francisco}"
-shaders="$(cd "$(dirname "$0")" && pwd)/shaders"
+shaders="$(CDPATH='' cd -P -- "$(dirname -- "$(realpath -- "$0")")" && pwd -P)/shaders"
 
 test_code=""
 if [ "${1:-}" = "--test" ]; then
