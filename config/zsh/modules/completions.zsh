@@ -27,14 +27,22 @@ if [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]; then
     . "$HOME/google-cloud-sdk/completion.zsh.inc"
 fi
 
-if command -v kubectl >/dev/null 2>&1; then
-    . <(kubectl completion zsh)
-fi
-
-if command -v helm >/dev/null 2>&1; then
-    . <(helm completion zsh)
-fi
-
-if command -v oc >/dev/null 2>&1; then
-    . <(oc completion zsh)
-fi
+# "TOOL completion zsh" is slow, so cache its output. A new binary path, such as after an upgrade, makes it again.
+_zdot_cached_completion() {
+    local bin=${commands[$1]:A} cache="$XDG_CACHE_HOME/zsh/completions/$1.zsh" first=""
+    [ -n "$bin" ] || return 0
+    [ -f "$cache" ] && read -r first <"$cache"
+    if [ "$first" != "# $bin" ]; then
+        command mkdir -p "${cache:h}"
+        if { echo "# $bin" && "$1" completion zsh; } >|"$cache.$$" 2>/dev/null; then
+            command mv -f "$cache.$$" "$cache"
+        else
+            command rm -f "$cache.$$"
+        fi
+    fi
+    [ -f "$cache" ] && . "$cache"
+}
+for tool in kubectl helm oc; do
+    _zdot_cached_completion "$tool"
+done
+unset tool
