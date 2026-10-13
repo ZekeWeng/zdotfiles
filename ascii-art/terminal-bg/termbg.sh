@@ -42,7 +42,7 @@ EOF
 }
 
 # Draw the text of the shader in $tmp in the top-right corner, with text.glsl.
-# A design names its text in a line such as "// @TEXT: AURORA|BOREALIS". "|" starts a new line.
+# A design names its text in a line such as "// @TEXT: NIGHT SKY". "|" starts a new line.
 apply_text() {
     text="$(sed -n 's|^// @TEXT: ||p' "$tmp" | head -n 1)"
     [ -n "$text" ] || return 0
