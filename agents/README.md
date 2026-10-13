@@ -41,7 +41,7 @@ Install only one company on each computer. To remove a company, delete `~/.claud
 | `research` | Answer a question from the web and the codebase. |
 | `ship` | Commit the staged changes. Open a draft PR after the user pushes. |
 | `statechart` | Check a TLA+ model of a state machine with TLC, and draw it as a Mermaid statechart. Only the user can start it. It is a copy of [pstack](https://github.com/cursor/plugins/tree/main/pstack) 0.15.36. |
-| `text-visualize` | Show information as a list, a table, a diagram, or a chart. |
+| `text-visualize` | Show information as a list, a table, a diagram, or a chart. In the Cursor IDE, use the built-in `visualize` skill. |
 | `tutor` | Teach a subject with questions. |
 
 In Codex, a skill that has `agents/openai.yaml` starts only when the user asks for it.
