@@ -30,9 +30,8 @@ _zdot_termbg_precmd() {
     if [[ -f $stamp && ${#old} -eq 0 ]]; then
         return
     fi
-    # Touch the stamp first, so that other shells do not also start a request.
-    touch "$stamp"
-    "$zdot_termbg_script" update >>"$zdot_termbg_dir/termbg.log" 2>&1 &!
+    # termbg.sh takes a lock, tests the stamp again, and touches it. Thus, only one of many shells does the request.
+    "$zdot_termbg_script" update --hourly >>"$zdot_termbg_dir/termbg.log" 2>&1 &!
 }
 
 autoload -Uz add-zsh-hook

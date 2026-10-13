@@ -7,7 +7,7 @@
 # next moves to the next mode in the cycle: weather, stars, and each design in backgrounds/, in alphabetical order.
 # off shows no design.
 # overlay turns an overlay from overlays/ on or off, such as dog-leaf. An overlay shows over each mode.
-# update writes the shader again for the mode now. The zsh module uses it.
+# update writes the shader again for the mode now. --hourly skips it if the last hourly update is under 1 hour old.
 # names prints each command, mode, and design on one line, for tab completion.
 # The script writes $XDG_STATE_HOME/ghostty/termbg.glsl and reloads cmux.
 # Ghostty has no reload command for scripts. Press Cmd+Shift+, in Ghostty to see a change.
@@ -18,7 +18,14 @@ state="${XDG_STATE_HOME:-$HOME/.local/state}/ghostty"
 out="$state/termbg.glsl"
 mode_file="$state/termbg.mode"
 overlays_file="$state/termbg.overlays"
-tmp="$out.tmp"
+stamp="$state/termbg.stamp"
+weather_cache="$state/termbg.weather.glsl"
+lock="$state/termbg.lock"
+# Each run has its own temporary files, so runs at the same time do not write into the same file.
+tmp="$out.tmp.$$"
+# apply_overlays reads the overlays from this file. The overlay command sets a new list here before it saves the list.
+overlays_src="$overlays_file"
+use_weather_cache=no
 
 # Print the path of the background in $1. Return 1 if it does not exist.
 find_bg() {
@@ -69,7 +76,7 @@ apply_text() {
 # An overlay calls bgImage. Each overlay renames mainImage of the shader before it, so overlays can stack.
 apply_overlays() {
     i=0
-    for o in $(cat "$overlays_file" 2>/dev/null || true); do
+    for o in $(cat "$overlays_src" 2>/dev/null || true); do
         f="$root/overlays/$o.glsl"
         if [ ! -f "$f" ]; then
             echo "warning: there is no overlay named $o." >&2
@@ -103,8 +110,12 @@ build() {
     case "$m" in
         off) write_off ;;
         weather)
-            if ! "$root/weather/weather.sh" "$@" >"$tmp"; then
-                rm -f "$tmp"
+            # An overlay change uses the last weather design, so it needs no network request.
+            if [ "$use_weather_cache" = yes ] && [ -f "$weather_cache" ]; then
+                cp "$weather_cache" "$tmp"
+            elif "$root/weather/weather.sh" "$@" >"$tmp"; then
+                cp "$tmp" "$weather_cache"
+            else
                 exit 1
             fi
             ;;
@@ -152,7 +163,32 @@ set_mode() {
     echo "mode: $new"
 }
 
+# Take the lock, so that only one run changes the state at a time.
+# Wait up to 30 seconds. The weather request stops after 20 seconds.
+# A lock that is older than 1 minute is from a run that stopped. Remove it.
+take_lock() {
+    tries=0
+    until mkdir "$lock" 2>/dev/null; do
+        if [ -n "$(find "$lock" -maxdepth 0 -mmin +1 2>/dev/null)" ]; then
+            rmdir "$lock" 2>/dev/null || true
+            continue
+        fi
+        tries=$((tries + 1))
+        if [ "$tries" -ge 300 ]; then
+            echo "error: another termbg run holds $lock. If no termbg run is active, remove it." >&2
+            exit 1
+        fi
+        sleep 0.1
+    done
+    trap 'rm -f "$tmp" "$tmp.next" "$overlays_file.next.$$"; rmdir "$lock" 2>/dev/null || true' EXIT
+    trap 'exit 1' HUP INT TERM
+}
+
 mkdir -p "$state"
+case "${1:-list}" in
+    names | list) ;;
+    *) take_lock ;;
+esac
 mode="$(cat "$mode_file" 2>/dev/null || echo stars)"
 
 case "${1:-list}" in
@@ -179,6 +215,20 @@ case "${1:-list}" in
         shader_names backgrounds weather/shaders | sed 's/^/    /'
         ;;
     update)
+        if [ "${2:-}" = --hourly ]; then
+            # Another shell possibly did the update while this run waited for the lock.
+            if [ -n "$(find "$stamp" -mmin -60 2>/dev/null)" ]; then
+                exit 0
+            fi
+            touch "$stamp"
+            # Keep only the last 200 lines of the log. Write into the same file, because the zsh hook appends to it.
+            log="$state/termbg.log"
+            if [ -f "$log" ]; then
+                tail -n 200 "$log" >"$log.$$"
+                cat "$log.$$" >"$log"
+                rm -f "$log.$$"
+            fi
+        fi
         compose "$mode"
         install_shader
         ;;
@@ -188,16 +238,23 @@ case "${1:-list}" in
             echo "error: there is no overlay named $name. Run: termbg list" >&2
             exit 1
         fi
+        # Write the new list to a temporary file. Save it only after the shader is installed.
+        overlays_src="$overlays_file.next.$$"
         if grep -qx "$name" "$overlays_file" 2>/dev/null; then
-            grep -vx "$name" "$overlays_file" >"$overlays_file.next" || true
-            mv "$overlays_file.next" "$overlays_file"
-            echo "overlay off: $name"
+            grep -vx "$name" "$overlays_file" >"$overlays_src" || true
+            change="overlay off: $name"
         else
-            echo "$name" >>"$overlays_file"
-            echo "overlay on: $name"
+            {
+                cat "$overlays_file" 2>/dev/null || true
+                echo "$name"
+            } >"$overlays_src"
+            change="overlay on: $name"
         fi
+        use_weather_cache=yes
         compose "$mode"
         install_shader
+        mv "$overlays_src" "$overlays_file"
+        echo "$change"
         ;;
     *) set_mode "$@" ;;
 esac
