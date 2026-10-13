@@ -172,7 +172,7 @@ case "${1:-list}" in
     list)
         echo "mode: $mode"
         echo "modes: weather, off"
-        echo "overlays on: $(tr '\n' ' ' <"$overlays_file" 2>/dev/null || true)"
+        echo "overlays on: $(tr '\n' ' ' 2>/dev/null <"$overlays_file" || true)"
         echo "overlays:"
         shader_names overlays | sed 's/^/    /'
         echo "backgrounds:"
