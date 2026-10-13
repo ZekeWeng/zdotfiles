@@ -51,7 +51,7 @@ alias gst="git stash"
 alias gstp="git stash pop"
 
 # System
-alias reload="exec zsh"
+alias reload="exec zsh -l"
 alias df="df -h"
 alias du="du -h"
 alias path='print -l $path'
