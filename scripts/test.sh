@@ -158,6 +158,13 @@ expect "install-agents: a real claude gets the skills" "$(count_entries "$agents
 install_agents "$agents_home" "$shim_claude:/usr/bin:/bin" >/dev/null
 expect "install-agents: only the cmux wrapper removes the skills" "$(count_entries "$agents_home/.claude/skills")" 0
 
+# install-agents: a claude in ~/.local/bin counts when PATH does not have it.
+mkdir -p "$agents_home/.local/bin"
+cp "$real_claude/claude" "$agents_home/.local/bin/claude"
+install_agents "$agents_home" "/usr/bin:/bin" >/dev/null
+expect "install-agents: a claude in ~/.local/bin gets the skills" "$(count_entries "$agents_home/.claude/skills")" \
+    "$skill_count"
+
 # install-agents: the second run with a company changes nothing.
 cp -R "$copy/agents/companies/_template" "$copy/agents/companies/acme"
 agents_home="$tmp_dir/company-home"
