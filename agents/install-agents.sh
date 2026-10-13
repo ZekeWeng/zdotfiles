@@ -6,7 +6,6 @@
 set -eu
 : "${HOME:?HOME must be set and must not be empty}"
 
-# Use the real folder, so that the links stay correct when you run the script through a symlink.
 src="$(CDPATH='' cd -P -- "$(dirname -- "$(realpath -- "$0")")" && pwd -P)"
 base_rules="$(CDPATH='' cd -P -- "$src/.." && pwd -P)/AGENTS.md"
 codex_dir="${CODEX_HOME:-$HOME/.codex}"

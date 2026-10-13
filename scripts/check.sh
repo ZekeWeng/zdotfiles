@@ -8,7 +8,6 @@ set -u
 src="$(CDPATH='' cd -P -- "$(dirname -- "$(realpath -- "$0")")/.." && pwd -P)"
 cd "$src" || exit 1
 failed=0
-# POSIX has no mktemp. mkdir fails if the folder exists, so no other process can own it.
 tmp_dir="${TMPDIR:-/tmp}/zdot-check.$$"
 (umask 077 && mkdir "$tmp_dir") || exit 1
 home="$tmp_dir/home"

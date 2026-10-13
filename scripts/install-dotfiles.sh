@@ -7,7 +7,6 @@
 set -eu
 : "${HOME:?HOME must be set and must not be empty}"
 
-# Use the real folder, so that the links stay correct when you run the script through a symlink.
 src="$(CDPATH='' cd -P -- "$(dirname -- "$(realpath -- "$0")")/.." && pwd -P)"
 
 # Link the target in $1 to the path in $2.

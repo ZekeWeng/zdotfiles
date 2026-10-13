@@ -9,7 +9,6 @@
 set -eu
 : "${HOME:?HOME must be set and must not be empty}"
 
-# Use the real folder, so that the paths stay correct when you run the script through a symlink.
 src="$(CDPATH='' cd -P -- "$(dirname -- "$(realpath -- "$0")")/.." && pwd -P)"
 local_brewfile="$HOME/.config/brew/Brewfile.local"
 all_groups="shell tools languages apps"
@@ -37,7 +36,6 @@ if ! command -v brew >/dev/null 2>&1; then
 fi
 
 installed_casks="$(brew list --cask -1 2>/dev/null || true)"
-# POSIX has no mktemp. mkdir fails if the folder exists, so no other process can own it.
 tmp_dir="${TMPDIR:-/tmp}/zdot-brew.$$"
 (umask 077 && mkdir "$tmp_dir")
 trap 'rm -rf "$tmp_dir"' EXIT
