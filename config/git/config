@@ -4,10 +4,11 @@
 
 [core]
 	autocrlf = input
-	pager = delta
+	# Use less until install-brew.sh installs delta.
+	pager = "if command -v delta >/dev/null; then delta; else less; fi"
 
 [interactive]
-	diffFilter = delta --color-only
+	diffFilter = "if command -v delta >/dev/null; then delta --color-only; else cat; fi"
 
 [delta]
 	# n and N go to the next and the previous file.
