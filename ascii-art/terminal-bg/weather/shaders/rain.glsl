@@ -1,6 +1,9 @@
-// Realistic rain behind the terminal text: 3 depth layers, motion blur, wind, and splashes.
-// The rain shows only on background pixels, so the text stays clear.
-// Enable it with: custom-shader = <path to this file>
+// Rain
+//
+// Three depth layers of rain with motion blur, a lean from the wind, and splashes on the ground.
+// In a storm, lightning flashes from time to time.
+//
+// Enable it with: termbg rain
 
 // The strength of the rain over the background. 0 hides it.
 const float STRENGTH = 0.35;
@@ -22,20 +25,6 @@ const float SEG = 160.0;
 const float SPLASH_TIME = 0.4;
 // The lightning in a storm: 0 turns it off, and 1 turns it on.
 const float LIGHTNING = 0.0;
-
-float hash(vec2 p) {
-    p = fract(p * vec2(123.34, 456.21));
-    p += dot(p, p + 45.32);
-    return fract(p.x * p.y);
-}
-
-// Put the rain of strength ink under the terminal pixel.
-// Ghostty gives opaque background pixels. cmux gives transparent background pixels.
-vec4 compose(vec4 term, float ink) {
-    float isBg = max(1.0 - smoothstep(0.01, 0.06, distance(term.rgb, iBackgroundColor)), 1.0 - term.a);
-    float a = STRENGTH * clamp(ink, 0.0, 1.0) * isBg;
-    return vec4(INK * a, a) + term * (1.0 - a);
-}
 
 // The x position of the drops in a column, in layer pixels, before the wind lean.
 float columnX(float col, float seed) {
@@ -152,5 +141,5 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     // A storm has a short, double flash of light at random times.
     if (LIGHTNING > 0.0) ink = max(ink, LIGHTNING * 0.45 * lightning());
 
-    fragColor = compose(term, ink);
+    fragColor = paint(term, INK, STRENGTH * min(ink, 1.0));
 }

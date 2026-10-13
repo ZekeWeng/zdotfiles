@@ -1,6 +1,9 @@
-// Realistic snow behind the terminal text: 5 depth layers, flutter, gusts, depth of field, and a snow line.
-// The snow shows only on background pixels, so the text stays clear.
-// Enable it with: custom-shader = <path to this file>
+// Snow
+//
+// Five depth layers of soft flakes that flutter and drift in gusts, and a line of snow on the ground.
+// Near flakes are large and soft, like flakes close to a camera.
+//
+// Enable it with: termbg snow
 
 // The strength of the snow over the background. 0 hides it.
 const float STRENGTH = 0.35;
@@ -22,30 +25,6 @@ const float SLOT = 40.0;
 const float GROUND = 10.0;
 // The time for the snow line to reach its full height, in seconds.
 const float GROUND_TIME = 120.0;
-
-float hash(vec2 p) {
-    p = fract(p * vec2(123.34, 456.21));
-    p += dot(p, p + 45.32);
-    return fract(p.x * p.y);
-}
-
-float noise(vec2 p) {
-    vec2 i = floor(p);
-    vec2 f = fract(p);
-    vec2 u = f * f * (3.0 - 2.0 * f);
-    return mix(
-        mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x),
-        mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x),
-        u.y);
-}
-
-// Put the snow of strength ink under the terminal pixel.
-// Ghostty gives opaque background pixels. cmux gives transparent background pixels.
-vec4 compose(vec4 term, float ink) {
-    float isBg = max(1.0 - smoothstep(0.01, 0.06, distance(term.rgb, iBackgroundColor)), 1.0 - term.a);
-    float a = STRENGTH * clamp(ink, 0.0, 1.0) * isBg;
-    return vec4(INK * a, a) + term * (1.0 - a);
-}
 
 // Return the ink of one layer of flakes at frag.
 // scale is the size of one layer pixel, in screen pixels. A near layer has a larger scale.
@@ -108,5 +87,5 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     if (GROUND > 0.0) ink = max(ink, ground(fragCoord));
 
-    fragColor = compose(term, ink);
+    fragColor = paint(term, INK, STRENGTH * min(ink, 1.0));
 }

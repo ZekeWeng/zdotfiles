@@ -1,6 +1,10 @@
-// A realistic night sky behind the terminal text: twinkling stars, a slow turn, the Milky Way, and shooting stars.
-// The sky shows only on background pixels, so the text stays clear.
-// Enable it with: custom-shader = <path to this file>
+// Stars
+//
+// A night sky that turns slowly: stars in clusters that twinkle in their own colors,
+// the Milky Way, and a shooting star from time to time.
+//
+// Enable it with: termbg stars
+// @TEXT: NIGHT SKY
 
 // The strength of the sky over the background. 0 hides it.
 const float STRENGTH = 0.5;
@@ -16,41 +20,6 @@ const float ROTATION = 0.0003;
 const float MILKY_WAY = 0.12;
 // The time between two chances of a shooting star, in seconds.
 const float METEOR_TIME = 20.0;
-
-float hash(vec2 p) {
-    p = fract(p * vec2(123.34, 456.21));
-    p += dot(p, p + 45.32);
-    return fract(p.x * p.y);
-}
-
-float noise(vec2 p) {
-    vec2 i = floor(p);
-    vec2 f = fract(p);
-    vec2 u = f * f * (3.0 - 2.0 * f);
-    return mix(
-        mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x),
-        mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x),
-        u.y);
-}
-
-float fbm(vec2 p) {
-    float v = 0.0;
-    float a = 0.5;
-    for (int i = 0; i < 4; i++) {
-        v += a * noise(p);
-        p *= 2.03;
-        a *= 0.5;
-    }
-    return v;
-}
-
-// Put the sky color under the terminal pixel. sky.rgb is the color and sky.a is the strength.
-// Ghostty gives opaque background pixels. cmux gives transparent background pixels.
-vec4 compose(vec4 term, vec4 sky) {
-    float isBg = max(1.0 - smoothstep(0.01, 0.06, distance(term.rgb, iBackgroundColor)), 1.0 - term.a);
-    float a = STRENGTH * clamp(sky.a, 0.0, 1.0) * isBg;
-    return vec4(sky.rgb * a, a) + term * (1.0 - a);
-}
 
 // Keep the stronger of two sky colors.
 vec4 brighter(vec4 a, vec4 b) {
@@ -135,10 +104,10 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 mid = iResolution.xy * 0.5;
     float dist = abs(dot(p - mid, vec2(-axis.y, axis.x))) / iResolution.y;
     float band = exp(-dist * dist * 30.0);
-    float dust = smoothstep(0.35, 0.75, fbm(p * 0.004));
+    float dust = smoothstep(0.35, 0.75, fbm(p * 0.004, 4));
 
     // Stars group in clusters, and there are more stars near the Milky Way.
-    float cluster = mix(0.3, 1.7, smoothstep(0.3, 0.7, fbm(p * 0.0015 + 7.0))) + 1.2 * band;
+    float cluster = mix(0.3, 1.7, smoothstep(0.3, 0.7, fbm(p * 0.0015 + 7.0, 4))) + 1.2 * band;
 
     // Many small, dim stars, some medium stars, and a few large, bright stars.
     vec4 sky = vec4(INK, MILKY_WAY * band * dust);
@@ -147,5 +116,5 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     sky = brighter(sky, starField(p, 56.0, 0.30, 0.3, cluster, 19.0));
     sky = brighter(sky, vec4(INK, meteor(fragCoord)));
 
-    fragColor = compose(term, sky);
+    fragColor = paint(term, sky.rgb, STRENGTH * sky.a);
 }
