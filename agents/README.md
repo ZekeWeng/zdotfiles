@@ -4,7 +4,7 @@ This folder holds the skills and the company rules for Codex, Claude Code, Curso
 
 ## Install
 
-From the repo root, run `./agents/install-agents.sh`. To add a company layer, add the folder name of the company: `./agents/install-agents.sh COMPANY`. The script links the files below. It also deletes each link to a skill that no longer exists.
+From the repo root, run `./agents/install-agents.sh`. To add a company layer, add the folder name of the company: `./agents/install-agents.sh COMPANY`. The script links the files below. It also deletes each link to a skill that no longer exists. The script links the skills into `~/.claude/skills` only when the `claude` command exists, because Cursor also reads that folder. If `claude` does not exist, the script deletes the links to this repo in that folder.
 
 | Harness | Rules | Skills |
 |---------|-------|--------|
