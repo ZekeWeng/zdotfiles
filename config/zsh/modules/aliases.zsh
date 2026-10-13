@@ -8,7 +8,6 @@ alias .....="cd ../../../.."
 
 # eza
 if command -v eza >/dev/null 2>&1; then
-    alias ls="eza --group-directories-first --git"
     alias l="eza --group-directories-first --git"
     alias la="eza --group-directories-first --git -a"
     alias ll="eza --group-directories-first --git -l"
