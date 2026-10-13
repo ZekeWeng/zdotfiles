@@ -5,7 +5,7 @@
 # The script asks y/n for each cask that is not installed.
 # It installs the formulas and the installed casks with no question.
 # If the input is not a terminal, the script installs all casks with no question.
-# The script does not uninstall packages. It does not run "brew bundle cleanup".
+# The script does not uninstall or upgrade packages. Run "brew upgrade" to upgrade them.
 set -eu
 : "${HOME:?HOME must be set and must not be empty}"
 
@@ -90,7 +90,7 @@ else
     echo "skip  $local_brewfile (the file does not exist)"
 fi
 
-brew bundle --file "$tmp_dir/Brewfile"
+brew bundle --no-upgrade --file "$tmp_dir/Brewfile"
 if [ -f "$tmp_dir/Brewfile.local" ]; then
-    brew bundle --file "$tmp_dir/Brewfile.local"
+    brew bundle --no-upgrade --file "$tmp_dir/Brewfile.local"
 fi
