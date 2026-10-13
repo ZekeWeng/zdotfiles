@@ -37,6 +37,8 @@ unset zdot_company_dir
 case "${zdot_company:-}" in
     "" | [!A-Za-z0-9]* | *[!A-Za-z0-9._-]*) ;;
     *)
+        # install-agents.sh reads it to warn when the agent rules use a different company.
+        export zdot_company
         if [ -f "$zsh_config_dir/private/$zdot_company.secrets.zsh" ]; then
             . "$zsh_config_dir/private/$zdot_company.secrets.zsh"
         fi

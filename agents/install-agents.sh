@@ -122,6 +122,7 @@ write_override() {
         return
     fi
     mkdir -p "$(dirname "$2")"
+    new_copy="$2.next.$$"
     {
         echo "$marker_prefix $1 -->"
         edit_note="Edit AGENTS.md or companies/$1/RULES.md. Then run install-agents.sh again."
@@ -130,7 +131,13 @@ write_override() {
         cat "$base_rules"
         echo
         cat "$src/companies/$1/RULES.md"
-    } >"$2"
+    } >"$new_copy"
+    if cmp -s "$new_copy" "$2"; then
+        rm -f "$new_copy"
+        echo "ok    $2"
+        return
+    fi
+    mv "$new_copy" "$2"
     echo "write $2"
 }
 
@@ -207,6 +214,9 @@ install_company() {
 }
 
 company="${1:-$(installed_company)}"
+if [ -n "${zdot_company:-}" ] && [ "$zdot_company" != "$company" ] && [ -d "$src/companies/$zdot_company" ]; then
+    echo "warning: zdot_company is $zdot_company, but the agent rules use company ${company:-none}." >&2
+fi
 check_harness_folders
 check_skill_names "$src/skills"
 if [ -n "$company" ]; then
