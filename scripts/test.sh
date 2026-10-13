@@ -236,18 +236,19 @@ for alias_name in lg lga lgp; do
 done
 
 # tmux: the options load, and a reload adds no duplicate overrides.
+# The pane runs sleep, not a shell, so that your .zshrc and its hooks do not run. HOME hides your local.conf.
 if command -v tmux >/dev/null 2>&1; then
-    socket="zdot-test-$$"
-    tmux -L "$socket" -f "$src/config/tmux/tmux.conf" new-session -d
+    mkdir -p "$tmp_dir/tmux-home"
+    tmux_test() { env HOME="$tmp_dir/tmux-home" TMUX_TMPDIR="$tmp_dir" tmux -L zdot-test "$@"; }
+    tmux_test -f "$src/config/tmux/tmux.conf" new-session -d 'sleep 60'
     tmux_options="$(for option in prefix base-index pane-base-index renumber-windows mode-keys status-position; do
-        tmux -L "$socket" show -gv "$option" 2>/dev/null || tmux -L "$socket" show -gwv "$option"
+        tmux_test show -gv "$option" 2>/dev/null || tmux_test show -gwv "$option"
     done | tr '\n' ' ')"
     expect "tmux: the options load" "$tmux_options" "C-a 1 1 on vi top "
-    before="$(tmux -L "$socket" show -s terminal-overrides | wc -l)"
-    tmux -L "$socket" source-file "$src/config/tmux/tmux.conf"
-    expect "tmux: a reload adds no duplicate overrides" "$(tmux -L "$socket" show -s terminal-overrides | wc -l)" \
-        "$before"
-    tmux -L "$socket" kill-server
+    before="$(tmux_test show -s terminal-overrides | wc -l)"
+    tmux_test source-file "$src/config/tmux/tmux.conf"
+    expect "tmux: a reload adds no duplicate overrides" "$(tmux_test show -s terminal-overrides | wc -l)" "$before"
+    tmux_test kill-server
 fi
 
 # The copies of one value must agree.
