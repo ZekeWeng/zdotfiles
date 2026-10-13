@@ -51,8 +51,8 @@
 
 	# Log as a graph. lga shows all branches. lgp also shows each diff.
 	lg = log --graph --pretty=format:'%C(green)%h%Creset -%C(yellow)%d%Creset %s %C(green)(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
-	lga = log --graph --pretty=format:'%C(green)%h%Creset -%C(yellow)%d%Creset %s %C(green)(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --all
-	lgp = log --graph --pretty=format:'%C(green)%h%Creset -%C(yellow)%d%Creset %s %C(green)(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit -p
+	lga = lg --all
+	lgp = lg -p
 
 	# Stash
 	sl = stash list
