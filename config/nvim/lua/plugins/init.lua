@@ -22,6 +22,7 @@ return {
         keys = {
             { "<leader>e", "<cmd>NvimTreeToggle<cr>", desc = "Explorer" },
         },
+        -- Call setup() with no argument. With opts = {}, the start shows E216 for the FileExplorer group.
         config = function()
             require("nvim-tree").setup()
         end,
@@ -38,9 +39,7 @@ return {
             { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Buffers" },
             { "<leader>fh", "<cmd>Telescope help_tags<cr>", desc = "Help Tags" },
         },
-        config = function()
-            require("telescope").setup()
-        end,
+        opts = {},
     },
 
     -- Syntax highlight
@@ -77,28 +76,23 @@ return {
     {
         "nvim-lualine/lualine.nvim",
         dependencies = { "nvim-tree/nvim-web-devicons" },
-        config = function()
-            require("lualine").setup({
-                options = {
-                    theme = "catppuccin-mocha",
-                },
-            })
-        end,
+        opts = {
+            options = {
+                theme = "catppuccin-mocha",
+            },
+        },
     },
 
     -- Autopairs
-    -- Close brackets and quotes automatically.
     {
         "windwp/nvim-autopairs",
         event = "InsertEnter",
-        config = true,
+        opts = {},
     },
 
     -- Git integration
     {
         "lewis6991/gitsigns.nvim",
-        config = function()
-            require("gitsigns").setup()
-        end,
+        opts = {},
     },
 }

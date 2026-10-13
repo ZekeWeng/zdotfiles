@@ -41,5 +41,4 @@ require("config.keymaps")
 require("config.autocmds")
 
 -- Plugins
--- Load the plugins in lua/plugins/.
 require("lazy").setup("plugins")

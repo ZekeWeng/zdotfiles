@@ -1,9 +1,9 @@
 -- Autocommands for Neovim.
 
 local autocmd = vim.api.nvim_create_autocmd
+local keymap = vim.keymap
 
 -- Yank
--- Highlight the text that you yank.
 autocmd("TextYankPost", {
     group = vim.api.nvim_create_augroup("highlight_yank", {}),
     callback = function()
@@ -12,8 +12,7 @@ autocmd("TextYankPost", {
 })
 
 -- Resize
--- Make the splits equal when the terminal changes size.
-autocmd({ "VimResized" }, {
+autocmd("VimResized", {
     group = vim.api.nvim_create_augroup("resize_splits", {}),
     callback = function()
         local current_tab = vim.fn.tabpagenr()
@@ -37,7 +36,6 @@ autocmd("FileType", {
 })
 
 -- Quit
--- Close these filetypes with q.
 autocmd("FileType", {
     group = vim.api.nvim_create_augroup("close_with_q", {}),
     pattern = {
@@ -49,6 +47,6 @@ autocmd("FileType", {
     },
     callback = function(event)
         vim.bo[event.buf].buflisted = false
-        vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true })
+        keymap.set("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true })
     end,
 })
