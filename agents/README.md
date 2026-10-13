@@ -34,8 +34,8 @@ Install only one company on each computer. To remove a company, delete `~/.claud
 | `refactor` | Change the structure of code, but not its behavior. |
 | `research` | Answer a question from the web and the codebase. |
 | `ship` | Commit the staged changes. Open a draft PR after the user pushes. |
+| `text-visualize` | Show information as a list, a table, a diagram, or a chart. |
 | `tutor` | Teach a subject with questions. |
-| `visualize` | Show information as a list, a table, a diagram, or a chart. |
 
 In Codex, a skill that has `agents/openai.yaml` starts only when the user asks for it.
 

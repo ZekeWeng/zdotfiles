@@ -1,9 +1,9 @@
 ---
-name: visualize
+name: text-visualize
 description: Selects the clearest form to show information, such as plain text, a list, a table, a tree, a diagram, or a chart, and makes it for the output medium. Use it when the user asks for a diagram, a chart, a visualization, or a clear view of a structure, a flow, or a comparison. For a quick fact, answer directly in place of it.
 ---
 
-# Visualize
+# Text visualize
 
 Show the subject in the argument in the clearest form. The argument is a subject, or a request such as "explain this repo with a diagram".
 
