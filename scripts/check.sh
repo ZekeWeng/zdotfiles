@@ -261,8 +261,12 @@ else
 fi
 
 # Neovim starts with no errors. This uses your installed plugins, so it needs no network.
+# The config comes from this checkout, not from ~/.config/nvim, so that a worktree tests its own files.
 if has nvim && [ -d "$HOME/.local/share/nvim/lazy/lazy.nvim" ]; then
-    err="$(nvim --headless "+lua vim.defer_fn(function() io.stderr:write(vim.v.errmsg) vim.cmd('qa!') end, 2000)" 2>&1)"
+    mkdir -p "$tmp_dir/xdg-config"
+    ln -s "$src/config/nvim" "$tmp_dir/xdg-config/nvim"
+    err="$(XDG_CONFIG_HOME="$tmp_dir/xdg-config" nvim --headless \
+        "+lua vim.defer_fn(function() io.stderr:write(vim.v.errmsg) vim.cmd('qa!') end, 2000)" 2>&1)"
     check "nvim starts with no errors $err" test -z "$err"
 else
     skip "nvim start (the plugins are not installed)"
