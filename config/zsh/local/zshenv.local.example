@@ -2,7 +2,7 @@
 
 # Settings
 # zdot_brew_kegs=(node@22 postgresql@15 rustup)
-# zdot_zsh_modules=(history keybinds completions aliases fzf)
+# zdot_zsh_modules=(history keybinds completions aliases fzf termbg)
 # zdot_history_days=120
 
 # Company
