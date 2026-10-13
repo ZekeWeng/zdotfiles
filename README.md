@@ -24,7 +24,7 @@ To make an SSH key, run `ssh-keygen -t ed25519 -C "EMAIL"`. Replace `EMAIL` with
 
 | Tool | Fixed file | Manual file in the repo | Home path |
 |------|------------|-------------------------|-----------|
-| zsh | `config/zsh/.zshenv`, `.zprofile`, `.zshrc`, `config/zsh/modules/`, `config/zsh/paths/paths.zsh` | `config/zsh/private/secrets.zsh` (secrets of this laptop), `config/zsh/private/COMPANY.secrets.zsh` (secrets of one company), `config/zsh/zshenv.local` (settings), `config/zsh/zshrc.local` (aliases), `config/zsh/paths/local.zsh` (PATH) | —, —, `~/.zshenv.local`, `~/.zshrc.local`, — |
+| zsh | `config/zsh/.zshenv`, `.zprofile`, `.zshrc`, `config/zsh/modules/`, `config/zsh/paths/paths.zsh` | `config/zsh/zshenv.local` (settings), `config/zsh/zshrc.local` (aliases), `config/zsh/paths/local.zsh` (PATH) | `~/.zshenv.local`, `~/.zshrc.local`, — |
 | Ghostty | `config/ghostty/config` | `config/ghostty/local` | `~/.config/ghostty/local` |
 | SSH | `config/ssh/config` | `config/ssh/config.local` (hosts) | `~/.ssh/config.local` |
 | zsh companies | `config/zsh/companies/_template/` | `config/zsh/companies/COMPANY/` (exports and aliases) | — |
@@ -34,7 +34,7 @@ To make an SSH key, run `ssh-keygen -t ed25519 -C "EMAIL"`. Replace `EMAIL` with
 | Neovim | `config/nvim/` | — | — |
 | Homebrew | `brew/shell.Brewfile`, `tools.Brewfile`, `languages.Brewfile`, `apps.Brewfile` | `brew/Brewfile.local` | `~/.config/brew/Brewfile.local` |
 
-SSH keys and the login files of apps, such as `gh`, Docker, Codex, and Pi, stay in their usual folders. Do not put them in the repo, because each tool that reads the repo folder can then read them.
+SSH keys and the login files of apps, such as `gh`, Docker, Codex, and Pi, stay in their usual folders. Do not put them in the repo, because each tool that reads the repo folder can then read them. For the same reason, the zsh secrets are in `~/.config/zsh/private/`.
 
 Each tool reads its manual file after its fixed file, so the manual file can override it. SSH is different: it uses the first value that it finds, so `config/ssh/config` reads `config/ssh/config.local` first.
 
@@ -87,7 +87,7 @@ Each company has its own exports, aliases, and secrets. Set `zdot_company` in `c
 
 1. Run `cp -R config/zsh/companies/_template config/zsh/companies/COMPANY`. Replace `COMPANY` with the folder name.
 2. Put the exports in `config/zsh/companies/COMPANY/env.zsh`, and the aliases for repos and jobs in `aliases.zsh`.
-3. To add secrets, copy `config/zsh/private/company.secrets.example` to `config/zsh/private/COMPANY.secrets.zsh` with mode 600.
+3. To add secrets, copy `config/zsh/local/company.secrets.example` to `~/.config/zsh/private/COMPANY.secrets.zsh` with mode 600.
 4. Add `zdot_company=COMPANY` to `config/zsh/zshenv.local`.
 
 `.zshenv` loads the company secrets and `env.zsh` in each shell, also scripts. `.zshrc` loads `aliases.zsh` in each interactive shell. Git ignores each company folder, except `_template`.

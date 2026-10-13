@@ -44,7 +44,7 @@ is_ignored() { run_home git -C "$1" check-ignore -q "$2"; }
 
 shell_scripts="scripts/install-dotfiles.sh scripts/install-brew.sh agents/install-agents.sh scripts/check.sh
     ascii-art/terminal-bg/termbg.sh ascii-art/terminal-bg/weather/weather.sh"
-manual_files="config/zsh/zshenv.local config/zsh/zshrc.local config/zsh/paths/local.zsh config/zsh/private/secrets.zsh
+manual_files="config/zsh/zshenv.local config/zsh/zshrc.local config/zsh/paths/local.zsh
     config/ssh/config.local config/git/gitconfig.local brew/Brewfile.local config/ghostty/local config/tmux/local.conf"
 
 # Syntax and lint
@@ -62,7 +62,7 @@ for f in $shell_scripts; do
 done
 for f in config/zsh/.zshenv config/zsh/.zprofile config/zsh/.zshrc config/zsh/modules/*.zsh \
     config/zsh/paths/*.zsh config/zsh/paths/*.example config/zsh/companies/_template/*.zsh \
-    config/zsh/local/*.example config/zsh/private/*.example; do
+    config/zsh/local/*.example; do
     check "zsh -n $f" zsh -n "$f"
 done
 if has nvim; then
@@ -170,7 +170,6 @@ check "each package is in only 1 brew/*.Brewfile $duplicates" test -z "$duplicat
 for f in $manual_files; do
     check "git ignores $f" git check-ignore -q "$f"
 done
-check "git ignores config/zsh/private/COMPANY.secrets.zsh" git check-ignore -q config/zsh/private/acme.secrets.zsh
 check "git ignores config/zsh/companies/COMPANY/" git check-ignore -q config/zsh/companies/acme/env.zsh
 # No file that git can see may hold a private key or a token.
 secret_re='BEGIN [A-Z ]*PRIVATE KEY|ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}'

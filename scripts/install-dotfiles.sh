@@ -79,5 +79,7 @@ manual "$src/brew/Brewfile.local.example" "$src/brew/Brewfile.local" 644 "$HOME/
 manual "$src/config/ghostty/local.example" "$src/config/ghostty/local" 644 "$HOME/.config/ghostty/local"
 manual "$src/config/tmux/local.conf.example" "$src/config/tmux/local.conf" 644 "$HOME/.config/tmux/local.conf"
 seed "$src/config/zsh/paths/local.zsh.example" "$src/config/zsh/paths/local.zsh" 644
-chmod 700 "$src/config/zsh/private"
-seed "$src/config/zsh/private/secrets.example" "$src/config/zsh/private/secrets.zsh" 600
+# The secrets stay outside the repo, so agents that work in the repo cannot read them.
+mkdir -p "$HOME/.config/zsh/private"
+chmod 700 "$HOME/.config/zsh/private"
+seed "$src/config/zsh/local/secrets.example" "$HOME/.config/zsh/private/secrets.zsh" 600

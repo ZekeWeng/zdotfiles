@@ -6,9 +6,9 @@
 # zdot_history_days=120
 
 # Company
-# Set the company of this laptop. .zshenv then loads config/zsh/private/COMPANY.secrets.zsh
+# Set the company of this laptop. .zshenv then loads ~/.config/zsh/private/COMPANY.secrets.zsh
 # and config/zsh/companies/COMPANY/env.zsh. .zshrc loads config/zsh/companies/COMPANY/aliases.zsh.
 # zdot_company=COMPANY
 
 # Secrets
-# Put secrets in config/zsh/private/secrets.zsh, not here.
+# Put secrets in ~/.config/zsh/private/secrets.zsh, not here.

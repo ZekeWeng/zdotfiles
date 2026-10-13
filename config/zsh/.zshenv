@@ -23,10 +23,11 @@ if [ -f "$HOME/.zshenv.local" ]; then
 fi
 
 # Secrets
-# secrets.zsh holds the secrets of this laptop.
+# They are outside the repo, so agents that work in the repo cannot read them.
 zsh_config_dir="${${(%):-%x}:A:h}"
-if [ -f "$zsh_config_dir/private/secrets.zsh" ]; then
-    . "$zsh_config_dir/private/secrets.zsh"
+zsh_secrets_dir="$XDG_CONFIG_HOME/zsh/private"
+if [ -f "$zsh_secrets_dir/secrets.zsh" ]; then
+    . "$zsh_secrets_dir/secrets.zsh"
 fi
 
 # Company
@@ -39,8 +40,8 @@ case "${zdot_company:-}" in
     *)
         # install-agents.sh reads it to warn when the agent rules use a different company.
         export zdot_company
-        if [ -f "$zsh_config_dir/private/$zdot_company.secrets.zsh" ]; then
-            . "$zsh_config_dir/private/$zdot_company.secrets.zsh"
+        if [ -f "$zsh_secrets_dir/$zdot_company.secrets.zsh" ]; then
+            . "$zsh_secrets_dir/$zdot_company.secrets.zsh"
         fi
         if [ -d "$zsh_config_dir/companies/$zdot_company" ]; then
             zdot_company_dir="$zsh_config_dir/companies/$zdot_company"
@@ -50,4 +51,4 @@ case "${zdot_company:-}" in
         fi
         ;;
 esac
-unset zsh_config_dir
+unset zsh_config_dir zsh_secrets_dir

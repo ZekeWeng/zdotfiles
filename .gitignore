@@ -5,9 +5,6 @@
 config/zsh/paths/local.zsh
 config/ghostty/local
 config/tmux/local.conf
-config/zsh/private/*
-!config/zsh/private/secrets.example
-!config/zsh/private/company.secrets.example
 config/zsh/companies/*
 !config/zsh/companies/_template/
 agents/companies/*
