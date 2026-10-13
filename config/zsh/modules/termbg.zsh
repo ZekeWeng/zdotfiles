@@ -23,11 +23,11 @@ fi
 _zdot_termbg_precmd() {
     local mode_file="$zdot_termbg_dir/termbg.mode"
     # Test the file first. "$(<file 2>/dev/null)" still prints an error, because zsh opens the file first.
-    [[ -r $mode_file && "$(<"$mode_file")" == weather ]] || return
+    [ -r "$mode_file" ] && [ "$(<"$mode_file")" = weather ] || return
     local stamp="$zdot_termbg_dir/termbg.stamp"
     # (N) gives no error for a missing file. (mh+0) matches a file that is 1 hour old or older.
     local old=($stamp(Nmh+0))
-    if [[ -f $stamp && ${#old} -eq 0 ]]; then
+    if [ -f "$stamp" ] && [ ${#old} -eq 0 ]; then
         return
     fi
     # termbg.sh takes a lock, tests the stamp again, and touches it. Thus, only one of many shells does the request.

@@ -2,6 +2,6 @@
 # .zprofile loads it after config/zsh/paths/paths.zsh.
 
 # Path
-# zdotfiles_path_prepend puts a folder first. zdotfiles_path_append puts a folder last.
-# zdotfiles_path_prepend "$HOME/work/bin"
-# zdotfiles_path_append "/opt/tools/bin"
+# zdot_path_prepend puts a folder first. zdot_path_append puts a folder last.
+# zdot_path_prepend "$HOME/work/bin"
+# zdot_path_append "/opt/tools/bin"

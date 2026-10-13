@@ -4,14 +4,14 @@
 setopt AUTO_CD GLOB_DOTS EXTENDED_GLOB CORRECT INTERACTIVE_COMMENTS
 
 # Modules
-zsh_config_dir="${${(%):-%x}:A:h}"
+zdot_config_dir="${${(%):-%x}:A:h}"
 if [ -z "${zdot_zsh_modules+set}" ]; then
     zdot_zsh_modules=(history keybinds completions aliases fzf termbg)
 fi
-for module in $zdot_zsh_modules; do
-    . "$zsh_config_dir/modules/$module.zsh"
+for zdot_module in $zdot_zsh_modules; do
+    . "$zdot_config_dir/modules/$zdot_module.zsh"
 done
-unset module zsh_config_dir
+unset zdot_module zdot_config_dir
 
 # Company
 # .zshenv sets zdot_company_dir when zdot_company names a company folder.

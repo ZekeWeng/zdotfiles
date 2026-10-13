@@ -73,8 +73,8 @@ unset zdot_agent
 # A daemon on the host keeps the shell alive after a disconnect.
 # Each other form of ssh runs the usual ssh. Examples are "ssh HOST CMD", "ssh -p 22 HOST", and "cmd | ssh HOST".
 ssh() {
-    if [[ -n ${CMUX_WORKSPACE_ID:-} && -t 0 && -t 1 && $# -eq 1 && $1 != -* ]] &&
-        (( $+commands[cmux] )); then
+    if [ -n "${CMUX_WORKSPACE_ID:-}" ] && [ -t 0 ] && [ -t 1 ] && [ "$#" -eq 1 ] && [ "${1#-}" = "$1" ] &&
+        command -v cmux >/dev/null 2>&1; then
         cmux ssh "$1"
     else
         command ssh "$@"

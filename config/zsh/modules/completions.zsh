@@ -9,14 +9,14 @@ typeset -U fpath
 # compinit
 # Run the full compinit one time each day. At other times, use the cache file.
 autoload -Uz compinit
-zcompdump_old=(~/.zcompdump(N.mh+24))
-if [ ! -f ~/.zcompdump ] || [ ${#zcompdump_old} -gt 0 ]; then
+zdot_zcompdump_old=(~/.zcompdump(N.mh+24))
+if [ ! -f ~/.zcompdump ] || [ ${#zdot_zcompdump_old} -gt 0 ]; then
     compinit
     touch ~/.zcompdump
 else
     compinit -C
 fi
-unset zcompdump_old
+unset zdot_zcompdump_old
 
 # Styles
 zstyle ":completion:*" matcher-list "m:{a-z}={A-Za-z}"
@@ -42,7 +42,7 @@ _zdot_cached_completion() {
     fi
     [ -f "$cache" ] && . "$cache"
 }
-for tool in kubectl helm oc; do
-    _zdot_cached_completion "$tool"
+for zdot_tool in kubectl helm oc; do
+    _zdot_cached_completion "$zdot_tool"
 done
-unset tool
+unset zdot_tool

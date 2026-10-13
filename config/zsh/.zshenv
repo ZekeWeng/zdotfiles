@@ -24,10 +24,10 @@ fi
 
 # Secrets
 # They are outside the repo, so agents that work in the repo cannot read them.
-zsh_config_dir="${${(%):-%x}:A:h}"
-zsh_secrets_dir="$XDG_CONFIG_HOME/zsh/private"
-if [ -f "$zsh_secrets_dir/secrets.zsh" ]; then
-    . "$zsh_secrets_dir/secrets.zsh"
+zdot_config_dir="${${(%):-%x}:A:h}"
+zdot_secrets_dir="$XDG_CONFIG_HOME/zsh/private"
+if [ -f "$zdot_secrets_dir/secrets.zsh" ]; then
+    . "$zdot_secrets_dir/secrets.zsh"
 fi
 
 # Company
@@ -40,15 +40,15 @@ case "${zdot_company:-}" in
     *)
         # install-agents.sh reads it to warn when the agent rules use a different company.
         export zdot_company
-        if [ -f "$zsh_secrets_dir/$zdot_company.secrets.zsh" ]; then
-            . "$zsh_secrets_dir/$zdot_company.secrets.zsh"
+        if [ -f "$zdot_secrets_dir/$zdot_company.secrets.zsh" ]; then
+            . "$zdot_secrets_dir/$zdot_company.secrets.zsh"
         fi
-        if [ -d "$zsh_config_dir/companies/$zdot_company" ]; then
-            zdot_company_dir="$zsh_config_dir/companies/$zdot_company"
+        if [ -d "$zdot_config_dir/companies/$zdot_company" ]; then
+            zdot_company_dir="$zdot_config_dir/companies/$zdot_company"
             if [ -f "$zdot_company_dir/env.zsh" ]; then
                 . "$zdot_company_dir/env.zsh"
             fi
         fi
         ;;
 esac
-unset zsh_config_dir zsh_secrets_dir
+unset zdot_config_dir zdot_secrets_dir

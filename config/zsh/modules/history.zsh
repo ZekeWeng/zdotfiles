@@ -6,13 +6,13 @@ HISTSIZE=100000
 SAVEHIST=100000
 
 # Options
-setopt SHARE_HISTORY            # Share history across terminals.
-setopt EXTENDED_HISTORY         # Record timestamp and runtime.
-setopt HIST_VERIFY              # Edit before running history expansion.
-setopt HIST_IGNORE_ALL_DUPS     # Remove duplicate commands.
-setopt HIST_IGNORE_SPACE        # Ignore commands that start with a space.
-setopt HIST_REDUCE_BLANKS       # Remove extra blanks.
-setopt HIST_FCNTL_LOCK          # Use fcntl() for locking.
+setopt SHARE_HISTORY
+setopt EXTENDED_HISTORY
+setopt HIST_VERIFY
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_REDUCE_BLANKS
+setopt HIST_FCNTL_LOCK
 
 # Ignored commands
 HISTORY_IGNORE='(ls|ls *|ll|ll *|la|la *|lt|lt *|tree|tree *|pwd|clear|gs|g|ga|gp|gpl|gcm|gst|gstp|gl|gla|reload|df|du|path|mkdir|cp|mv|rm|c|h|v|vim|ports|myip|\.\.|\.\.\.|\.\.\.\.|\.\.\.\.\.)'
