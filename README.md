@@ -39,6 +39,36 @@ Each tool reads its manual file after its fixed file, so the manual file can ove
 
 `git config --global` writes to `config/git/gitconfig.local` through the `~/.gitconfig` link. Git ignores that file. `config/git/ignore` holds only the patterns for the OS, the editors, and secrets. Put the patterns for a language in the `.gitignore` of each repo.
 
+## Terminal backgrounds
+
+`ascii-art/terminal-bg/` holds animated backgrounds for Ghostty and cmux. Each background is a GLSL shader that draws only on background pixels, so the terminal text stays clear. The `termbg` command, or its short name `tbg`, switches the background:
+
+| Command | Effect |
+|---------|--------|
+| `tbg` | Shows the mode now, the backgrounds, and the overlays. |
+| `tbg next` | Moves to the next mode, in alphabetical order. |
+| `tbg weather` | Shows the weather now: clear, rain, or snow. The zsh module updates it each hour. |
+| `tbg NAME` | Shows one background, such as `stars` or `sovereign`. |
+| `tbg off` | Shows no background. |
+| `tbg overlay dog-leaf` | Turns the overlay of a dog under a leaf on or off. |
+
+To turn on the backgrounds on a new computer:
+
+1. Run `tbg stars` one time. It writes the shader to `~/.local/state/ghostty/termbg.glsl`.
+2. Remove the `#` from the `custom-shader` line in `config/ghostty/local`.
+3. Press Cmd+Shift+, in Ghostty to reload. `termbg` reloads cmux by itself.
+
+Weather mode uses the free [Open-Meteo API](https://open-meteo.com/), which needs no key. To set the place, export `WEATHER_LAT`, `WEATHER_LON`, and `WEATHER_NAME` in `config/zsh/zshenv.local`, for example `export WEATHER_NAME="Oakland"`. The default place is San Francisco.
+
+| Path | Content |
+|------|---------|
+| `termbg.sh` | The switch. It builds the shader for a mode and reloads cmux. |
+| `common.glsl` | The helpers that each shader uses. `termbg.sh` adds this file to the start of each shader. |
+| `text.glsl` | The text in the top-right corner. A design names its text in a `// @TEXT:` line. |
+| `backgrounds/` | The fixed backgrounds. A new `.glsl` file here becomes a mode. |
+| `weather/` | `weather.sh` and the rain, snow, and stars shaders of weather mode. |
+| `overlays/` | Art that shows over each mode. |
+
 ## Settings for one computer
 
 Set these values in `~/.zshenv.local`:
@@ -46,7 +76,7 @@ Set these values in `~/.zshenv.local`:
 | Setting | Default |
 |---------|---------|
 | `zdot_brew_kegs` | `(node@22 postgresql@15 rustup)`, the keg-only formulas to add to PATH |
-| `zdot_zsh_modules` | `(history keybinds completions aliases fzf)` |
+| `zdot_zsh_modules` | `(history keybinds completions aliases fzf termbg)` |
 | `zdot_history_days` | `120`, the age in days at which zsh deletes a history entry |
 | `zdot_company` | Not set. The company of this laptop. See [Company files](#company-files). |
 

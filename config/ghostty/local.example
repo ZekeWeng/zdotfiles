@@ -2,3 +2,8 @@
 # ~/.config/ghostty/local links to it. Ghostty reads it last, so its values win.
 
 # font-size = 16
+
+# Background design. The termbg command writes this file. Run "tbg" to see the modes.
+# custom-shader = ~/.local/state/ghostty/termbg.glsl
+# Move the design in all panes, not only in the focused pane. This uses more CPU for each pane.
+# custom-shader-animation = always
