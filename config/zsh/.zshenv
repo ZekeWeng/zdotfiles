@@ -1,4 +1,4 @@
-# Environment for each zsh shell, also scripts and agent commands.
+# Environment for each zsh shell, also scripts and agent commands. ~/.zshenv links to this file.
 
 # Path
 typeset -U path PATH manpath MANPATH

@@ -1,4 +1,4 @@
-# The termbg command, and the hourly update of the weather background.
+# termbg for the shell: the command, and the hourly update of the weather background.
 
 # ascii-art/terminal-bg/termbg.sh switches the background design of the terminal.
 zdot_termbg_script="${${(%):-%x}:A:h:h:h:h}/ascii-art/terminal-bg/termbg.sh"

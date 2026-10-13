@@ -1,4 +1,4 @@
-# Setup for each zsh login shell.
+# Setup for each zsh login shell. ~/.zprofile links to this file.
 # The path is set here, not in .zshenv, because /etc/zprofile runs path_helper.
 
 # Homebrew

@@ -1,4 +1,4 @@
-# Git config for each computer.
+# Git config for each computer. ~/.config/git/config links to this file.
 # Your name, email, and signing key go in config/git/gitconfig.local. ~/.gitconfig links to it.
 # Git reads ~/.gitconfig after this file, so its values win. "git config --global" also writes there.
 

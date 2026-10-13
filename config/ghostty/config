@@ -1,4 +1,4 @@
-# Ghostty config for each computer.
+# Ghostty config for each computer. ~/.config/ghostty/config links to this file.
 
 # Theme
 theme = Catppuccin Mocha

@@ -12,6 +12,8 @@
 //
 // This is an overlay. termbg.sh renames mainImage of the background to bgImage
 // and adds this file after it.
+//
+// Enable it with: termbg overlay dog-leaf
 
 // ---- Settings ------------------------------------------------------------------------------------------
 

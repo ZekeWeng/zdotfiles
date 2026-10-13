@@ -1,4 +1,4 @@
-# Setup for each interactive zsh shell.
+# Setup for each interactive zsh shell. ~/.zshrc links to this file.
 
 # Options
 setopt AUTO_CD GLOB_DOTS EXTENDED_GLOB CORRECT INTERACTIVE_COMMENTS
