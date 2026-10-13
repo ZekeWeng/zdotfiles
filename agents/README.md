@@ -63,6 +63,7 @@ description: <what it does, when to use it, and what to use in its place>
 
 - The name must use only lowercase letters, numbers, and single hyphens. Do not use a reserved name, such as `review` or `synced`.
 - Keep the description to 1,024 characters or fewer. Keep the body to approximately 40 lines.
+- End each skill with `## Output`. Add the other sections, such as `## Steps` or `## Hard stops`, only when the skill needs them.
 - Use only the frontmatter fields of the [Agent Skills](https://agentskills.io) format. The only exception is `disable-model-invocation: true` for a skill that pushes or merges.
 - Write plain steps that each harness can read. Do not use `$ARGUMENTS`, `` !`cmd` ``, `allowed-tools`, or tool names.
 - Add an approval step before each write to an outside service, such as Slack, Linear, or Notion.
