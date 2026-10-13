@@ -61,14 +61,7 @@ To turn on the backgrounds on a new computer:
 
 Weather mode uses the free [Open-Meteo API](https://open-meteo.com/), which needs no key. To set the place, export `WEATHER_LAT`, `WEATHER_LON`, and `WEATHER_NAME` in `config/zsh/zshenv.local`, for example `export WEATHER_NAME="Oakland"`. The default place is San Francisco.
 
-| Path | Content |
-|------|---------|
-| `termbg.sh` | The switch. It builds the shader for a mode and reloads cmux. |
-| `common.glsl` | The helpers that each shader uses. `termbg.sh` adds this file to the start of each shader. |
-| `text.glsl` | The text in the top-right corner. A design names its text in a `// @TEXT:` line. |
-| `backgrounds/` | The fixed backgrounds. A new `.glsl` file here becomes a mode. |
-| `weather/` | `weather.sh` and the rain, snow, and stars shaders of weather mode. |
-| `overlays/` | Art that shows over each mode. |
+To add a background, add a `.glsl` file to `ascii-art/terminal-bg/backgrounds/`. The file name becomes a mode.
 
 ## Settings for one computer
 
@@ -90,7 +83,7 @@ Each company has its own exports, aliases, and secrets. Set `zdot_company` in `c
 3. To add secrets, copy `config/zsh/local/company.secrets.example` to `~/.config/zsh/private/COMPANY.secrets.zsh` with mode 600.
 4. Add `zdot_company=COMPANY` to `config/zsh/zshenv.local`.
 
-`.zshenv` loads the company secrets and `env.zsh` in each shell, also scripts. `.zshrc` loads `aliases.zsh` in each interactive shell. Git ignores each company folder, except `_template`.
+Git ignores each company folder, except `_template`.
 
 ## Rules for changes
 

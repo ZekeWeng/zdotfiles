@@ -17,7 +17,6 @@ $character"""
 
 # Each style uses one of these names, so each color has one meaning in the prompt.
 [palettes.zdot]
-# Each color answers one question.
 info = 'cyan'      # Where am I? The folder, and the counts against the parent branch.
 pending = 'yellow' # What must I do? Unstaged and untracked files, stash, push or pull, rebase or merge, slow command.
 success = 'green'  # What is ready? Staged changes, added lines, a passed command.
