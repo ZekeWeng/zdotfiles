@@ -19,6 +19,7 @@ Thumbs.db
 **/.claude/settings.local.json
 
 # Environment / secrets
+# To commit a file that a pattern hides, such as .env.production, run "git add -f FILE".
 .env
 .env.*
 !.env.example
