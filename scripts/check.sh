@@ -43,7 +43,7 @@ run_home() { env -i HOME="$home" PATH="$PATH" TERM="${TERM:-dumb}" "$@"; }
 is_ignored() { run_home git -C "$1" check-ignore -q "$2"; }
 
 shell_scripts="scripts/install-dotfiles.sh scripts/install-brew.sh agents/install-agents.sh scripts/check.sh
-    ascii-art/terminal-bg/termbg.sh ascii-art/terminal-bg/weather/weather.sh"
+    scripts/test.sh ascii-art/terminal-bg/termbg.sh ascii-art/terminal-bg/weather/weather.sh"
 manual_files="config/zsh/zshenv.local config/zsh/zshrc.local config/zsh/paths/local.zsh
     config/ssh/config.local config/git/gitconfig.local brew/Brewfile.local config/ghostty/local config/tmux/local.conf"
 
@@ -296,6 +296,8 @@ if has uvx; then
 else
     skip "skills (uvx is not installed)"
 fi
+
+check "scripts/test.sh" "$src/scripts/test.sh"
 
 if [ "$failed" -ne 0 ]; then
     echo "One or more checks failed."

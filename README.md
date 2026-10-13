@@ -97,5 +97,5 @@ Each company has its own exports, aliases, and secrets. Set `zdot_company` in `c
 - Put a change for each computer in a fixed file. Put a change for one computer in a manual file.
 - Do not put a secret, a private host, or a company package in a fixed file.
 - Put private repo patterns in `.git/info/exclude`. Git reads that file, but it is not part of a clone.
-- Run `./scripts/check.sh` before you commit. It runs the linters, the installers with a temporary home folder, and the skill validator.
+- Run `./scripts/check.sh` before you commit. It runs the linters, the installers with a temporary home folder, the skill validator, and the behavior tests in `scripts/test.sh`.
 - Write comments and docs in ASD-STE100 Simplified Technical English. See `AGENTS.md`.
