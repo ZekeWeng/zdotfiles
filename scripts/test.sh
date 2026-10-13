@@ -124,6 +124,11 @@ STUB_CURL_FAIL=1 termbg "$state" overlay dog-leaf >/dev/null 2>&1
 expect "termbg: overlay change fails with no cache and no network" "$?" 1
 expect "termbg: a failed overlay change keeps the list" "$(cat "$state/ghostty/termbg.overlays")" dog-leaf
 
+# termbg: a symlink to the script finds the designs in the repo.
+ln -s "$copy/ascii-art/terminal-bg/termbg.sh" "$tmp_dir/tbg-link"
+link_out="$(env XDG_STATE_HOME="$tmp_dir/termbg-link" PATH="$stub_path" "$tmp_dir/tbg-link" sovereign 2>&1)"
+expect "termbg: runs through a symlink" "$link_out" "mode: sovereign"
+
 # termbg: a new computer has no state files, and the zsh hook must print nothing.
 state="$tmp_dir/termbg-new"
 expect "termbg: list prints no error with no state" "$(termbg "$state" list 2>&1 >/dev/null)" ""
@@ -179,6 +184,12 @@ done
 expect "completions: the cached completion loads" "$completion" yes
 expect "completions: the tool runs 1 time for 2 shells" "$(count_lines "$tmp_dir/kubectl-runs")" 1
 
+# paths.zsh: the helpers add a folder only if it exists.
+path_out="$(env -i HOME="$tmp_dir" zsh -fc ". $src/config/zsh/paths/paths.zsh
+    zdot_path_prepend $tmp_dir; zdot_path_append $tmp_dir/missing; echo \$path[1] \${path[(I)$tmp_dir/missing]}")"
+expect "paths.zsh: zdot_path_prepend adds a folder, and zdot_path_append skips a missing folder" "$path_out" \
+    "$tmp_dir 0"
+
 # .zshenv: the secrets load from outside the repo.
 secrets_home="$tmp_dir/secrets-home"
 mkdir -p "$secrets_home/.config/zsh/private"
@@ -198,10 +209,23 @@ case "$pager_out" in
     *) fail "git: the pager falls back to less with no delta: $pager_out" ;;
 esac
 
-# tmux: a reload adds no duplicate overrides.
+# git: the log aliases that build on lg.
+for alias_name in lg lga lgp; do
+    alias_out="$(GIT_CONFIG_GLOBAL="$src/config/git/config" git -C "$repo" --no-pager "$alias_name" 2>&1)"
+    case "$alias_out" in
+        *first*) pass "git: the $alias_name alias" ;;
+        *) fail "git: the $alias_name alias: $alias_out" ;;
+    esac
+done
+
+# tmux: the options load, and a reload adds no duplicate overrides.
 if command -v tmux >/dev/null 2>&1; then
     socket="zdot-test-$$"
     tmux -L "$socket" -f "$src/config/tmux/tmux.conf" new-session -d
+    tmux_options="$(for option in prefix base-index pane-base-index renumber-windows mode-keys status-position; do
+        tmux -L "$socket" show -gv "$option" 2>/dev/null || tmux -L "$socket" show -gwv "$option"
+    done | tr '\n' ' ')"
+    expect "tmux: the options load" "$tmux_options" "C-a 1 1 on vi top "
     before="$(tmux -L "$socket" show -s terminal-overrides | wc -l)"
     tmux -L "$socket" source-file "$src/config/tmux/tmux.conf"
     expect "tmux: a reload adds no duplicate overrides" "$(tmux -L "$socket" show -s terminal-overrides | wc -l)" \
