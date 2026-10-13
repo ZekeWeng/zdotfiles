@@ -69,6 +69,19 @@ if [ -t 0 ] && [ -z "$zdot_agent" ]; then
 fi
 unset zdot_agent
 
+# SSH
+# In a cmux terminal, "ssh HOST" opens a cmux SSH workspace.
+# A daemon on the host keeps the shell alive after a disconnect.
+# Each other form of ssh runs the usual ssh. Examples are "ssh HOST CMD", "ssh -p 22 HOST", and "cmd | ssh HOST".
+ssh() {
+    if [[ -n ${CMUX_WORKSPACE_ID:-} && -t 0 && -t 1 && $# -eq 1 && $1 != -* ]] &&
+        (( $+commands[cmux] )); then
+        cmux ssh "$1"
+    else
+        command ssh "$@"
+    fi
+}
+
 # Utilities
 alias c="clear"
 alias h="history"
