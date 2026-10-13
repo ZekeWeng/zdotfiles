@@ -166,6 +166,16 @@ changes="$(install_agents "$agents_home" "$real_claude:/usr/bin:/bin" | grep -E 
 expect "install-agents: the second run with a company changes nothing" "$changes" ""
 rm -rf "$copy/agents/companies/acme"
 
+# install-dotfiles: an old secret file in the repo moves to ~/.config/zsh/private/.
+dotfiles_home="$tmp_dir/dotfiles-home"
+mkdir -p "$dotfiles_home" "$copy/config/zsh/private"
+echo 'export ZDOT_OLD_SECRET=yes' >"$copy/config/zsh/private/secrets.zsh"
+env -i HOME="$dotfiles_home" PATH=/usr/bin:/bin "$copy/scripts/install-dotfiles.sh" >/dev/null
+expect "install-dotfiles: moves the old secrets out of the repo" \
+    "$(cat "$dotfiles_home/.config/zsh/private/secrets.zsh") $(count_entries "$copy/config/zsh/private")" \
+    "export ZDOT_OLD_SECRET=yes 0"
+rm -rf "$copy/config/zsh/private"
+
 # ssh(): only "ssh HOST" in a cmux terminal opens cmux ssh. script gives zsh a terminal.
 ssh_out="$(env PATH="$stub_path" script -q /dev/null zsh -fc ". $src/config/zsh/modules/aliases.zsh
     CMUX_WORKSPACE_ID=test

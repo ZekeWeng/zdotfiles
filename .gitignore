@@ -5,6 +5,8 @@
 config/zsh/paths/local.zsh
 config/ghostty/local
 config/tmux/local.conf
+# The old folder of the secret files. install-dotfiles.sh moves them to ~/.config/zsh/private/.
+config/zsh/private/
 config/zsh/companies/*
 !config/zsh/companies/_template/
 agents/companies/*

@@ -80,6 +80,17 @@ manual "$src/config/ghostty/local.example" "$src/config/ghostty/local" 644 "$HOM
 manual "$src/config/tmux/local.conf.example" "$src/config/tmux/local.conf" 644 "$HOME/.config/tmux/local.conf"
 seed "$src/config/zsh/paths/local.zsh.example" "$src/config/zsh/paths/local.zsh" 644
 # The secrets stay outside the repo, so agents that work in the repo cannot read them.
+# Move the secret files from the old folder in the repo, so that the shell loads them again.
 mkdir -p "$HOME/.config/zsh/private"
 chmod 700 "$HOME/.config/zsh/private"
+for old_secrets in "$src"/config/zsh/private/*.zsh; do
+    [ -f "$old_secrets" ] || continue
+    new_secrets="$HOME/.config/zsh/private/$(basename "$old_secrets")"
+    if [ -e "$new_secrets" ]; then
+        echo "skip  $old_secrets ($new_secrets exists. Merge the two files. Delete the old file.)"
+    else
+        mv "$old_secrets" "$new_secrets"
+        echo "move  $old_secrets -> $new_secrets"
+    fi
+done
 seed "$src/config/zsh/local/secrets.example" "$HOME/.config/zsh/private/secrets.zsh" 600
