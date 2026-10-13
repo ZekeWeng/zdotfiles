@@ -160,19 +160,18 @@ if has starship; then
     check "starship.toml has no warnings $warnings" test -z "$warnings"
 fi
 
-# Each package is in only 1 group file.
 duplicates="$(cat brew/*.Brewfile | grep -E '^(brew|cask|tap) ' | sort | uniq -d)"
 check "each package is in only 1 brew/*.Brewfile $duplicates" test -z "$duplicates"
 
 # Safety
-# Git must ignore each manual file.
 for f in $manual_files; do
     check "git ignores $f" git check-ignore -q "$f"
 done
 check "git ignores config/zsh/companies/COMPANY/" git check-ignore -q config/zsh/companies/acme/env.zsh
 # No file that git can see may hold a private key or a token.
 secret_re='BEGIN [A-Z ]*PRIVATE KEY|ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}'
-secret_re="$secret_re|sk-ant-[A-Za-z0-9_-]{20,}|AKIA[0-9A-Z]{16}|xox[baprs]-[A-Za-z0-9-]{10,}"
+secret_re="$secret_re|sk-ant-[A-Za-z0-9_-]{20,}|sk-proj-[A-Za-z0-9_-]{20,}"
+secret_re="$secret_re|AKIA[0-9A-Z]{16}|xox[baprs]-[A-Za-z0-9-]{10,}"
 secrets="$(xargs grep -lE "$secret_re" <"$repo_files" 2>/dev/null)"
 check "no keys or tokens in the files that git can see $secrets" test -z "$secrets"
 
@@ -237,9 +236,9 @@ for path in .env.example Cargo.lock db/init.sql certs/ca.crt env/prod.ts data.gz
     fi
 done
 
-# tmux reads the config.
+# The pane runs sleep, not a shell, so that no shell hook runs.
 if has tmux; then
-    if run_home tmux -L zdot-check -f "$src/config/tmux/tmux.conf" new-session -d 2>"$tmp_dir/err"; then
+    if run_home tmux -L zdot-check -f "$src/config/tmux/tmux.conf" new-session -d 'sleep 60' 2>"$tmp_dir/err"; then
         check "tmux.conf" run_home tmux -L zdot-check list-keys -T copy-mode-vi y
     else
         fail "tmux.conf: $(cat "$tmp_dir/err")"
