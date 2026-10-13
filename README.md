@@ -12,8 +12,9 @@ Each tool has two types of files:
 From the repo root, run these scripts:
 
 1. `./scripts/install-dotfiles.sh` links the dotfiles, and makes and links the manual files.
-2. `./scripts/install-brew.sh` installs the Homebrew packages. It asks y/n for each cask that is not installed. To install only some groups, name them, such as `./scripts/install-brew.sh shell tools`.
-3. `./agents/install-agents.sh` links the agent rules and skills. See [the agents README](agents/README.md).
+2. `./scripts/install-brew.sh` installs the Homebrew packages. It asks y/n for each cask that is not installed. It does not upgrade installed packages. To install only some groups, name them, such as `./scripts/install-brew.sh shell tools`.
+3. Install the Claude Code CLI with `curl -fsSL https://claude.ai/install.sh | bash`. The `claude` cask installs only the desktop app.
+4. `./agents/install-agents.sh` links the agent rules and skills. See [the agents README](agents/README.md).
 
 The scripts do not replace a path that exists. If a script prints `skip`, move that path, and then run the script again.
 
