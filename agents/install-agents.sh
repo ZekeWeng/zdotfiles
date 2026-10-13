@@ -229,7 +229,7 @@ link "$base_rules" "$HOME/.claude/CLAUDE.md" # Claude Code rules
 link "$base_rules" "$pi_dir/AGENTS.md"       # Pi rules
 prune_skills
 if [ "$claude_installed" = no ]; then
-    echo "skip  $HOME/.claude/skills (claude was not found. Install Claude Code. Run the script again.)"
+    echo "note  $HOME/.claude/skills (claude was not found. Install Claude Code. Run the script again.)"
 fi
 link_skills "$src/skills"
 
