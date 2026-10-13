@@ -283,7 +283,7 @@ if has uvx; then
     # The commit is pinned, so a new commit upstream cannot run on this computer. To update, change the SHA.
     validator_sha="69ef37e9424c0a7ea9dd2293b559e43ec8176379"
     validator_url="git+https://github.com/agentskills/agentskills@$validator_sha#subdirectory=skills-ref"
-    for skill in agents/skills/*/ agents/companies/_template/skills/*/; do
+    for skill in agents/skills/*/ agents/companies/*/skills/*/; do
         [ -d "$skill" ] || continue
         skill="${skill%/}"
         out="$(uvx --quiet --from "$validator_url" skills-ref validate "$skill" 2>&1)"
