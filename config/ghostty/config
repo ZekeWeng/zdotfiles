@@ -17,7 +17,8 @@ cursor-style = block
 shell-integration-features = no-cursor
 
 copy-on-select = clipboard
-clipboard-write = allow
+# Ask before a program sets the clipboard with OSC 52, such as a remote host over SSH.
+clipboard-write = ask
 
 # Keys
 # Cmd+Delete sends Ctrl+u, like the default of Cmd+Backspace. zsh deletes the text to the left of the cursor.
