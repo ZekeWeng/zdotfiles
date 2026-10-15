@@ -92,7 +92,7 @@ sshkill() {
 # Secrets
 # Each token is an item in the login Keychain, with the service "zdot". No shell exports it.
 # The item has no trusted apps and no partition, so each read asks for the login password.
-# An agent does not know the password. In the dialog, click Allow. "Always Allow" removes this protection.
+# In the dialog, click Allow. "Always Allow" removes this protection.
 # "secret-set NAME" asks for the token, then for the login password.
 secret-set() {
     [ "$#" -eq 1 ] || { echo "usage: secret-set NAME" >&2; return 2; }

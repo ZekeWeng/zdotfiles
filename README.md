@@ -15,7 +15,7 @@ If a script prints `skip`, move that path. Then run the script again.
 
 ## Local changes
 
-Git ignores the `.local` files and the `local` files in `config/`. Put the hosts, the keys, and the changes for one computer in these files. Put each token in the Keychain with `secret-set NAME`. Do not put tokens in a file, because an agent can read each file that you can read.
+Git ignores the `.local` files and the `local` files in `config/`. Put the hosts, the keys, and the changes for one computer in these files. Put each token in the Keychain with `secret-set NAME`. Do not put tokens in a file.
 
 Set these values in `~/.zshenv.local`:
 

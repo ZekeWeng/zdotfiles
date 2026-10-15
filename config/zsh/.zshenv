@@ -23,7 +23,7 @@ if [ -f "$HOME/.zshenv.local" ]; then
 fi
 
 # Secrets
-# They are outside the repo, so agents that work in the repo cannot read them.
+# They are outside the repo, so git cannot commit them.
 # Put tokens in the Keychain with secret-set, not in these files. See config/zsh/modules/aliases.zsh.
 zdot_config_dir="${${(%):-%x}:A:h}"
 zdot_secrets_dir="$XDG_CONFIG_HOME/zsh/private"

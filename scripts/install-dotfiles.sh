@@ -78,7 +78,7 @@ manual "$src/brew/Brewfile.local.example" "$src/brew/Brewfile.local" 644 "$HOME/
 manual "$src/config/ghostty/local.example" "$src/config/ghostty/local" 644 "$HOME/.config/ghostty/local"
 manual "$src/config/tmux/local.conf.example" "$src/config/tmux/local.conf" 644 "$HOME/.config/tmux/local.conf"
 seed "$src/config/zsh/paths/local.zsh.example" "$src/config/zsh/paths/local.zsh" 644
-# The secrets stay outside the repo, so agents that work in the repo cannot read them.
+# The secrets stay outside the repo, so git cannot commit them.
 # Move the secret files from the old folder in the repo, so that the shell loads them again.
 mkdir -p "$HOME/.config/zsh/private"
 chmod 700 "$HOME/.config/zsh/private"
