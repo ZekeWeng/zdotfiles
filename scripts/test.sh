@@ -195,6 +195,16 @@ expect "sshkill: the workspaces of 4 forms" "$kill_out" \
     "--workspace workspace:2;close workspace:2;--workspace workspace:3;close workspace:3;\
 --workspace workspace:2;close workspace:2;--workspace workspace:3;close workspace:3;none;"
 
+# secret: each function gives security the zdot service. with-secret gives the token to one command only.
+# The security stub prints to stderr, because the functions send the output of security to /dev/null.
+secret_out="$(env PATH="$stub_path" zsh -fc ". $src/config/zsh/modules/aliases.zsh
+    security() { case \$1 in find-generic-password) echo tok ;; *) echo \"\$*\" >&2 ;; esac }
+    secret-set A; secret-rm A; with-secret A sh -c 'echo \$A'; echo \"[\${A:-}]\"
+    secret 2>/dev/null || echo \$?" 2>&1 | tr '\n' ';')"
+expect "secret: the security calls and the scope of the token" "$secret_out" \
+    "add-generic-password -U -s zdot -a A -T  -w;set-generic-password-partition-list -S  -s zdot -a A;\
+delete-generic-password -s zdot -a A;tok;[];2;"
+
 # completions: the second shell reads the cache and does not run the tool.
 cache="$tmp_dir/cache"
 for _ in 1 2; do

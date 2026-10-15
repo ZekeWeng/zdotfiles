@@ -89,6 +89,33 @@ sshkill() {
     done
 }
 
+# Secrets
+# Each token is an item in the login Keychain, with the service "zdot". No shell exports it.
+# The item has no trusted apps and no partition, so each read asks for the login password.
+# An agent does not know the password. In the dialog, click Allow. "Always Allow" removes this protection.
+# "secret-set NAME" asks for the token, then for the login password.
+secret-set() {
+    [ "$#" -eq 1 ] || { echo "usage: secret-set NAME" >&2; return 2; }
+    security add-generic-password -U -s zdot -a "$1" -T "" -w &&
+        security set-generic-password-partition-list -S "" -s zdot -a "$1" >/dev/null
+}
+# "secret NAME" prints the token.
+secret() {
+    [ "$#" -eq 1 ] || { echo "usage: secret NAME" >&2; return 2; }
+    security find-generic-password -s zdot -a "$1" -w
+}
+secret-rm() {
+    [ "$#" -eq 1 ] || { echo "usage: secret-rm NAME" >&2; return 2; }
+    security delete-generic-password -s zdot -a "$1" >/dev/null
+}
+# "with-secret GITHUB_TOKEN gh pr list" gives the token to one command as the variable GITHUB_TOKEN.
+with-secret() {
+    [ "$#" -ge 2 ] || { echo "usage: with-secret NAME COMMAND [ARGS...]" >&2; return 2; }
+    local value
+    value="$(secret "$1")" || return
+    env "$1=$value" "${@:2}"
+}
+
 # Utilities
 alias c="clear"
 alias h="history"
