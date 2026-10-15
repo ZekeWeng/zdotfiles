@@ -15,7 +15,7 @@ If a script prints `skip`, move that path. Then run the script again.
 
 ## Local changes
 
-Git ignores the `.local` files and the `local` files in `config/`. Put the hosts, the keys, and the changes for one computer in these files. Put the secrets in `~/.config/zsh/private/secrets.zsh`.
+Git ignores the `.local` files and the `local` files in `config/`. Put the hosts, the keys, and the changes for one computer in these files. Put each token in the Keychain with `secret-set NAME`. Do not put tokens in a file, because an agent can read each file that you can read.
 
 Set these values in `~/.zshenv.local`:
 
@@ -33,6 +33,8 @@ To add a company, copy `config/zsh/companies/_template` to `config/zsh/companies
 | Command | Effect |
 |---------|--------|
 | `reload` | Starts the shell again with the new config. |
+| `secret-set NAME` | Puts a token in the Keychain. Each read asks for the login password. Click Allow, not Always Allow. |
+| `with-secret NAME CMD` | Runs `CMD` with the token in the variable `NAME`. |
 | `sshkill HOST` | Ends the cmux SSH workspaces for `HOST`. Without `HOST`, it ends each one. |
 | `tbg` | Shows the terminal background now and the other backgrounds. |
 | `tbg next` | Shows the next background. |
