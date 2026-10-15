@@ -41,7 +41,6 @@ sleep 0.2
 echo '$(printf '%s' "$weather_json" | tr -d '\n')'
 EOF
 printf '#!/bin/sh\necho "cmux $*"\n' >"$stubs/cmux"
-printf '#!/bin/sh\necho "ssh $*"\n' >"$stubs/ssh"
 cat >"$stubs/kubectl" <<EOF
 #!/bin/sh
 echo run >>"$tmp_dir/kubectl-runs"
@@ -182,14 +181,6 @@ expect "install-dotfiles: moves the old secrets out of the repo" \
     "$(cat "$dotfiles_home/.config/zsh/private/secrets.zsh") $(count_entries "$copy/config/zsh/private")" \
     "export ZDOT_OLD_SECRET=yes 0"
 rm -rf "$copy/config/zsh/private"
-
-# ssh(): only "ssh HOST" in a cmux terminal opens cmux ssh. script gives zsh a terminal.
-ssh_out="$(env PATH="$stub_path" script -q /dev/null zsh -fc ". $src/config/zsh/modules/aliases.zsh
-    CMUX_WORKSPACE_ID=test
-    ssh zw; ssh zw ls; echo x | ssh zw; ssh -p 22 zw
-    unset CMUX_WORKSPACE_ID; ssh zw" </dev/null 2>&1 | tr -d '\r\010' | sed 's/^\^D//' | grep -E '^(cmux|ssh) ')"
-expect "ssh(): the routes of 5 forms" "$(printf '%s' "$ssh_out" | tr '\n' ';')" \
-    "cmux ssh zw;ssh zw ls;ssh zw;ssh -p 22 zw;ssh zw"
 
 # sshkill: a host or a ref selects the SSH workspaces. A local workspace and an unknown host match nothing.
 cat >"$tmp_dir/workspaces.json" <<'EOF'

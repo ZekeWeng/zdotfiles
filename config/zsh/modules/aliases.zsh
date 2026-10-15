@@ -69,18 +69,6 @@ fi
 unset zdot_agent
 
 # SSH
-# In a cmux terminal, "ssh HOST" opens a cmux SSH workspace.
-# A daemon on the host keeps the shell alive after a disconnect.
-# Each other form of ssh runs the usual ssh. Examples are "ssh HOST CMD", "ssh -p 22 HOST", and "cmd | ssh HOST".
-ssh() {
-    if [ -n "${CMUX_WORKSPACE_ID:-}" ] && [ -t 0 ] && [ -t 1 ] && [ "$#" -eq 1 ] && [ "${1#-}" = "$1" ] &&
-        command -v cmux >/dev/null 2>&1; then
-        cmux ssh "$1"
-    else
-        command ssh "$@"
-    fi
-}
-
 # End a cmux SSH workspace: close its sessions on the host, then close the workspace.
 # "sshkill zw" or "sshkill workspace:7" ends the workspaces that match. "sshkill" ends each SSH workspace.
 sshkill() {
