@@ -88,6 +88,8 @@ while IFS= read -r f; do
     [ -f "$f" ] || continue
     case "$f" in
         LICENSE | *.json) continue ;;
+        # The anatomy skill is a copy of github.com/wheresryan22/anatomy. Keep it the same as upstream.
+        agents/skills/anatomy/*) continue ;;
     esac
     # The rules of .editorconfig: no trailing spaces, a final newline, LF line ends.
     if grep -nE '[[:space:]]+$' "$f" >/dev/null; then echo "$f: trailing spaces" >>"$format_errors"; fi

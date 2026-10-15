@@ -27,6 +27,7 @@ Install only one company on each computer. To remove a company, delete `~/.claud
 
 | Skill | Use |
 |-------|-----|
+| `anatomy` | Draw an idea as an interactive isometric machine. It is a copy of [wheresryan22/anatomy](https://github.com/wheresryan22/anatomy). |
 | `critique` | Review a diff, a PR, or a plan. `deep` uses more reviewers. `audit` reviews a full codebase. |
 | `fix` | Find the root cause of a bug, and fix it. |
 | `forge` | Build a project from a spec, from the issues to the merged PRs. Only the user can start it. |
