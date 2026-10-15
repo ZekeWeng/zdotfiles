@@ -172,6 +172,7 @@ check "git ignores config/zsh/companies/COMPANY/" git check-ignore -q config/zsh
 secret_re='BEGIN [A-Z ]*PRIVATE KEY|ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}'
 secret_re="$secret_re|sk-ant-[A-Za-z0-9_-]{20,}|sk-proj-[A-Za-z0-9_-]{20,}"
 secret_re="$secret_re|AKIA[0-9A-Z]{16}|xox[baprs]-[A-Za-z0-9-]{10,}"
+secret_re="$secret_re|lin_api_[A-Za-z0-9]{20,}|ntn_[A-Za-z0-9]{20,}|npm_[A-Za-z0-9]{30,}"
 secrets="$(xargs grep -lE "$secret_re" <"$repo_files" 2>/dev/null)"
 check "no keys or tokens in the files that git can see $secrets" test -z "$secrets"
 
