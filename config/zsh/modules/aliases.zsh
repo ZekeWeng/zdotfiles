@@ -81,6 +81,26 @@ ssh() {
     fi
 }
 
+# End a cmux SSH workspace: close its sessions on the host, then close the workspace.
+# "sshkill zw" or "sshkill workspace:7" ends the workspaces that match. "sshkill" ends each SSH workspace.
+sshkill() {
+    local ws
+    local -a targets
+    # Print the ref of each SSH workspace whose host or ref is an argument. With no arguments, print each one.
+    local find_ssh='.workspaces[] | select(.remote.destination != null)
+        | select($ARGS.positional == [] or ([.ref, .remote.destination] - $ARGS.positional | length) < 2)
+        | .ref'
+    targets=(${(f)"$(CMUX_QUIET=1 cmux workspace list --json | jq -r "$find_ssh" --args "$@")"})
+    if [ "${#targets[@]}" -eq 0 ]; then
+        echo "sshkill: no SSH workspace matches${1:+ $*}" >&2
+        return 1
+    fi
+    for ws in "${targets[@]}"; do
+        cmux ssh-session-cleanup --workspace "$ws" --all
+        cmux workspace close "$ws"
+    done
+}
+
 # Utilities
 alias c="clear"
 alias h="history"

@@ -34,6 +34,7 @@ To add a company, copy `config/zsh/companies/_template` to `config/zsh/companies
 |---------|--------|
 | `reload` | Starts the shell again with the new config. |
 | `ssh HOST` | In cmux, opens a persistent SSH workspace. |
+| `sshkill HOST` | Ends the cmux SSH workspaces for `HOST`. Without `HOST`, it ends each one. |
 | `tbg` | Shows the terminal background now and the other backgrounds. |
 | `tbg next` | Shows the next background. |
 | `tbg weather` | Shows the weather now. It updates each hour. |

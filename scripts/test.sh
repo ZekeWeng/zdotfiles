@@ -191,6 +191,19 @@ ssh_out="$(env PATH="$stub_path" script -q /dev/null zsh -fc ". $src/config/zsh/
 expect "ssh(): the routes of 5 forms" "$(printf '%s' "$ssh_out" | tr '\n' ';')" \
     "cmux ssh zw;ssh zw ls;ssh zw;ssh -p 22 zw;ssh zw"
 
+# sshkill: a host or a ref selects the SSH workspaces. A local workspace and an unknown host match nothing.
+cat >"$tmp_dir/workspaces.json" <<'EOF'
+{"workspaces": [{"ref": "workspace:1", "remote": {"destination": null}},
+    {"ref": "workspace:2", "remote": {"destination": "zw"}},
+    {"ref": "workspace:3", "remote": {"destination": "vm"}}]}
+EOF
+kill_out="$(env PATH="$stub_path" zsh -fc ". $src/config/zsh/modules/aliases.zsh
+    cmux() { case \$* in 'workspace list --json') cat $tmp_dir/workspaces.json ;; *) echo \"\$2 \$3\" ;; esac }
+    sshkill zw; sshkill workspace:3; sshkill; sshkill nohost || echo none" 2>/dev/null | tr '\n' ';')"
+expect "sshkill: the workspaces of 4 forms" "$kill_out" \
+    "--workspace workspace:2;close workspace:2;--workspace workspace:3;close workspace:3;\
+--workspace workspace:2;close workspace:2;--workspace workspace:3;close workspace:3;none;"
+
 # completions: the second shell reads the cache and does not run the tool.
 cache="$tmp_dir/cache"
 for _ in 1 2; do
