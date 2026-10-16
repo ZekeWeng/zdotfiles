@@ -1,5 +1,13 @@
 # Setup for each interactive zsh shell. ~/.zshrc links to this file.
 
+# SSH
+# An SSH login attaches to the tmux session "main". The programs in it continue after the connection stops.
+# Detach, and the login closes. Set zdot_ssh_tmux=0 in ~/.zshenv.local to stop this.
+if [ -n "${SSH_CONNECTION:-}" ] && [ -z "${TMUX:-}" ] && [ "${zdot_ssh_tmux:-1}" != 0 ] &&
+    [ -t 0 ] && [ -t 1 ] && command -v tmux >/dev/null 2>&1; then
+    tmux new-session -A -s main && exit
+fi
+
 # Options
 setopt AUTO_CD GLOB_DOTS EXTENDED_GLOB CORRECT INTERACTIVE_COMMENTS
 

@@ -24,6 +24,7 @@ Set these values in `~/.zshenv.local`:
 | `zdot_brew_kegs` | `(node@22 postgresql@15 rustup)` |
 | `zdot_zsh_modules` | `(history keybinds completions aliases fzf termbg)` |
 | `zdot_history_days` | `120` |
+| `zdot_ssh_tmux` | `1`. An SSH login attaches to the tmux session `main`. Set `0` to stop this. |
 | `zdot_company` | Not set. Use a folder name from `config/zsh/companies/`. |
 
 To add a company, copy `config/zsh/companies/_template` to `config/zsh/companies/COMPANY`. Replace `COMPANY` with the name.

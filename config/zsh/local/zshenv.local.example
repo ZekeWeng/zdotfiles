@@ -4,6 +4,7 @@
 # zdot_brew_kegs=(node@22 postgresql@15 rustup)
 # zdot_zsh_modules=(history keybinds completions aliases fzf termbg)
 # zdot_history_days=120
+# zdot_ssh_tmux=1
 
 # Company
 # Set the company of this laptop. .zshenv then loads ~/.config/zsh/private/COMPANY.secrets.zsh
