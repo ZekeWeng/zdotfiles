@@ -22,5 +22,7 @@ Host *
   # Show the key of a new host, and ask before ssh adds it. Refuse a changed key.
   # "accept-new" adds new keys with no question, so it does not find an attack on the first connection.
   StrictHostKeyChecking ask
-  # Use SSHFP records in DNS when they exist.
-  VerifyHostKeyDNS yes
+  # Show the match with SSHFP records in DNS, but still ask before ssh adds a new key.
+  # "yes" trusts a matched key with no question. The DNSSEC result comes from the resolver of the network,
+  # so a hostile network can make a false match.
+  VerifyHostKeyDNS ask
