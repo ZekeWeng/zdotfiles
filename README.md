@@ -42,12 +42,16 @@ To add a company, copy `config/zsh/companies/_template` to `config/zsh/companies
 | `tbg NAME` | Shows one background, such as `stars`. |
 | `tbg off` | Shows no background. |
 | `tbg overlay dog-leaf` | Turns the dog overlay on or off. |
+| `tbg light` | Shows a bone background and black text. The stars use darker colors. |
+| `tbg dark` | Shows the terminal colors from the Ghostty config again. |
 
 To see the backgrounds in Ghostty:
 
 1. Run `tbg stars`.
 2. Remove the `#` from the `custom-shader` line in `config/ghostty/local`.
 3. Press Cmd+Shift+, in Ghostty.
+
+`tbg light` and `tbg dark` need the `config-file` line for `termbg.colors` in `config/ghostty/local`. `config/ghostty/local.example` has it. Ghostty also needs Cmd+Shift+, after each change. cmux reloads with no action.
 
 ## Check
 

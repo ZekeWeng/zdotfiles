@@ -135,6 +135,16 @@ hook_err="$(env XDG_STATE_HOME="$state" PATH="$stub_path" zsh -fc \
     ". $copy/config/zsh/modules/termbg.zsh; _zdot_termbg_precmd" 2>&1)"
 expect "termbg: the zsh hook prints no error with no state" "$hook_err" ""
 
+# termbg: light writes the bone and black colors. dark removes the colors, so the Ghostty config wins.
+state="$tmp_dir/termbg-theme"
+expect "termbg: light prints the theme" "$(termbg "$state" light 2>&1)" "theme: light"
+expect "termbg: light writes the bone and black colors" "$(grep -v '^#' "$state/ghostty/termbg.colors" | tr '\n' ';')" \
+    "theme = Catppuccin Latte;background = #e4e0d8;foreground = #000000;"
+expect "termbg: list shows the theme" "$(termbg "$state" list | grep '^theme:')" "theme: light"
+termbg "$state" dark >/dev/null
+expect "termbg: dark writes no colors" "$(grep -cv '^#' "$state/ghostty/termbg.colors")" 0
+expect "termbg: no temporary colors file stays" "$(count_entries "$state/ghostty")" 2
+
 # Run install-agents.sh from the copy with the home folder in $1, the PATH in $2, and the next arguments.
 install_agents() {
     agents_home="$1"

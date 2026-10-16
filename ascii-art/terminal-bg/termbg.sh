@@ -1,15 +1,19 @@
 #!/bin/sh
 # Switch the background design of the terminal.
-# Usage: termbg.sh [list | next | weather [--test WEATHER_CODE] | NAME | off | overlay OVERLAY | update | names]
+# Usage: termbg.sh [list | next | weather [--test WEATHER_CODE] | NAME | off | overlay OVERLAY | light | dark |
+#                   update | names]
 # list, or no argument, shows the mode now and the names of the backgrounds. The first mode is stars.
 # weather makes the design follow the weather. The zsh module termbg updates it each hour.
 # NAME sets one fixed background from backgrounds/ or weather/shaders/. Give the file name without .glsl.
 # next moves to the next mode in the cycle: weather, stars, and each design in backgrounds/, in alphabetical order.
 # off shows no design.
 # overlay turns an overlay from overlays/ on or off, such as dog-leaf. An overlay shows over each mode.
+# light sets a bone background and black text, with the Catppuccin Latte palette. dark keeps the Ghostty colors.
+# The stars follow the background.
 # update writes the shader again for the mode now. --hourly skips it if the last hourly update is under 1 hour old.
 # names prints each command, mode, and design on one line, for tab completion.
-# The script writes $XDG_STATE_HOME/ghostty/termbg.glsl and reloads cmux.
+# The script writes $XDG_STATE_HOME/ghostty/termbg.glsl and termbg.colors, and reloads cmux.
+# config/ghostty/local reads termbg.colors with config-file.
 # Ghostty has no reload command for scripts. Press Cmd+Shift+, in Ghostty to see a change.
 set -eu
 
@@ -18,6 +22,8 @@ state="${XDG_STATE_HOME:-$HOME/.local/state}/ghostty"
 out="$state/termbg.glsl"
 mode_file="$state/termbg.mode"
 overlays_file="$state/termbg.overlays"
+theme_file="$state/termbg.theme"
+colors="$state/termbg.colors"
 stamp="$state/termbg.stamp"
 weather_cache="$state/termbg.weather.glsl"
 lock="$state/termbg.lock"
@@ -96,10 +102,32 @@ install_shader() {
         return 0
     fi
     mv "$tmp" "$out"
+    reload_cmux
+}
+
+reload_cmux() {
     cmux="$(command -v cmux || echo /Applications/cmux.app/Contents/Resources/bin/cmux)"
     if [ -x "$cmux" ]; then
         "$cmux" reload-config >/dev/null || echo "warning: cmux did not reload. Run: cmux reload-config" >&2
     fi
+}
+
+# Set the theme in $1, light or dark. Write the terminal colors for it to $colors, and reload cmux.
+# The shaders read the background color, so they need no change.
+# A dark theme writes no colors, so the colors of the Ghostty config stay.
+set_theme() {
+    {
+        echo "# Terminal colors from termbg.sh. Run \"termbg light\" or \"termbg dark\" to change them."
+        if [ "$1" = light ]; then
+            echo "theme = Catppuccin Latte"
+            echo "background = #e4e0d8"
+            echo "foreground = #000000"
+        fi
+    } >"$colors.next.$$"
+    mv "$colors.next.$$" "$colors"
+    echo "$1" >"$theme_file"
+    reload_cmux
+    echo "theme: $1"
 }
 
 # Write the shader for the mode in $1 to $tmp. The next arguments go to weather.sh.
@@ -178,7 +206,8 @@ take_lock() {
         fi
         sleep 0.1
     done
-    trap 'rm -f "$tmp" "$tmp.next" "$overlays_file.next.$$"; rmdir "$lock" 2>/dev/null || true' EXIT
+    trap 'rm -f "$tmp" "$tmp.next" "$overlays_file.next.$$" "$colors.next.$$"
+        rmdir "$lock" 2>/dev/null || true' EXIT
     trap 'exit 1' HUP INT TERM
 }
 
@@ -191,7 +220,7 @@ mode="$(cat "$mode_file" 2>/dev/null || echo stars)"
 
 case "${1:-list}" in
     names)
-        echo list next off overlay update weather
+        echo dark light list next off overlay update weather
         shader_names backgrounds weather/shaders overlays
         ;;
     next)
@@ -205,6 +234,7 @@ case "${1:-list}" in
         ;;
     list)
         echo "mode: $mode"
+        echo "theme: $(cat "$theme_file" 2>/dev/null || echo dark)"
         echo "modes: weather, off"
         echo "overlays on: $(tr '\n' ' ' 2>/dev/null <"$overlays_file" || true)"
         echo "overlays:"
@@ -254,5 +284,6 @@ case "${1:-list}" in
         mv "$overlays_src" "$overlays_file"
         echo "$change"
         ;;
+    light | dark) set_theme "$1" ;;
     *) set_mode "$@" ;;
 esac

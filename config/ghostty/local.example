@@ -7,3 +7,6 @@
 # custom-shader = ~/.local/state/ghostty/termbg.glsl
 # Move the design in all panes, not only in the focused pane. This uses more CPU for each pane.
 # custom-shader-animation = always
+
+# Terminal colors. "tbg light" and "tbg dark" write this file. Ghostty reads it after this file, so its colors win.
+config-file = ?~/.local/state/ghostty/termbg.colors

@@ -84,6 +84,11 @@ float isBackground(vec4 term) {
     return max(1.0 - smoothstep(0.01, 0.06, distance(term.rgb, iBackgroundColor)), 1.0 - term.a);
 }
 
+// True if the terminal background is light, such as after "termbg light". A design can then use darker colors.
+bool lightTheme() {
+    return dot(iBackgroundColor, vec3(0.299, 0.587, 0.114)) > 0.5;
+}
+
 // Put the design art under the terminal pixel. The design shows only on background pixels,
 // so the terminal text stays clear.
 vec4 underText(vec4 term, vec4 art) {

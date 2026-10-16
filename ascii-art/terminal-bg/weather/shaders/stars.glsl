@@ -2,14 +2,18 @@
 //
 // A night sky that turns slowly: stars in clusters that twinkle in their own colors,
 // the Milky Way, and a shooting star from time to time.
+// On a light terminal background, such as after "termbg light", the stars use deep colors at a lower strength,
+// so that they stay behind the text.
 //
 // Enable it with: termbg stars
 // @TEXT: NIGHT SKY
 
-// The strength of the sky over the background. 0 hides it.
+// The strength of the sky over a dark background and over a light background. 0 hides it.
 const float STRENGTH = 0.5;
-// The color of the sky: Catppuccin lavender, #b4befe.
+const float STRENGTH_LIGHT = 0.55;
+// The color of the sky: Catppuccin Mocha lavender, #b4befe, and deep indigo, #3a4482.
 const vec3 INK = vec3(0.706, 0.745, 0.996);
+const vec3 INK_LIGHT = vec3(0.227, 0.267, 0.510);
 // The amount of stars, as a multiple of the default amount.
 const float DENSITY = 1.0;
 // How much the stars twinkle. 0 stops it.
@@ -26,13 +30,20 @@ vec4 brighter(vec4 a, vec4 b) {
     return b.a > a.a ? b : a;
 }
 
+// The color of the sky for the terminal background.
+vec3 ink() {
+    return lightTheme() ? INK_LIGHT : INK;
+}
+
 // The tint of a star. Hot stars are blue, and cool stars are orange, as in the real sky.
-// Most stars use INK. The other tints are Catppuccin blue, rosewater, and peach.
+// Most stars use ink(). The other tints are blue, rose, and orange.
+// They are Catppuccin Mocha colors, or deep colors for a light background.
 vec3 tint(float h) {
-    if (h < 0.55) return INK;
-    if (h < 0.75) return vec3(0.537, 0.706, 0.980);
-    if (h < 0.92) return vec3(0.961, 0.878, 0.863);
-    return vec3(0.980, 0.702, 0.529);
+    bool light = lightTheme();
+    if (h < 0.55) return ink();
+    if (h < 0.75) return light ? vec3(0.122, 0.247, 0.561) : vec3(0.537, 0.706, 0.980);
+    if (h < 0.92) return light ? vec3(0.490, 0.227, 0.204) : vec3(0.961, 0.878, 0.863);
+    return light ? vec3(0.604, 0.290, 0.110) : vec3(0.980, 0.702, 0.529);
 }
 
 // Return the color and the ink of one star field at the sky position p.
@@ -110,11 +121,11 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float cluster = mix(0.3, 1.7, smoothstep(0.3, 0.7, fbm(p * 0.0015 + 7.0, 4))) + 1.2 * band;
 
     // Many small, dim stars, some medium stars, and a few large, bright stars.
-    vec4 sky = vec4(INK, MILKY_WAY * band * dust);
+    vec4 sky = vec4(ink(), MILKY_WAY * band * dust);
     sky = brighter(sky, starField(p, 10.0, 0.25, 0.0, cluster, 0.0));
     sky = brighter(sky, starField(p, 24.0, 0.25, 0.1, cluster, 31.0));
     sky = brighter(sky, starField(p, 56.0, 0.30, 0.3, cluster, 19.0));
-    sky = brighter(sky, vec4(INK, meteor(fragCoord)));
+    sky = brighter(sky, vec4(ink(), meteor(fragCoord)));
 
-    fragColor = paint(term, sky.rgb, STRENGTH * sky.a);
+    fragColor = paint(term, sky.rgb, (lightTheme() ? STRENGTH_LIGHT : STRENGTH) * sky.a);
 }

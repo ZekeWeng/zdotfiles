@@ -9,10 +9,12 @@
 const float TEXT_PIXEL = 3.0;
 // The space from the top-right corner of the window to the text, in screen pixels.
 const vec2 TEXT_MARGIN = vec2(28.0, 20.0);
-// The strength of the text over the background. 0 hides it.
+// The strength of the text over a dark background and over a light background. 0 hides it.
 const float TEXT_STRENGTH = 0.6;
-// The color of the text.
+const float TEXT_STRENGTH_LIGHT = 0.9;
+// The color of the text on a dark background, and on a light background: black, as the terminal text.
 const vec3 TEXT_COLOR = vec3(0.933, 0.941, 0.973);
+const vec3 TEXT_COLOR_LIGHT = vec3(0.0);
 
 // The ASCII codes of the text, as const int TEXT[96]. 10 starts a new line, and 0 ends the text.
 // termbg.sh puts the array in place of the next line.
@@ -120,6 +122,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     textBgImage(fragColor, fragCoord);
     if (!textOn(fragCoord)) return;
     vec4 term = texture(iChannel0, fragCoord / iResolution.xy);
-    float a = TEXT_STRENGTH * isBackground(term);
-    fragColor = vec4(TEXT_COLOR * a, a) + fragColor * (1.0 - a);
+    bool light = lightTheme();
+    float a = (light ? TEXT_STRENGTH_LIGHT : TEXT_STRENGTH) * isBackground(term);
+    vec3 color = light ? TEXT_COLOR_LIGHT : TEXT_COLOR;
+    fragColor = vec4(color * a, a) + fragColor * (1.0 - a);
 }
