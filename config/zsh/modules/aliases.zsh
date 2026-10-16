@@ -113,7 +113,8 @@ with-secret() {
     [ "$#" -ge 2 ] || { echo "usage: with-secret NAME COMMAND [ARGS...]" >&2; return 2; }
     local value
     value="$(secret "$1")" || return
-    env "$1=$value" "${@:2}"
+    # Export the token in a subshell. "env NAME=TOKEN" puts the token in the arguments, which ps shows.
+    (export "$1=$value" && "${@:2}")
 }
 
 # Utilities
