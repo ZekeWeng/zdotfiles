@@ -47,6 +47,12 @@ seed() {
     echo "copy  $2 (manual file: edit it for this computer)"
 }
 
+# Copy the example in $1 to the manual file $2 in the repo, with the mode in $3. Then link the home path in $4 to it.
+manual() {
+    seed "$1" "$2" "$3"
+    link "$2" "$4"
+}
+
 # ssh refuses a config folder that other users can write to.
 mkdir -p "$HOME/.ssh"
 chmod 700 "$HOME/.ssh"
@@ -62,12 +68,6 @@ link "$src/config/tmux/tmux.conf" "$HOME/.config/tmux/tmux.conf"
 link "$src/config/git/config" "$HOME/.config/git/config"
 link "$src/config/git/ignore" "$HOME/.config/git/ignore"
 link "$src/config/nvim" "$HOME/.config/nvim"
-
-# Copy the example in $1 to the manual file $2 in the repo, with the mode in $3. Then link the home path in $4 to it.
-manual() {
-    seed "$1" "$2" "$3"
-    link "$2" "$4"
-}
 
 # Manual files. The files that can hold secrets get mode 600.
 manual "$src/config/zsh/local/zshenv.local.example" "$src/config/zsh/zshenv.local" 600 "$HOME/.zshenv.local"
