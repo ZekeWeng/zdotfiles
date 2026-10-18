@@ -69,6 +69,14 @@ fi
 unset zdot_agent
 
 # SSH
+# "csh zw" opens a cmux SSH workspace. Each split in it is a new shell on the host.
+# cmux keeps the shells on the host after a disconnect, and it attaches to them again.
+# This alias hides the C shell /bin/csh in interactive zsh. "command csh" starts the C shell.
+alias csh="cmux ssh"
+# "tsh zw" shows the tmux sessions of the host as cmux workspaces. Each tmux pane is a cmux split.
+# The programs continue when the laptop turns off. It needs the "Remote tmux" beta setting of cmux.
+alias tsh="cmux ssh-tmux"
+
 # End a cmux SSH workspace: close its sessions on the host, then close the workspace.
 # "sshkill zw" or "sshkill workspace:7" ends the workspaces that match. "sshkill" ends each SSH workspace.
 sshkill() {

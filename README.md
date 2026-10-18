@@ -24,7 +24,7 @@ Set these values in `~/.zshenv.local`:
 | `zdot_brew_kegs` | `(node@22 postgresql@15 rustup)` |
 | `zdot_zsh_modules` | `(history keybinds completions aliases fzf termbg)` |
 | `zdot_history_days` | `120` |
-| `zdot_ssh_tmux` | `1`. An SSH login attaches to the tmux session `main`. Set `0` to stop this. |
+| `zdot_ssh_tmux` | `1`. An SSH login attaches to the tmux session `main`. A `csh` workspace does not. Set `0` to stop this. |
 | `zdot_company` | Not set. Use a folder name from `config/zsh/companies/`. |
 
 To add a company, copy `config/zsh/companies/_template` to `config/zsh/companies/COMPANY`. Replace `COMPANY` with the name.
@@ -36,6 +36,8 @@ To add a company, copy `config/zsh/companies/_template` to `config/zsh/companies
 | `reload` | Starts the shell again with the new config. |
 | `secret-set NAME` | Puts a token in the Keychain. Each read asks for the login password. Click Allow, not Always Allow. |
 | `with-secret NAME CMD` | Runs `CMD` with the token in the variable `NAME`. |
+| `csh HOST` | Opens a cmux SSH workspace. Each split, such as Cmd+D, is a new shell on `HOST`. The shells continue after a disconnect. |
+| `tsh HOST` | Shows the tmux sessions of `HOST` as cmux workspaces. Each split is a tmux pane. Turn on the "Remote tmux" beta setting first. |
 | `sshkill HOST` | Ends the cmux SSH workspaces for `HOST`. Without `HOST`, it ends each one. |
 | `tbg` | Shows the terminal background now and the other backgrounds. |
 | `tbg next` | Shows the next background. |
