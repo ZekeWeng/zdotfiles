@@ -12,7 +12,7 @@ alias tbg=termbg
 
 # Tab completion shows the commands, the modes, and the designs.
 _termbg() {
-    compadd -- ${(f)"$("$zdot_termbg_script" names | tr ' ' '\n')"}
+    compadd -- ${=$("$zdot_termbg_script" names)}
 }
 if (( $+functions[compdef] )); then
     compdef _termbg termbg
