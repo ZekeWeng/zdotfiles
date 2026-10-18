@@ -12,4 +12,4 @@
 # zdot_company=COMPANY
 
 # Secrets
-# Put secrets in ~/.config/zsh/private/secrets.zsh, not here.
+# Do not put tokens here. Put each token in the Keychain with "secret-set NAME".

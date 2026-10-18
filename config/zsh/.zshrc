@@ -3,9 +3,8 @@
 # SSH
 # An SSH login attaches to the tmux session "main". The programs in it continue after the connection stops.
 # Detach, and the login closes. Set zdot_ssh_tmux=0 in ~/.zshenv.local to stop this.
-# cmux sets CMUX_TUI_TERMINAL_ID, or CMUX_REAL_ZDOTDIR in older versions, in each shell of a "cmux ssh"
-# workspace. cmux keeps those shells after a disconnect, and each split needs its own shell,
-# so these shells do not attach to "main".
+# A "cmux ssh" shell does not attach. cmux keeps it after a disconnect, and each split needs its own shell.
+# cmux sets CMUX_TUI_TERMINAL_ID in these shells. Older versions of cmux set CMUX_REAL_ZDOTDIR.
 if [ -n "${SSH_CONNECTION:-}" ] && [ -z "${TMUX:-}" ] &&
     [ -z "${CMUX_TUI_TERMINAL_ID:-}${CMUX_REAL_ZDOTDIR:-}" ] &&
     [ "${zdot_ssh_tmux:-1}" != 0 ] &&
