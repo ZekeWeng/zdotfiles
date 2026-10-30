@@ -28,6 +28,7 @@ Install only one company on each computer. To remove a company, delete `~/.claud
 | Skill | Use |
 |-------|-----|
 | `anatomy` | Draw an idea as an interactive isometric machine. It is a copy of [wheresryan22/anatomy](https://github.com/wheresryan22/anatomy). |
+| `changes` | Show the staged changes, the unstaged changes, a branch diff, PRs, or an overview. It only reads. |
 | `create-formal-verification-skill` | Verify one property of the riskiest code with a formal tool, and write a project skill that checks it again. Only the user can start it. It is a copy of [pstack](https://github.com/cursor/plugins/tree/main/pstack) 0.15.36. |
 | `critique` | Review a diff, a PR, or a plan. `deep` uses more reviewers. `audit` reviews a full codebase. |
 | `fix` | Find the root cause of a bug, and fix it. |
