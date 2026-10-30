@@ -39,12 +39,12 @@ Make a diagram or a chart for the medium:
 3. Put 12 boxes or fewer in one diagram. For more, draw an overview first, then one diagram for each part.
 4. Put a label on each arrow that names the action or the data.
 5. Under the visual, define each symbol. Explain what the reader must notice, in 3 sentences or fewer.
-6. Check the result. For Mermaid, run `mmdc` if it is installed. If not, tell the user that the diagram did not render. For ASCII, make sure that the columns align in a monospace font.
+6. Check the result. For Mermaid, run `node SKILL_DIR/scripts/render.mjs --png FILE.mmd`. Replace `SKILL_DIR` with the folder of this skill, and `FILE.mmd` with an absolute path. It writes an SVG with Pele, and a PNG on macOS. Look at the PNG, and fix overlaps and labels that you cannot read. If the script fails, tell the user that the diagram did not render. For ASCII, make sure that the columns align in a monospace font.
 
 ## Hard stops
 
 - Do not use a diagram when a list or a table gives the same information.
-- Do not put Mermaid or HTML in a terminal response.
+- Do not put Mermaid or HTML in a terminal response, unless the user or another skill asks for it, such as `statechart`, `codemap`, or `flow`.
 
 ## Output
 
