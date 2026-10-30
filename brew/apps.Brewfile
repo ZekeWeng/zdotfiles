@@ -13,6 +13,10 @@ cask "microsoft-office"
 cask "slack"
 cask "zoom"
 
+# AI
+cask "claude"
+cask "chatgpt"
+
 # Chat
 cask "discord"
 cask "wechat"

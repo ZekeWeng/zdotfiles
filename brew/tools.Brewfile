@@ -36,6 +36,5 @@ brew "tree-sitter-cli"
 cask "cursor"
 
 # AI
-cask "claude"
+# The Codex CLI. The README installs the Claude Code CLI with its own script.
 cask "codex"
-cask "chatgpt"
