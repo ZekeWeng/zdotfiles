@@ -90,6 +90,10 @@ while IFS= read -r f; do
         LICENSE | *.json) continue ;;
         # The anatomy skill is a copy of github.com/wheresryan22/anatomy. Keep it the same as upstream.
         agents/skills/anatomy/*) continue ;;
+        # These skills are copies of pstack in github.com/cursor/plugins. Keep them the same as upstream.
+        agents/skills/statechart/*) continue ;;
+        agents/skills/create-formal-verification-skill/*) continue ;;
+        agents/skills/maintain-formal-verification-skill/*) continue ;;
     esac
     # The rules of .editorconfig: no trailing spaces, a final newline, LF line ends.
     if grep -nE '[[:space:]]+$' "$f" >/dev/null; then echo "$f: trailing spaces" >>"$format_errors"; fi
@@ -273,7 +277,8 @@ else
     skip "nvim start (the plugins are not installed)"
 fi
 
-# The Agent Skills validator. The forge skill has disable-model-invocation, so only that error is permitted.
+# The Agent Skills validator. The forge skill and the pstack copies have disable-model-invocation.
+# Thus, only that error is permitted.
 if has uvx; then
     # The commit is pinned, so a new commit upstream cannot run on this computer. To update, change the SHA.
     validator_sha="69ef37e9424c0a7ea9dd2293b559e43ec8176379"

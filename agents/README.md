@@ -28,13 +28,16 @@ Install only one company on each computer. To remove a company, delete `~/.claud
 | Skill | Use |
 |-------|-----|
 | `anatomy` | Draw an idea as an interactive isometric machine. It is a copy of [wheresryan22/anatomy](https://github.com/wheresryan22/anatomy). |
+| `create-formal-verification-skill` | Verify one property of the riskiest code with a formal tool, and write a project skill that checks it again. Only the user can start it. It is a copy of [pstack](https://github.com/cursor/plugins/tree/main/pstack) 0.15.36. |
 | `critique` | Review a diff, a PR, or a plan. `deep` uses more reviewers. `audit` reviews a full codebase. |
 | `fix` | Find the root cause of a bug, and fix it. |
 | `forge` | Build a project from a spec, from the issues to the merged PRs. Only the user can start it. |
 | `learn` | Make a lesson from a session into a rule. |
+| `maintain-formal-verification-skill` | Update a formal check after the code changes, and tell drift from bugs. Only the user can start it. It is a copy of [pstack](https://github.com/cursor/plugins/tree/main/pstack) 0.15.36. |
 | `refactor` | Change the structure of code, but not its behavior. |
 | `research` | Answer a question from the web and the codebase. |
 | `ship` | Commit the staged changes. Open a draft PR after the user pushes. |
+| `statechart` | Check a TLA+ model of a state machine with TLC, and draw it as a Mermaid statechart. Only the user can start it. It is a copy of [pstack](https://github.com/cursor/plugins/tree/main/pstack) 0.15.36. |
 | `text-visualize` | Show information as a list, a table, a diagram, or a chart. |
 | `tutor` | Teach a subject with questions. |
 
@@ -65,8 +68,9 @@ description: <what it does, when to use it, and what to use in its place>
 - The name must use only lowercase letters, numbers, and single hyphens. Do not use a reserved name, such as `review` or `synced`.
 - Keep the description to 1,024 characters or fewer. Keep the body to approximately 40 lines.
 - End each skill with `## Output`. Add the other sections, such as `## Steps` or `## Hard stops`, only when the skill needs them.
-- Use only the frontmatter fields of the [Agent Skills](https://agentskills.io) format. The only exception is `disable-model-invocation: true` for a skill that pushes or merges.
+- Use only the frontmatter fields of the [Agent Skills](https://agentskills.io) format. The only exception is `disable-model-invocation: true` for a skill that pushes or merges, or for a copy of an upstream skill that has it.
 - Write plain steps that each harness can read. Do not use `$ARGUMENTS`, `` !`cmd` ``, `allowed-tools`, or tool names.
 - Add an approval step before each write to an outside service, such as Slack, Linear, or Notion.
 - Do not repeat a rule from `AGENTS.md` in a skill.
+- A copy of an upstream skill, such as `anatomy` or a pstack skill, keeps its upstream form. These rules do not apply to it.
 - Run `./scripts/check.sh` to validate the skills.
