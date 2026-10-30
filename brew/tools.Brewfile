@@ -14,6 +14,8 @@ brew "sevenzip"
 
 # System
 brew "htop"
+# The statechart skill uses mise to install TLC and Java.
+brew "mise"
 
 # Lint and format
 brew "shellcheck"
