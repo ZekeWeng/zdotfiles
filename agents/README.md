@@ -29,9 +29,11 @@ Install only one company on each computer. To remove a company, delete `~/.claud
 |-------|-----|
 | `anatomy` | Draw an idea as an interactive isometric machine. It is a copy of [wheresryan22/anatomy](https://github.com/wheresryan22/anatomy). |
 | `changes` | Show the staged changes, the unstaged changes, a branch diff, PRs, or an overview. It only reads. |
+| `codemap` | Map a repo: its parts, its dependencies, its data model, and a reading tour. `save` keeps it in `docs/map/`. |
 | `create-formal-verification-skill` | Verify one property of the riskiest code with a formal tool, and write a project skill that checks it again. Only the user can start it. It is a copy of [pstack](https://github.com/cursor/plugins/tree/main/pstack) 0.15.36. |
 | `critique` | Review a diff, a PR, or a plan. `deep` uses more reviewers. `audit` reviews a full codebase. |
 | `fix` | Find the root cause of a bug, and fix it. |
+| `flow` | Draw how one request or command moves through the code. `save` keeps it in `docs/map/flows/`. |
 | `forge` | Build a project from a spec, from the issues to the merged PRs. Only the user can start it. |
 | `learn` | Make a lesson from a session into a rule. |
 | `maintain-formal-verification-skill` | Update a formal check after the code changes, and tell drift from bugs. Only the user can start it. It is a copy of [pstack](https://github.com/cursor/plugins/tree/main/pstack) 0.15.36. |
