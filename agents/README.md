@@ -59,7 +59,11 @@ Each skill folder is in a section folder, such as `skills/dev/fix`. Company skil
 
 ### Progress
 
-The shared layer has no progress skills. The company template has `linear`.
+| Skill | Use |
+|-------|-----|
+| `journal` | Write the daily journal in `~/Repos/Journal`: the tasks, the day summary, and a standup. |
+
+The company template has `linear`.
 
 ### Projects
 
