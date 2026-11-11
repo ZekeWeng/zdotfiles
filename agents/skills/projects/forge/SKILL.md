@@ -26,8 +26,8 @@ Build the project in the argument from the spec to the merged code, with one app
 3. Write a plan. Change only the module in the issue.
 4. Run the build commands of the repo, or `make all`. Fix each failure. Run the commands again until they pass.
 5. Commit the changes. Run `git push -u origin BRANCH`. Run `gh pr create --draft --head BRANCH --title TITLE --body BODY`. Replace `BRANCH` with the branch name. Replace `TITLE` with the commit subject. Replace `BODY` with a summary that has `Closes #ISSUE_NUMBER`.
-6. Read `../critique/SKILL.md`. Do its steps on the PR. Fix the blocking findings. Commit the fixes. Push the branch.
-7. Run `gh pr checks --watch`. If CI fails, read `../fix/SKILL.md`. Do fix steps 2 to 8 on the PR branch. Push the fix. Do not open a new PR. If fix step 2 cannot reproduce the failure, obey the hard stops below.
+6. Load the critique skill. Do its steps on the PR. Fix the blocking findings. Commit the fixes. Push the branch.
+7. Run `gh pr checks --watch`. If CI fails, load the fix skill. Do its steps 2 to 8 on the PR branch. Push the fix. Do not open a new PR. If fix step 2 cannot reproduce the failure, obey the hard stops below.
 8. Run `git fetch origin`. If the branch is behind, merge `origin/DEFAULT_BRANCH` into it. Run the build commands again. Push the branch. Run `gh pr checks --watch`. Run `gh pr ready`. Run `gh pr merge --squash --delete-branch`.
 
 Give the issues that can run at the same time to subagents, if the harness has subagents. Give each subagent a different worktree. Merge one PR at a time.

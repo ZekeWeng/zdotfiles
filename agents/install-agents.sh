@@ -55,17 +55,41 @@ link() {
     echo "link  $2 -> $1"
 }
 
+# A skill folder has a SKILL.md file. It is in $1, or in a section folder of $1, such as $1/dev.
+is_skill_dir() {
+    [ -f "${1%/}/SKILL.md" ]
+}
+
+# Print the path of the shared skill with the name in $1. Print nothing if there is no such skill.
+shared_skill() {
+    for skill_dir in "$src/skills/$1/" "$src/skills"/*/"$1"/; do
+        if is_skill_dir "$skill_dir"; then
+            echo "${skill_dir%/}"
+            return
+        fi
+    done
+}
+
 # Make a link for each skill folder in $1, so that the other skills in the harness folders stay.
 # Cursor also reads ~/.claude/skills. Thus, the script links there only when Claude Code is installed.
 link_skills() {
-    for skill_dir in "$1"/*/; do
-        [ -d "$skill_dir" ] || continue
+    for skill_dir in "$1"/*/ "$1"/*/*/; do
+        is_skill_dir "$skill_dir" || continue
         skill_dir="${skill_dir%/}"
         link "$skill_dir" "$HOME/.agents/skills/$(basename "$skill_dir")" # Codex, Cursor, and Pi
         if [ "$claude_installed" = yes ]; then
             link "$skill_dir" "$HOME/.claude/skills/$(basename "$skill_dir")" # Claude Code
         fi
     done
+}
+
+# Return 0 if $1 is a link into this folder to a skill that does not exist now. prune_skills deletes it.
+is_stale_link() {
+    [ -L "$1" ] && [ ! -e "$1" ] || return 1
+    case "$(readlink "$1")" in
+        "$src/"*) return 0 ;;
+        *) return 1 ;;
+    esac
 }
 
 # Delete each skill link that points into this folder to a skill that does not exist now.
@@ -141,13 +165,19 @@ write_override() {
     echo "write $2"
 }
 
-# Stop before any write if a skill folder name in $1 breaks the Agent Skills name rule.
+# Stop before any write if a skill folder name in $1 breaks the Agent Skills name rule,
+# or if 2 sections in $1 have a skill with the same name.
 check_skill_names() {
-    for skill_dir in "$1"/*/; do
-        [ -d "$skill_dir" ] || continue
+    seen_names=" "
+    for skill_dir in "$1"/*/ "$1"/*/*/; do
+        is_skill_dir "$skill_dir" || continue
         skill_name="$(basename "$skill_dir")"
         printf '%s\n' "$skill_name" | grep -Eqx '[a-z0-9]+(-[a-z0-9]+)*' ||
             fail "skill folder $skill_name is not a correct skill name."
+        case "$seen_names" in
+            *" $skill_name "*) fail "2 skill folders in $1 have the name $skill_name." ;;
+        esac
+        seen_names="$seen_names$skill_name "
     done
 }
 
@@ -189,14 +219,15 @@ check_company() {
     if [ -n "$current" ] && [ "$current" != "$1" ]; then
         fail "company $current is installed. Delete its links and copies first. agents/README.md lists them."
     fi
-    for skill_dir in "$company_dir"/skills/*/; do
-        [ -d "$skill_dir" ] || continue
+    for skill_dir in "$company_dir"/skills/*/ "$company_dir"/skills/*/*/; do
+        is_skill_dir "$skill_dir" || continue
         skill_dir="${skill_dir%/}"
         skill_name="$(basename "$skill_dir")"
-        if [ -e "$src/skills/$skill_name" ]; then
+        if [ -n "$(shared_skill "$skill_name")" ]; then
             fail "company skill $skill_name has the same name as a shared skill."
         fi
         for skill_link in "$HOME/.agents/skills/$skill_name" "$HOME/.claude/skills/$skill_name"; do
+            is_stale_link "$skill_link" && continue
             if { [ -e "$skill_link" ] || [ -L "$skill_link" ]; } &&
                 [ "$(readlink "$skill_link")" != "$skill_dir" ]; then
                 fail "$skill_link exists and is not this company skill. Move it. Run the script again."

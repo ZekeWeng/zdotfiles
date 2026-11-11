@@ -25,24 +25,47 @@ Install only one company on each computer. To remove a company, delete `~/.claud
 
 ## Skills
 
+Each skill folder is in a section folder, such as `skills/dev/fix`. Company skills use the same sections, such as `companies/COMPANY/skills/progress/linear`. A skill name must be unique across all sections and the company skills, because each harness reads one flat folder of skills.
+
+### Dev
+
 | Skill | Use |
 |-------|-----|
-| `anatomy` | Draw an idea as an interactive isometric machine. It is a copy of [wheresryan22/anatomy](https://github.com/wheresryan22/anatomy). |
 | `changes` | Show the staged changes, the unstaged changes, a branch diff, PRs, or an overview. It only reads. |
-| `codemap` | Map a repo: its parts, its dependencies, its data model, and a reading tour. `save` keeps it in `docs/map/`. |
 | `create-formal-verification-skill` | Verify one property of the riskiest code with a formal tool, and write a project skill that checks it again. Only the user can start it. It is a copy of [pstack](https://github.com/cursor/plugins/tree/main/pstack) 0.15.36. |
 | `critique` | Review a diff, a PR, or a plan. `deep` uses more reviewers. `audit` reviews a full codebase. |
 | `fix` | Find the root cause of a bug, and fix it. |
-| `flow` | Draw how one request or command moves through the code. `save` keeps it in `docs/map/flows/`. |
-| `forge` | Build a project from a spec, from the issues to the merged PRs. Only the user can start it. |
-| `learn` | Make a lesson from a session into a rule. |
 | `maintain-formal-verification-skill` | Update a formal check after the code changes, and tell drift from bugs. Only the user can start it. It is a copy of [pstack](https://github.com/cursor/plugins/tree/main/pstack) 0.15.36. |
 | `refactor` | Change the structure of code, but not its behavior. |
-| `research` | Answer a question from the web and the codebase. |
 | `ship` | Commit the staged changes. Open a draft PR after the user pushes. |
+
+### Writing
+
+| Skill | Use |
+|-------|-----|
+| `learn` | Make a lesson from a session into a rule. |
+| `research` | Answer a question from the web and the codebase. |
+| `tutor` | Teach a subject with questions. |
+
+### Visualizations
+
+| Skill | Use |
+|-------|-----|
+| `anatomy` | Draw an idea as an interactive isometric machine. It is a copy of [wheresryan22/anatomy](https://github.com/wheresryan22/anatomy). |
+| `codemap` | Map a repo: its parts, its dependencies, its data model, and a reading tour. `save` keeps it in `docs/map/`. |
+| `flow` | Draw how one request or command moves through the code. `save` keeps it in `docs/map/flows/`. |
 | `statechart` | Check a TLA+ model of a state machine with TLC, and draw it as a Mermaid statechart. Only the user can start it. It is a copy of [pstack](https://github.com/cursor/plugins/tree/main/pstack) 0.15.36. |
 | `text-visualize` | Show information as a list, a table, a diagram, or a chart. In the Cursor IDE, use the built-in `visualize` skill. |
-| `tutor` | Teach a subject with questions. |
+
+### Progress
+
+The shared layer has no progress skills. The company template has `linear`.
+
+### Projects
+
+| Skill | Use |
+|-------|-----|
+| `forge` | Build a project from a spec, from the issues to the merged PRs. Only the user can start it. |
 
 In Codex, a skill that has `agents/openai.yaml` starts only when the user asks for it.
 

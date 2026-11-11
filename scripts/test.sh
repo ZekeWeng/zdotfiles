@@ -162,7 +162,7 @@ cp "$real_claude/claude" "$shim_claude/claude"
 chmod +x "$real_claude/claude" "$shim_claude/claude"
 agents_home="$tmp_dir/agents-home"
 install_agents "$agents_home" "$real_claude:/usr/bin:/bin" >/dev/null
-skill_count="$(count_entries "$copy/agents/skills")"
+skill_count="$(find "$copy/agents/skills" -mindepth 2 -maxdepth 3 -name SKILL.md | wc -l | tr -d ' ')"
 expect "install-agents: a real claude gets the skills" "$(count_entries "$agents_home/.claude/skills")" "$skill_count"
 install_agents "$agents_home" "$shim_claude:/usr/bin:/bin" >/dev/null
 expect "install-agents: only the cmux wrapper removes the skills" "$(count_entries "$agents_home/.claude/skills")" 0
@@ -180,7 +180,24 @@ agents_home="$tmp_dir/company-home"
 install_agents "$agents_home" "$real_claude:/usr/bin:/bin" acme >/dev/null
 changes="$(install_agents "$agents_home" "$real_claude:/usr/bin:/bin" | grep -E '^(link|move|copy|skip|write|prune) ')"
 expect "install-agents: the second run with a company changes nothing" "$changes" ""
+mv "$copy/agents/companies/acme/skills/progress/linear" "$copy/agents/companies/acme/skills/writing/linear"
+moved_status=0
+install_agents "$agents_home" "$real_claude:/usr/bin:/bin" >/dev/null 2>&1 || moved_status=$?
+expect "install-agents: a company skill that moved to a new section installs" "$moved_status" 0
+moved_link="$(readlink "$agents_home/.agents/skills/linear")"
+expect "install-agents: the link follows the moved company skill" "${moved_link##*/companies/}" \
+    "acme/skills/writing/linear"
 rm -rf "$copy/agents/companies/acme"
+
+# install-agents: a skill name in 2 sections stops the install before any write.
+mkdir -p "$copy/agents/skills/writing/fix"
+cp "$copy/agents/skills/dev/fix/SKILL.md" "$copy/agents/skills/writing/fix/SKILL.md"
+duplicate_status=0
+install_agents "$tmp_dir/duplicate-home" "/usr/bin:/bin" >/dev/null 2>&1 || duplicate_status=$?
+expect "install-agents: a skill name in 2 sections stops the install" "$duplicate_status" 1
+duplicate_links="$(find "$tmp_dir/duplicate-home" -type l 2>/dev/null | wc -l | tr -d ' ')"
+expect "install-agents: the stopped install makes no skill links" "$duplicate_links" 0
+rm -rf "$copy/agents/skills/writing/fix"
 
 # install-dotfiles: an old secret file in the repo moves to ~/.config/zsh/private/.
 dotfiles_home="$tmp_dir/dotfiles-home"
