@@ -1,6 +1,6 @@
 # Agents
 
-This folder holds the skills and the company rules for Codex, Claude Code, Cursor, and Pi. The root `AGENTS.md` holds the shared rules.
+This folder holds the skills and the company rules for Codex, Claude Code, Cursor, Pi, and North Code. The root `AGENTS.md` holds the shared rules.
 
 ## Install
 
@@ -12,8 +12,9 @@ From the repo root, run `./agents/install-agents.sh`. To add a company layer, ad
 | Claude Code | `~/.claude/CLAUDE.md` | `~/.claude/skills` |
 | Cursor | Paste `AGENTS.md` into **Customize → Rules** | `~/.agents/skills` |
 | Pi | `~/.pi/agent/AGENTS.md` | `~/.agents/skills` |
+| North Code | `~/.north-code/userdata/north-opencode/engine/AGENTS.md` | `~/.agents/skills` |
 
-After you edit `AGENTS.md` or a company `RULES.md`, run the script again. Codex and Pi use a copy of the company rules, and the copy does not change by itself.
+After you edit `AGENTS.md` or a company `RULES.md`, run the script again. Codex, Pi, and North Code use a copy of the rules, and the copy does not change by itself. North Code reads one rules file, so its copy has `AGENTS.md` and the company `RULES.md`. The script writes it only when the North Code engine folder exists.
 
 ## Company layer
 
@@ -21,7 +22,7 @@ After you edit `AGENTS.md` or a company `RULES.md`, run the script again. Codex 
 2. Replace each `<...>` value in `RULES.md` and in the skills.
 3. Run `./agents/install-agents.sh COMPANY`.
 
-Install only one company on each computer. To remove a company, delete `~/.claude/rules/company.md`, the `AGENTS.override.md` files in `~/.codex` and `~/.pi/agent`, and the links to the company skills.
+Install only one company on each computer. To remove a company, delete `~/.claude/rules/company.md`, the `AGENTS.override.md` files in `~/.codex` and `~/.pi/agent`, and the links to the company skills. Then run the script again, so that the North Code copy has only `AGENTS.md`.
 
 ## Skills
 
