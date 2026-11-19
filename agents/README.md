@@ -33,6 +33,7 @@ Each skill folder is in a section folder, such as `skills/dev/fix`. Company skil
 | Skill | Use |
 |-------|-----|
 | `changes` | Show the staged changes, the unstaged changes, a branch diff, PRs, or an overview. It only reads. |
+| `cleanup` | Remove the local branch and the worktree of a merged PR, and keep a backup ref. |
 | `create-formal-verification-skill` | Verify one property of the riskiest code with a formal tool, and write a project skill that checks it again. Only the user can start it. It is a copy of [pstack](https://github.com/cursor/plugins/tree/main/pstack) 0.15.36. |
 | `critique` | Review a diff, a PR, or a plan. `deep` uses more reviewers. `audit` reviews a full codebase. |
 | `fix` | Find the root cause of a bug, and fix it. |
