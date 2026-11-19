@@ -48,6 +48,12 @@ echo "zdot_test_completion=yes"
 EOF
 chmod +x "$stubs"/*
 stub_path="$stubs:/usr/bin:/bin:/usr/sbin:/sbin:$(dirname "$(command -v jq)")"
+# zsh can be outside /usr/bin and /bin, such as in the Homebrew folder on Linux. A test with "env -i" has no PATH,
+# so each test starts zsh by its full path.
+zsh_bin="$(command -v zsh)" || {
+    echo "FAIL  zsh is not installed"
+    exit 1
+}
 
 # Make a copy of the repo with only the files that git can see, like a new clone.
 copy="$tmp_dir/copy"
@@ -131,7 +137,7 @@ expect "termbg: runs through a symlink" "$link_out" "mode: sovereign"
 # termbg: a new computer has no state files, and the zsh hook must print nothing.
 state="$tmp_dir/termbg-new"
 expect "termbg: list prints no error with no state" "$(termbg "$state" list 2>&1 >/dev/null)" ""
-hook_err="$(env XDG_STATE_HOME="$state" PATH="$stub_path" zsh -fc \
+hook_err="$(env XDG_STATE_HOME="$state" PATH="$stub_path" "$zsh_bin" -fc \
     ". $copy/config/zsh/modules/termbg.zsh; _zdot_termbg_precmd" 2>&1)"
 expect "termbg: the zsh hook prints no error with no state" "$hook_err" ""
 
@@ -220,7 +226,7 @@ cat >"$tmp_dir/workspaces.json" <<'EOF'
     {"ref": "workspace:2", "remote": {"destination": "zw"}},
     {"ref": "workspace:3", "remote": {"destination": "vm"}}]}
 EOF
-kill_out="$(env PATH="$stub_path" zsh -fc ". $src/config/zsh/modules/aliases.zsh
+kill_out="$(env PATH="$stub_path" "$zsh_bin" -fc ". $src/config/zsh/modules/aliases.zsh
     cmux() { case \$* in 'workspace list --json') cat $tmp_dir/workspaces.json ;; *) echo \"\$2 \$3\" ;; esac }
     sshkill zw; sshkill workspace:3; sshkill; sshkill nohost || echo none" 2>/dev/null | tr '\n' ';')"
 expect "sshkill: the workspaces of 4 forms" "$kill_out" \
@@ -229,7 +235,7 @@ expect "sshkill: the workspaces of 4 forms" "$kill_out" \
 
 # secret: each function gives security the zdot service. with-secret gives the token to one command only.
 # The security stub prints to stderr, because the functions send the output of security to /dev/null.
-secret_out="$(env PATH="$stub_path" zsh -fc ". $src/config/zsh/modules/aliases.zsh
+secret_out="$(env PATH="$stub_path" "$zsh_bin" -fc ". $src/config/zsh/modules/aliases.zsh
     security() { case \$1 in find-generic-password) echo tok ;; *) echo \"\$*\" >&2 ;; esac }
     secret-set A; secret-rm A; with-secret A sh -c 'echo \$A'; echo \"[\${A:-}]\"
     secret 2>/dev/null || echo \$?" 2>&1 | tr '\n' ';')"
@@ -240,7 +246,7 @@ delete-generic-password -s zdot -a A;tok;[];2;"
 # completions: the second shell reads the cache and does not run the tool.
 cache="$tmp_dir/cache"
 for _ in 1 2; do
-    completion="$(env -i HOME="$tmp_dir" XDG_CACHE_HOME="$cache" PATH="$stub_path" zsh -fc \
+    completion="$(env -i HOME="$tmp_dir" XDG_CACHE_HOME="$cache" PATH="$stub_path" "$zsh_bin" -fc \
         "autoload -Uz compinit && compinit -D; . $src/config/zsh/modules/completions.zsh
         echo \$zdot_test_completion" 2>/dev/null)"
 done
@@ -248,7 +254,7 @@ expect "completions: the cached completion loads" "$completion" yes
 expect "completions: the tool runs 1 time for 2 shells" "$(count_lines "$tmp_dir/kubectl-runs")" 1
 
 # paths.zsh: the helpers add a folder only if it exists.
-path_out="$(env -i HOME="$tmp_dir" zsh -fc ". $src/config/zsh/paths/paths.zsh
+path_out="$(env -i HOME="$tmp_dir" "$zsh_bin" -fc ". $src/config/zsh/paths/paths.zsh
     zdot_path_prepend $tmp_dir; zdot_path_append $tmp_dir/missing; echo \$path[1] \${path[(I)$tmp_dir/missing]}")"
 expect "paths.zsh: zdot_path_prepend adds a folder, and zdot_path_append skips a missing folder" "$path_out" \
     "$tmp_dir 0"
@@ -259,14 +265,21 @@ mkdir -p "$secrets_home/.config/zsh/private"
 echo 'export ZDOT_TEST_SECRET=yes' >"$secrets_home/.config/zsh/private/secrets.zsh"
 # shellcheck disable=SC2016
 expect ".zshenv: loads ~/.config/zsh/private/secrets.zsh" \
-    "$(env -i HOME="$secrets_home" ZDOTDIR="$src/config/zsh" zsh -c 'echo $ZDOT_TEST_SECRET')" yes
+    "$(env -i HOME="$secrets_home" ZDOTDIR="$src/config/zsh" "$zsh_bin" -c 'echo $ZDOT_TEST_SECRET')" yes
 
 # git: the pager works when delta is not installed.
 repo="$tmp_dir/repo"
 git init -q "$repo"
 git -C "$repo" -c user.name=test -c user.email=test@example.com commit -q --allow-empty -m first
+# script gives git a terminal, so git starts the pager. The macOS script takes the command as arguments.
+# The util-linux script of Linux takes the command as one string after -c.
+if script -V 2>/dev/null | grep -q util-linux; then
+    set -- script -qec "git -C '$repo' log -1 --format=%s" /dev/null
+else
+    set -- script -q /dev/null git -C "$repo" log -1 --format=%s
+fi
 pager_out="$(env -i HOME="$tmp_dir" PATH=/usr/bin:/bin TERM=xterm GIT_CONFIG_GLOBAL="$src/config/git/config" \
-    script -q /dev/null git -C "$repo" log -1 --format=%s </dev/null 2>&1)"
+    "$@" </dev/null 2>&1)"
 case "$pager_out" in
     *first*) pass "git: the pager falls back to less with no delta" ;;
     *) fail "git: the pager falls back to less with no delta: $pager_out" ;;
