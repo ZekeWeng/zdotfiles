@@ -101,19 +101,28 @@ sshkill() {
 # Each token is an item in the login Keychain, with the service "zdot". No shell exports it.
 # The item has no trusted apps and no partition, so each read asks for the login password.
 # In the dialog, click Allow. "Always Allow" removes this protection.
+# Linux has no Keychain. There, put each token in ~/.config/zsh/private/secrets.zsh (mode 600).
+zdot_keychain_check() {
+    command -v security >/dev/null 2>&1 && return 0
+    echo "$1: this computer has no macOS Keychain. Put the token in ~/.config/zsh/private/secrets.zsh." >&2
+    return 1
+}
 # "secret-set NAME" asks for the token, then for the login password.
 secret-set() {
     [ "$#" -eq 1 ] || { echo "usage: secret-set NAME" >&2; return 2; }
+    zdot_keychain_check secret-set || return
     security add-generic-password -U -s zdot -a "$1" -T "" -w &&
         security set-generic-password-partition-list -S "" -s zdot -a "$1" >/dev/null
 }
 # "secret NAME" prints the token.
 secret() {
     [ "$#" -eq 1 ] || { echo "usage: secret NAME" >&2; return 2; }
+    zdot_keychain_check secret || return
     security find-generic-password -s zdot -a "$1" -w
 }
 secret-rm() {
     [ "$#" -eq 1 ] || { echo "usage: secret-rm NAME" >&2; return 2; }
+    zdot_keychain_check secret-rm || return
     security delete-generic-password -s zdot -a "$1" >/dev/null
 }
 # "with-secret GITHUB_TOKEN gh pr list" gives the token to one command as the variable GITHUB_TOKEN.
