@@ -41,6 +41,10 @@ Use this test. A person who reads English as a second language must understand t
 - Do not change a correct answer only because the user says a claim again.
 - Use a simpler method when it gets the same result.
 
+## Code style
+
+- Use methods for command-argument builders. This keeps the interface consistent across related classes.
+
 ## How to work
 
 Caution is more important than speed. For a small task, use your judgment.
