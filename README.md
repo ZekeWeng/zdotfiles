@@ -13,6 +13,27 @@ From the repo root, run these commands:
 
 If a script prints `skip`, move that path. Then run the script again.
 
+### Linux
+
+The dotfiles also work on Linux, such as a dev VM. These items are different from macOS:
+
+- **Homebrew:** install [Homebrew on Linux](https://docs.brew.sh/Homebrew-on-Linux) first. `install-brew.sh` skips each cask, because casks are macOS apps. Install zsh with `brew install zsh` before `install-dotfiles.sh`.
+- **Login shell:** change the login shell to zsh with `chsh -s "$(command -v zsh)"`. An OS Login account on a Google Cloud VM cannot use `chsh`. For that account, put this block at the top of `~/.bashrc`, after the check for an interactive shell:
+
+  ```sh
+  # Start zsh in a terminal. Do not start it for "bash -c CMD", because editors use that form to read the environment.
+  # Run "ZDOT_BASH=1 bash" to get bash.
+  if [ -z "${ZDOT_BASH:-}" ] && [ -z "${BASH_EXECUTION_STRING:-}" ] && [ -t 0 ] && [ -t 1 ] &&
+      [ -x /home/linuxbrew/.linuxbrew/bin/zsh ]; then
+      export SHELL=/home/linuxbrew/.linuxbrew/bin/zsh
+      exec "$SHELL" -l
+  fi
+  ```
+
+- **Secrets:** Linux has no Keychain, so `secret-set` and `with-secret` stop with a message. Put each token in `~/.config/zsh/private/secrets.zsh`, or in `~/.config/zsh/private/COMPANY.secrets.zsh`. Give each file mode 600.
+- **Locale:** `.zshenv` sets `LANG` to `en_US.UTF-8` if the computer has that locale. If not, it sets `C.UTF-8`.
+- **Ghostty:** the Ghostty config and the `termbg` module are only for the computer that runs Ghostty. Remove `termbg` from `zdot_zsh_modules` on a remote computer.
+
 ## Local changes
 
 Git ignores the `.local` files and the `local` files in `config/`. Put the hosts, the keys, and the changes for one computer in these files. Put each token in the Keychain with `secret-set NAME`. Do not put tokens in a file.
@@ -24,7 +45,7 @@ Set these values in `~/.zshenv.local`:
 | `zdot_brew_kegs` | `(node@22 postgresql@15 rustup)` |
 | `zdot_zsh_modules` | `(history keybinds completions aliases fzf termbg)` |
 | `zdot_history_days` | `120` |
-| `zdot_ssh_tmux` | `1`. An SSH login attaches to the tmux session `main`. A `csh` workspace does not. Set `0` to stop this. |
+| `zdot_ssh_tmux` | `1`. An SSH login attaches to the tmux session `main`. A `csh` workspace and a Cursor, VS Code, or North Code terminal do not. Set `0` to stop this. |
 | `zdot_company` | Not set. Use a folder name from `config/zsh/companies/`. |
 
 To add a company, copy `config/zsh/companies/_template` to `config/zsh/companies/COMPANY`. Replace `COMPANY` with the name.
