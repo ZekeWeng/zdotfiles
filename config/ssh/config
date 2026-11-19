@@ -1,6 +1,10 @@
 # SSH config for each computer. ~/.ssh/config links to this file.
 # ssh_config has no comments at the end of a line. Put each comment on its own line.
 
+# UseKeychain is only in the macOS ssh. Without this line, ssh on Linux refuses the file.
+# It must be before the first UseKeychain, also the ones in config.local.
+IgnoreUnknown UseKeychain
+
 # Local overrides
 # ssh uses the first value that it finds for each option. This Include is first, so its values win.
 Include ~/.ssh/config.local
