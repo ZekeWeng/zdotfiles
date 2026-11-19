@@ -5,8 +5,11 @@
 # Detach, and the login closes. Set zdot_ssh_tmux=0 in ~/.zshenv.local to stop this.
 # A "cmux ssh" shell does not attach. cmux keeps it after a disconnect, and each split needs its own shell.
 # cmux sets CMUX_TUI_TERMINAL_ID in these shells. Older versions of cmux set CMUX_REAL_ZDOTDIR.
+# A Cursor, VS Code, or North Code terminal does not attach. Their servers start over SSH, so their terminals
+# also have SSH_CONNECTION. If they attach, each terminal tab shows the same tmux session.
 if [ -n "${SSH_CONNECTION:-}" ] && [ -z "${TMUX:-}" ] &&
     [ -z "${CMUX_TUI_TERMINAL_ID:-}${CMUX_REAL_ZDOTDIR:-}" ] &&
+    [ -z "${VSCODE_IPC_HOOK_CLI:-}${OPENCODE:-}" ] && [ "${TERM_PROGRAM:-}" != vscode ] &&
     [ "${zdot_ssh_tmux:-1}" != 0 ] &&
     [ -t 0 ] && [ -t 1 ] && command -v tmux >/dev/null 2>&1; then
     tmux new-session -A -s main && exit
