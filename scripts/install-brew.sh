@@ -5,6 +5,7 @@
 # The script asks y/n for each cask that is not installed.
 # It installs the formulas and the installed casks with no question.
 # If the input is not a terminal, the script installs all casks with no question.
+# On Linux, the script skips each cask, because casks are only for macOS.
 # The script does not uninstall or upgrade packages. Run "brew upgrade" to upgrade them.
 set -eu
 : "${HOME:?HOME must be set and must not be empty}"
@@ -35,12 +36,18 @@ if ! command -v brew >/dev/null 2>&1; then
     exit 1
 fi
 
+# Casks are macOS apps. Homebrew on Linux cannot install them.
+case "$(uname -s)" in
+    Darwin) casks_ok=true ;;
+    *) casks_ok=false ;;
+esac
+
 installed_casks="$(brew list --cask -1 2>/dev/null || true)"
 tmp_dir="${TMPDIR:-/tmp}/zdot-brew.$$"
 (umask 077 && mkdir "$tmp_dir")
 trap 'rm -rf "$tmp_dir"' EXIT
 
-if [ ! -t 0 ]; then
+if [ ! -t 0 ] && [ "$casks_ok" = true ]; then
     echo "note  The input is not a terminal. The script installs all casks with no question."
 fi
 
@@ -58,10 +65,15 @@ ask_cask() {
 }
 
 # Copy the Brewfile in $1 to $2. Remove each cask that is not installed and that you decline.
+# On Linux, remove each cask.
 select_casks() {
     : >"$2"
     while IFS= read -r line <&3 || [ -n "$line" ]; do
         name="$(printf '%s\n' "$line" | sed -n 's/^[[:space:]]*cask[[:space:]][[:space:]]*"\([^"]*\)".*/\1/p')"
+        if [ "$casks_ok" = false ] && [ -n "$name" ]; then
+            echo "skip  $name (a cask, and casks are only for macOS)"
+            continue
+        fi
         if [ -t 0 ] && [ -n "$name" ]; then
             # brew list shows the short name of a cask from a tap, so remove the tap prefix.
             name="${name##*/}"
