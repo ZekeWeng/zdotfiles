@@ -14,7 +14,13 @@ export EDITOR="nvim"
 export VISUAL="nvim"
 
 # Locale
-export LANG="en_US.UTF-8"
+# macOS has en_US.UTF-8. A Linux computer can have only C.UTF-8. A locale that is not installed
+# makes each program print "Cannot set LC_CTYPE to default locale".
+if [[ "$OSTYPE" == darwin* ]] || locale -a 2>/dev/null | grep -qix 'en_US\.utf-\{0,1\}8'; then
+    export LANG="en_US.UTF-8"
+else
+    export LANG="C.UTF-8"
+fi
 
 # Local overrides
 # This file is first, because it sets zdot_company for the secrets below.
