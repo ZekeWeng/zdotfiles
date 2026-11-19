@@ -16,7 +16,7 @@ The argument is an issue number or a description of the bug. Find the root cause
 5. **Write the cause** in one sentence before you edit a file.
 6. **Show** the cause with a test that fails. If the repo has no tests, use a reproduction script. Ask before you add a test framework.
 7. Make the smallest fix. Run all the tests. For a bug that occurs only sometimes, run the loop 5 × N times. N is the number of runs from step 3. All runs must pass.
-8. If the fix is for an open PR, commit on its branch. Do not open a different PR. If not, make the branch `NAME/PROJECT/FEATURE` from the Git workflow rules. Commit the fix on that branch.
+8. If the fix is for an open PR, commit on its branch. Do not open a different PR. If not, make the branch `NAME/TICKET/DESCRIPTION` from the Git workflow rules. Commit the fix on that branch.
 9. Obey the push rule and the PR rule in the Git workflow rules. For an issue, after the user pushes, open a draft PR that links the issue.
 
 ## Hard stops

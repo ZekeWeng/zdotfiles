@@ -92,7 +92,8 @@ Docs for readers, such as READMEs, guides, and docstrings, also obey the [Google
 
   The server closes idle connections after 30 seconds, so large uploads failed.
   ```
-- Use the format `NAME/PROJECT/FEATURE` for branch names, for example `zeke/nvim/add-lsp-keybinds`. `NAME` is the short name of the user, in lowercase. If you do not know it, ask the user. `PROJECT` is the repo or the work area. `FEATURE` is a short description of the change, with hyphens between the words.
+- Use the format `NAME/TICKET/DESCRIPTION` for branch names, for example `zeke/abc-123/retry-failed-uploads`. `NAME` is the short name of the user, in lowercase. If you do not know it, ask the user. `TICKET` is the issue ID, in lowercase. If the work has no ticket, write `prototype` as `TICKET`, for example `zeke/prototype/cache-hit-chart`. `DESCRIPTION` is a short description of the change, with hyphens between the words.
+- Put `PAUSED/` before the name of a branch that is not active now, for example `PAUSED/zeke/abc-120/job-priority-class`. Remove the prefix when the work starts again.
 - Replace each placeholder with a real value before you run a command. Write placeholders in capital letters, such as `BRANCH`. Do not run a placeholder in `<...>` as it is written, because the shell reads `<` and `>` as operators.
 
 ## Security

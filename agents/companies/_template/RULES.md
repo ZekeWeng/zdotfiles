@@ -36,7 +36,7 @@ These rules apply to work for <Company>. They add to the shared rules in the roo
 - Use <company terms> for <topic>.
 - Write for <audience> in <voice or format>.
 - Obey <design, name, or documentation guide> for company work.
-- Use the branch format of the Git workflow rules. If the integration must have an issue ID in the branch name, put the ID in `FEATURE`. Write the ID accurately, as the issue tracker shows it.
+- Use the branch format of the Git workflow rules. If the integration must have an issue ID in the branch name, put the ID in `TICKET`. Write the ID accurately, as the issue tracker shows it.
 - Write the PR title as a commit subject from the Git workflow rules. Write `Fixes <KEY>-ISSUE_NUMBER` in the PR body. Replace `ISSUE_NUMBER` with the number of the issue.
 - These formats apply to all skills, such as ship, fix, and forge.
 - The GitHub integration of Linear links a PR when the branch name has the issue ID. By default, it sets the issue to In Progress when the PR opens. It sets the issue to Done when the PR merges. If the PR does not complete the issue, write `Part of <KEY>-ISSUE_NUMBER` in the PR body, not `Fixes`. <Delete this bullet if the integration is off.>
