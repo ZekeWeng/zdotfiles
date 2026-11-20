@@ -16,6 +16,17 @@ From the repo root, run `./agents/install-agents.sh`. To add a company layer, ad
 
 After you edit `AGENTS.md` or a company `RULES.md`, run the script again. Codex, Pi, and North Code use a copy of the rules, and the copy does not change by itself. North Code reads one rules file, so its copy has `AGENTS.md` and the company `RULES.md`. The script writes it only when the North Code engine folder exists.
 
+### Deny rules for secrets
+
+The script also adds the deny rules in `permissions/` to the settings of OpenCode and Claude Code. The rules block an agent from a read of the secret files, the SSH keys, and the cloud credentials. They also block commands such as `env`, `secret`, and `gh auth token`. The script keeps your other settings. It needs `jq`.
+
+| Harness | Settings | Condition |
+|---------|----------|-----------|
+| OpenCode | `~/.config/opencode/opencode.json`, at the end of `permissions` | The folder `~/.config/opencode` exists. |
+| Claude Code | `~/.claude/settings.json`, in `permissions.deny` | The `claude` command exists. |
+
+The rules stop an accident, not an attack. An agent can still read a secret with a different command, such as a Python script. If you remove a rule from `permissions/`, also remove it from the settings yourself.
+
 ## Company layer
 
 1. Run `cp -R agents/companies/_template agents/companies/COMPANY`. Replace `COMPANY` with the folder name.

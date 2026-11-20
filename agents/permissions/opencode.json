@@ -1,0 +1,19 @@
+[
+  { "action": "read", "resource": "~/.config/zsh/private/*", "effect": "deny" },
+  { "action": "edit", "resource": "~/.config/zsh/private/*", "effect": "deny" },
+  { "action": "read", "resource": "~/.ssh/id_*", "effect": "deny" },
+  { "action": "read", "resource": "~/.config/gcloud/*", "effect": "deny" },
+  { "action": "read", "resource": "~/.aws/credentials", "effect": "deny" },
+  { "action": "shell", "resource": "env", "effect": "deny" },
+  { "action": "shell", "resource": "printenv *", "effect": "deny" },
+  { "action": "shell", "resource": "export", "effect": "deny" },
+  { "action": "shell", "resource": "set", "effect": "deny" },
+  { "action": "shell", "resource": "secret *", "effect": "deny" },
+  { "action": "shell", "resource": "gh auth token *", "effect": "deny" },
+  { "action": "shell", "resource": "security find-generic-password *", "effect": "deny" },
+  { "action": "shell", "resource": "security dump-keychain *", "effect": "deny" },
+  { "action": "shell", "resource": "gcloud auth print-access-token *", "effect": "deny" },
+  { "action": "shell", "resource": "gcloud auth application-default print-access-token *", "effect": "deny" },
+  { "action": "shell", "resource": "* ~/.config/zsh/private/*", "effect": "deny" },
+  { "action": "shell", "resource": "* $HOME/.config/zsh/private/*", "effect": "deny" }
+]
