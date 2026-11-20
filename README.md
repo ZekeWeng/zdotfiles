@@ -41,14 +41,14 @@ Linux means a computer that you use over SSH, such as a dev VM. Ghostty runs on 
 | Homebrew folder | `/opt/homebrew` | `/home/linuxbrew/.linuxbrew` |
 | Homebrew casks (the apps) | You select each cask (y/n). | The script skips all casks. |
 | Login shell | `/bin/zsh`. The script runs `chsh` only if the login shell is a different shell. | The zsh from Homebrew. If `chsh` cannot change the shell, the script adds a block to `~/.bashrc`. |
-| Secrets | In the Keychain, with `secret-set NAME` | In `~/.config/zsh/private/secrets.zsh`, with mode 600 |
+| Secrets | In the Keychain, with `secret-set NAME` | In a file encrypted by `age`, with `secret-set NAME` |
 | Ghostty config and `tbg` | Installed | Not installed. The default list of zsh modules has no `termbg`. |
 | Copy in tmux and fzf | `pbcopy` | OSC 52. The text goes to the clipboard of your Mac through SSH. Ghostty asks first. |
 | Locale | `en_US.UTF-8` | `en_US.UTF-8` if the computer has it. If not, `C.UTF-8`. |
 
 On Linux, `chsh` accepts only a shell in `/etc/shells`, and Homebrew does not add its zsh to that file. An OS Login account on a Google Cloud VM cannot use `chsh`. For these cases, the `~/.bashrc` block starts zsh in each interactive terminal. It does not start zsh for `bash -c CMD`, because editors use that form to read the environment. To get bash, run `ZDOT_BASH=1 bash`.
 
-On Linux, `secret-set` and `with-secret` stop with a message, because Linux has no Keychain. Put each token in `~/.config/zsh/private/secrets.zsh`, or in `~/.config/zsh/private/COMPANY.secrets.zsh`.
+Linux has no Keychain. There, `secret-set` encrypts each token with a passphrase into `~/.config/zsh/private/age/NAME.age`. Each read asks for the passphrase on the terminal. Use the same passphrase for each token.
 
 ## Local changes
 
@@ -71,7 +71,7 @@ To add a company, copy `config/zsh/companies/_template` to `config/zsh/companies
 | Command | Effect |
 |---------|--------|
 | `reload` | Starts the shell again with the new config. |
-| `secret-set NAME` | Puts a token in the Keychain. Each read asks for the login password. Click Allow, not Always Allow. |
+| `secret-set NAME` | Puts a token in the Keychain, or in an `age` file on Linux. Each read asks for a password. On macOS, click Allow, not Always Allow. |
 | `with-secret NAME CMD` | Runs `CMD` with the token in the variable `NAME`. |
 | `csh HOST` | Opens a cmux SSH workspace. Each split, such as Cmd+D, is a new shell on `HOST`. The shells continue after a disconnect. |
 | `tsh HOST` | Shows the tmux sessions of `HOST` as cmux workspaces. Each split is a tmux pane. Turn on the "Remote tmux" beta setting first. |

@@ -267,6 +267,23 @@ expect "secret: the security calls and the scope of the token" "$secret_out" \
     "add-generic-password -U -s zdot -a A -T  -w;set-generic-password-partition-list -S  -s zdot -a A;\
 delete-generic-password -s zdot -a A;tok;[];2;"
 
+# secret: with no security command, each function uses an age file with mode 600. A name cannot be a path.
+# The age stub copies the token. The PATH has no security command, so the functions use age.
+age_bin="$tmp_dir/age-bin"
+mkdir -p "$age_bin"
+for tool in cat mkdir mv rm sh find; do
+    ln -s "$(command -v "$tool")" "$age_bin/$tool"
+done
+# shellcheck disable=SC2016
+printf '#!/bin/sh\ncase "$1" in -p) cat >"$3" ;; -d) cat "$2" ;; esac\n' >"$age_bin/age"
+chmod +x "$age_bin/age"
+age_home="$tmp_dir/age-home"
+age_file="$age_home/.config/zsh/private/age/A.age"
+age_out="$(env -i HOME="$age_home" PATH="$age_bin" "$zsh_bin" -fc ". $src/config/zsh/modules/aliases.zsh
+    print tok | secret-set A; echo; secret A; echo; with-secret A sh -c 'echo \$A'; echo \"[\${A:-}]\"
+    find $age_file -perm 0600; secret-rm A; secret A || echo \$?; secret ../x || echo \$?" 2>/dev/null | tr '\n' ';')"
+expect "secret: the age files and the scope of the token" "$age_out" ";tok;tok;[];$age_file;1;2;"
+
 # completions: the second shell reads the cache and does not run the tool.
 cache="$tmp_dir/cache"
 for _ in 1 2; do

@@ -14,3 +14,7 @@ brew "zoxide"
 # Files
 brew "bat"
 brew "eza"
+
+# Secrets
+# On Linux, secret-set and with-secret use age, because Linux has no Keychain.
+brew "age"

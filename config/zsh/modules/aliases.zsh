@@ -98,32 +98,80 @@ sshkill() {
 }
 
 # Secrets
-# Each token is an item in the login Keychain, with the service "zdot". No shell exports it.
+# No shell exports a token. Each read asks you for a password, so a command that an agent runs cannot read a token.
+# macOS: each token is an item in the login Keychain, with the service "zdot".
 # The item has no trusted apps and no partition, so each read asks for the login password.
 # In the dialog, click Allow. "Always Allow" removes this protection.
-# Linux has no Keychain. There, put each token in ~/.config/zsh/private/secrets.zsh (mode 600).
-zdot_keychain_check() {
-    command -v security >/dev/null 2>&1 && return 0
-    echo "$1: this computer has no macOS Keychain. Put the token in ~/.config/zsh/private/secrets.zsh." >&2
-    return 1
+# Linux: each token is a file in ~/.config/zsh/private/age, encrypted by age with a passphrase.
+# Each read asks for the passphrase on the terminal. Use the same passphrase for each token.
+# Print "keychain" or "age". The command name in $1 is for the error message.
+zdot_secret_store() {
+    if command -v security >/dev/null 2>&1; then
+        echo keychain
+    elif command -v age >/dev/null 2>&1; then
+        echo age
+    else
+        echo "$1: this computer has no macOS Keychain and no age. Install age with Homebrew." >&2
+        return 1
+    fi
 }
-# "secret-set NAME" asks for the token, then for the login password.
+# Print the age file of the token named $2. The name must be a variable name, so that it cannot be a path.
+zdot_secret_file() {
+    case "$2" in
+        "" | [!A-Za-z_]* | *[!A-Za-z0-9_]*)
+            echo "$1: NAME must be a variable name, such as GITHUB_TOKEN." >&2
+            return 2
+            ;;
+    esac
+    printf '%s\n' "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/private/age/$2.age"
+}
+# "secret-set NAME" asks for the token, then for the password.
 secret-set() {
     [ "$#" -eq 1 ] || { echo "usage: secret-set NAME" >&2; return 2; }
-    zdot_keychain_check secret-set || return
-    security add-generic-password -U -s zdot -a "$1" -T "" -w &&
-        security set-generic-password-partition-list -S "" -s zdot -a "$1" >/dev/null
+    local store file token
+    store="$(zdot_secret_store secret-set)" || return
+    if [ "$store" = keychain ]; then
+        security add-generic-password -U -s zdot -a "$1" -T "" -w &&
+            security set-generic-password-partition-list -S "" -s zdot -a "$1" >/dev/null
+        return
+    fi
+    file="$(zdot_secret_file secret-set "$1")" || return
+    printf 'Token for %s: ' "$1" >&2
+    read -rs token
+    echo >&2
+    [ -n "$token" ] || { echo "secret-set: the token is empty." >&2; return 1; }
+    # print is a builtin, so the token is not in the arguments of a process. umask 077 gives the file mode 600.
+    if (umask 077 && command mkdir -p "${file:h}" && print -rn -- "$token" | age -p -o "$file.next"); then
+        command mv -f "$file.next" "$file"
+    else
+        command rm -f "$file.next"
+        return 1
+    fi
 }
 # "secret NAME" prints the token.
 secret() {
     [ "$#" -eq 1 ] || { echo "usage: secret NAME" >&2; return 2; }
-    zdot_keychain_check secret || return
-    security find-generic-password -s zdot -a "$1" -w
+    local store file
+    store="$(zdot_secret_store secret)" || return
+    if [ "$store" = keychain ]; then
+        security find-generic-password -s zdot -a "$1" -w
+        return
+    fi
+    file="$(zdot_secret_file secret "$1")" || return
+    [ -f "$file" ] || { echo "secret: $1 does not exist. Run secret-set $1." >&2; return 1; }
+    age -d "$file"
 }
 secret-rm() {
     [ "$#" -eq 1 ] || { echo "usage: secret-rm NAME" >&2; return 2; }
-    zdot_keychain_check secret-rm || return
-    security delete-generic-password -s zdot -a "$1" >/dev/null
+    local store file
+    store="$(zdot_secret_store secret-rm)" || return
+    if [ "$store" = keychain ]; then
+        security delete-generic-password -s zdot -a "$1" >/dev/null
+        return
+    fi
+    file="$(zdot_secret_file secret-rm "$1")" || return
+    [ -f "$file" ] || { echo "secret-rm: $1 does not exist." >&2; return 1; }
+    command rm -f -- "$file"
 }
 # "with-secret GITHUB_TOKEN gh pr list" gives the token to one command as the variable GITHUB_TOKEN.
 with-secret() {
