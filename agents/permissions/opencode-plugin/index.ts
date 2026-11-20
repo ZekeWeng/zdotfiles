@@ -5,7 +5,9 @@ import { readFileSync, realpathSync } from "node:fs"
 import { homedir } from "node:os"
 import { isAbsolute, join, resolve, sep } from "node:path"
 
-const rules: { files: string[] } = JSON.parse(readFileSync(new URL("../secrets.json", import.meta.url), "utf8"))
+// Read the rules at each call, so that a new rule works with no restart of OpenCode.
+const rules = (): { files: string[] } =>
+  JSON.parse(readFileSync(new URL("../secrets.json", import.meta.url), "utf8"))
 
 // Give the path in $path and its real path, so that a symlink cannot hide a secret.
 const forms = (path: string) => {
@@ -18,7 +20,7 @@ const forms = (path: string) => {
 
 // The part of each file rule before the first glob character, such as ~/.ssh for .ssh/id_*.
 const secretPaths = () =>
-  rules.files.flatMap((file) => {
+  rules().files.flatMap((file) => {
     const parts = file.split("/")
     const glob = parts.findIndex((part) => /[*?[{]/.test(part))
     return forms(join(homedir(), ...(glob === -1 ? parts : parts.slice(0, glob))))
