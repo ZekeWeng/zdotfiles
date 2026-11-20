@@ -22,6 +22,10 @@ setopt AUTO_CD GLOB_DOTS EXTENDED_GLOB CORRECT INTERACTIVE_COMMENTS
 zdot_config_dir="${${(%):-%x}:A:h}"
 if [ -z "${zdot_zsh_modules+set}" ]; then
     zdot_zsh_modules=(history keybinds completions aliases fzf termbg)
+    # termbg changes the Ghostty background. Ghostty runs on the Mac, so Linux does not load it.
+    if [[ "$OSTYPE" != darwin* ]]; then
+        zdot_zsh_modules=(${zdot_zsh_modules:#termbg})
+    fi
 fi
 for zdot_module in $zdot_zsh_modules; do
     . "$zdot_config_dir/modules/$zdot_module.zsh"

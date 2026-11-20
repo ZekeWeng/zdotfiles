@@ -53,6 +53,12 @@ manual() {
     link "$2" "$4"
 }
 
+# Ghostty runs on the Mac. A Linux computer, such as a dev VM, does not use its config.
+case "$(uname -s)" in
+    Darwin) is_macos=true ;;
+    *) is_macos=false ;;
+esac
+
 # ssh refuses a config folder or a config file that other users can write to.
 # Git does not keep this mode, so a clone with umask 002 makes the file writable by the group.
 mkdir -p "$HOME/.ssh"
@@ -66,7 +72,11 @@ fi
 link "$src/config/zsh/.zshenv" "$HOME/.zshenv"
 link "$src/config/zsh/.zprofile" "$HOME/.zprofile"
 link "$src/config/zsh/.zshrc" "$HOME/.zshrc"
-link "$src/config/ghostty/config" "$HOME/.config/ghostty/config"
+if [ "$is_macos" = true ]; then
+    link "$src/config/ghostty/config" "$HOME/.config/ghostty/config"
+else
+    echo "only  $HOME/.config/ghostty (Ghostty is only for macOS)"
+fi
 link "$src/config/ssh/config" "$HOME/.ssh/config"
 link "$src/config/starship/starship.toml" "$HOME/.config/starship.toml"
 link "$src/config/tmux/tmux.conf" "$HOME/.config/tmux/tmux.conf"
@@ -80,7 +90,9 @@ manual "$src/config/zsh/local/zshrc.local.example" "$src/config/zsh/zshrc.local"
 manual "$src/config/ssh/config.local.example" "$src/config/ssh/config.local" 600 "$HOME/.ssh/config.local"
 manual "$src/config/git/gitconfig.example" "$src/config/git/gitconfig.local" 600 "$HOME/.gitconfig"
 manual "$src/brew/Brewfile.local.example" "$src/brew/Brewfile.local" 644 "$HOME/.config/brew/Brewfile.local"
-manual "$src/config/ghostty/local.example" "$src/config/ghostty/local" 644 "$HOME/.config/ghostty/local"
+if [ "$is_macos" = true ]; then
+    manual "$src/config/ghostty/local.example" "$src/config/ghostty/local" 644 "$HOME/.config/ghostty/local"
+fi
 manual "$src/config/tmux/local.conf.example" "$src/config/tmux/local.conf" 644 "$HOME/.config/tmux/local.conf"
 seed "$src/config/zsh/paths/local.zsh.example" "$src/config/zsh/paths/local.zsh" 644
 # The secrets stay outside the repo, so git cannot commit them.
