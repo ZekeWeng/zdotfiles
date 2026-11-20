@@ -18,14 +18,19 @@ After you edit `AGENTS.md` or a company `RULES.md`, run the script again. Codex,
 
 ### Deny rules for secrets
 
-The script also adds the deny rules in `permissions/` to the settings of OpenCode and Claude Code. The rules block an agent from a read of the secret files, the SSH keys, and the cloud credentials. They also block commands such as `env`, `secret`, and `gh auth token`. The script keeps your other settings. It needs `jq`.
+The script also adds deny rules for secrets to the settings of OpenCode and Claude Code. `permissions/secrets.json` has the one list of rules, and a `jq` filter for each harness converts it. The script keeps your other settings. It needs `jq`.
 
-| Harness | Settings | Condition |
-|---------|----------|-----------|
-| OpenCode | `~/.config/opencode/opencode.json`, at the end of `permissions` | The folder `~/.config/opencode` exists. |
-| Claude Code | `~/.claude/settings.json`, in `permissions.deny` | The `claude` command exists. |
+- `files`: paths in your home folder, such as `.ssh/id_*`. An agent cannot read or edit them, and it cannot run a shell command that names them.
+- `commands`: shell commands that print secrets, such as `env`, `secret`, and `gh auth token`.
 
-The rules stop an accident, not an attack. An agent can still read a secret with a different command, such as a Python script. If you remove a rule from `permissions/`, also remove it from the settings yourself.
+| Harness | Settings | Filter | Condition |
+|---------|----------|--------|-----------|
+| OpenCode | `~/.config/opencode/opencode.json`, at the end of `policies` | `permissions/opencode.jq` | The folder `~/.config/opencode` exists. |
+| Claude Code | `~/.claude/settings.json`, in `permissions.deny` | `permissions/claude.jq` | The `claude` command exists. |
+
+OpenCode gets `tool.use` policies, not `permissions` rules. A project config or an agent can allow a `permissions` rule again, but it cannot allow a global policy again. In Claude Code, a deny rule wins over each allow rule.
+
+The rules stop an accident, not an attack. An agent can still read a secret with a different command, such as a Python script. The real protection is that no shell exports a token: `secret-set` puts each token in the Keychain, and each read asks for your password. If you remove a rule from `secrets.json`, also remove it from the settings yourself.
 
 ## Company layer
 

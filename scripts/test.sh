@@ -210,22 +210,25 @@ duplicate_links="$(find "$tmp_dir/duplicate-home" -type l 2>/dev/null | wc -l | 
 expect "install-agents: the stopped install makes no skill links" "$duplicate_links" 0
 rm -rf "$copy/agents/skills/writing/fix"
 
-# install-agents: the deny rules go to the end of the OpenCode list, and the other settings stay.
-# Claude Code gets its deny rules. The second run changes nothing.
+# install-agents: OpenCode gets a deny policy for each secret rule, after its other policies. Its other settings stay.
+# Claude Code gets a deny rule for each secret rule. The second run changes nothing.
 agents_home="$tmp_dir/rules-home"
 jq_path="$real_claude:/usr/bin:/bin:$(dirname "$(command -v jq)")"
+secret_rules="$copy/agents/permissions/secrets.json"
 mkdir -p "$agents_home/.config/opencode"
-echo '{"a": 1, "permissions": [{"action": "shell", "resource": "*", "effect": "ask"}]}' \
+echo '{"a": 1, "policies": [{"action": "tool.use", "resource": "*", "effect": "allow"}]}' \
     >"$agents_home/.config/opencode/opencode.json"
 install_agents "$agents_home" "$jq_path" >/dev/null
-opencode_rules="$(jq length "$copy/agents/permissions/opencode.json")"
-expect "install-agents: OpenCode keeps its settings and gets the deny rules last" \
-    "$(jq -r '"\(.a) \(.permissions[0].effect) \(.permissions | length) \(.permissions[-1].resource)"' \
-        "$agents_home/.config/opencode/opencode.json")" \
-    "1 ask $((opencode_rules + 2)) * $agents_home/.config/zsh/private/*"
+# Each file gets 3 OpenCode policies: read, edit, and shell. The first file is a folder that ends in "**".
+expect "install-agents: OpenCode keeps its settings and gets the deny policies last" \
+    "$(jq -c '[.a, (.policies | length), .policies[0].effect, (.policies[1:4] | map(.resource)),
+        .policies[-1].resource]' "$agents_home/.config/opencode/opencode.json")" \
+    "$(jq -c '.files[0] as $f | [1, (.files | length) * 3 + (.commands | length) + 1, "allow",
+        ["read:*\($f)", "edit:*\($f)", "shell:*\($f | rtrimstr("**"))*"], "shell:\(.commands[-1])"]' "$secret_rules")"
 expect "install-agents: Claude Code gets the deny rules" \
-    "$(jq '.permissions.deny | length' "$agents_home/.claude/settings.json")" \
-    "$(jq length "$copy/agents/permissions/claude.json")"
+    "$(jq -r '.permissions.deny | "\(length) \(.[0]) \(.[-1])"' "$agents_home/.claude/settings.json")" \
+    "$(jq -r '"\((.files | length) * 2 + (.commands | length)) Read(~/\(.files[0])) Bash(\(.commands[-1]))"' \
+        "$secret_rules")"
 changes="$(install_agents "$agents_home" "$jq_path" | grep -E '^(write|skip) ')"
 expect "install-agents: the second run does not change the deny rules" "$changes" ""
 
