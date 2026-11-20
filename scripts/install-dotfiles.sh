@@ -53,9 +53,14 @@ manual() {
     link "$2" "$4"
 }
 
-# ssh refuses a config folder that other users can write to.
+# ssh refuses a config folder or a config file that other users can write to.
+# Git does not keep this mode, so a clone with umask 002 makes the file writable by the group.
 mkdir -p "$HOME/.ssh"
 chmod 700 "$HOME/.ssh"
+chmod 600 "$src/config/ssh/config"
+if [ -f "$src/config/ssh/config.local" ]; then
+    chmod 600 "$src/config/ssh/config.local"
+fi
 
 # Fixed files
 link "$src/config/zsh/.zshenv" "$HOME/.zshenv"
