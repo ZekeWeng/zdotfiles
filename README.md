@@ -2,37 +2,53 @@
 
 The configuration for zsh, Ghostty, SSH, Starship, tmux, git, Neovim, Homebrew, and the coding agents.
 
+## Layout
+
+| Path | Contents |
+|------|----------|
+| `scripts/` | `install.sh` and the steps that it runs, `check.sh`, and `test.sh` |
+| `config/zsh/` | `.zshenv`, `.zprofile`, `.zshrc`, the `modules/`, the `paths/`, and the `companies/` |
+| `config/ssh/`, `config/git/`, `config/tmux/`, `config/nvim/`, `config/starship/` | The config for each tool |
+| `config/ghostty/`, `ascii-art/terminal-bg/` | The Ghostty config and the `tbg` backgrounds. These are only for macOS. |
+| `brew/` | The Homebrew groups: `shell`, `tools`, `languages`, and `apps` |
+| `agents/` | The skills, the company rules, and `install-agents.sh`. The root `AGENTS.md` has the rules. |
+
 ## Install
 
-From the repo root, run these commands:
+You use the same command on macOS and on Linux. The script finds the OS, and it does the steps for that OS.
 
-1. `./scripts/install-dotfiles.sh`
-2. `./scripts/install-brew.sh`
-3. `curl -fsSL https://claude.ai/install.sh | bash`
-4. `./agents/install-agents.sh`
+1. Install [Homebrew](https://brew.sh). On Linux, read [Homebrew on Linux](https://docs.brew.sh/Homebrew-on-Linux) first.
+2. Clone this repo. Open a terminal in the repo root.
+3. Run `./scripts/install.sh`.
+4. Optional: install Claude Code with `curl -fsSL https://claude.ai/install.sh | bash`. Then run `./agents/install-agents.sh` again.
+5. Open a new terminal.
 
-If a script prints `skip`, move that path. Then run the script again.
+`install.sh` runs these steps in this order. You can also run each step alone:
 
-### Linux
+1. `./scripts/install-dotfiles.sh` links the config files into your home folder.
+2. `./scripts/install-brew.sh` installs the Homebrew packages.
+3. The script changes the login shell to zsh.
+4. `./agents/install-agents.sh` links the rules and the skills into the coding agents.
 
-The dotfiles also work on Linux, such as a dev VM. These items are different from macOS:
+You can run `install.sh` again. If a step prints `skip` for a path that exists, move that path. Then run the script again.
 
-- **Homebrew:** install [Homebrew on Linux](https://docs.brew.sh/Homebrew-on-Linux) first. `install-brew.sh` skips each cask, because casks are macOS apps. Install zsh with `brew install zsh` before `install-dotfiles.sh`.
-- **Login shell:** change the login shell to zsh with `chsh -s "$(command -v zsh)"`. An OS Login account on a Google Cloud VM cannot use `chsh`. For that account, put this block at the top of `~/.bashrc`, after the check for an interactive shell:
+### macOS and Linux
 
-  ```sh
-  # Start zsh in a terminal. Do not start it for "bash -c CMD", because editors use that form to read the environment.
-  # Run "ZDOT_BASH=1 bash" to get bash.
-  if [ -z "${ZDOT_BASH:-}" ] && [ -z "${BASH_EXECUTION_STRING:-}" ] && [ -t 0 ] && [ -t 1 ] &&
-      [ -x /home/linuxbrew/.linuxbrew/bin/zsh ]; then
-      export SHELL=/home/linuxbrew/.linuxbrew/bin/zsh
-      exec "$SHELL" -l
-  fi
-  ```
+Linux means a computer that you use over SSH, such as a dev VM. Ghostty runs on your Mac.
 
-- **Secrets:** Linux has no Keychain, so `secret-set` and `with-secret` stop with a message. Put each token in `~/.config/zsh/private/secrets.zsh`, or in `~/.config/zsh/private/COMPANY.secrets.zsh`. Give each file mode 600.
-- **Locale:** `.zshenv` sets `LANG` to `en_US.UTF-8` if the computer has that locale. If not, it sets `C.UTF-8`.
-- **Ghostty:** the Ghostty config and the `termbg` module are only for the computer that runs Ghostty. Remove `termbg` from `zdot_zsh_modules` on a remote computer.
+| Item | macOS | Linux |
+|------|-------|-------|
+| Homebrew folder | `/opt/homebrew` | `/home/linuxbrew/.linuxbrew` |
+| Homebrew casks (the apps) | You select each cask (y/n). | The script skips all casks. |
+| Login shell | `/bin/zsh`. The script runs `chsh` only if the login shell is a different shell. | The zsh from Homebrew. If `chsh` cannot change the shell, the script adds a block to `~/.bashrc`. |
+| Secrets | In the Keychain, with `secret-set NAME` | In `~/.config/zsh/private/secrets.zsh`, with mode 600 |
+| Ghostty config and `tbg` | Installed | Not installed. The default list of zsh modules has no `termbg`. |
+| Copy in tmux and fzf | `pbcopy` | OSC 52. The text goes to the clipboard of your Mac through SSH. Ghostty asks first. |
+| Locale | `en_US.UTF-8` | `en_US.UTF-8` if the computer has it. If not, `C.UTF-8`. |
+
+On Linux, `chsh` accepts only a shell in `/etc/shells`, and Homebrew does not add its zsh to that file. An OS Login account on a Google Cloud VM cannot use `chsh`. For these cases, the `~/.bashrc` block starts zsh in each interactive terminal. It does not start zsh for `bash -c CMD`, because editors use that form to read the environment. To get bash, run `ZDOT_BASH=1 bash`.
+
+On Linux, `secret-set` and `with-secret` stop with a message, because Linux has no Keychain. Put each token in `~/.config/zsh/private/secrets.zsh`, or in `~/.config/zsh/private/COMPANY.secrets.zsh`.
 
 ## Local changes
 
@@ -43,7 +59,7 @@ Set these values in `~/.zshenv.local`:
 | Setting | Default |
 |---------|---------|
 | `zdot_brew_kegs` | `(node@22 postgresql@15 rustup)` |
-| `zdot_zsh_modules` | `(history keybinds completions aliases fzf termbg)` |
+| `zdot_zsh_modules` | `(history keybinds completions aliases fzf termbg)`. Linux removes `termbg` from the default. |
 | `zdot_history_days` | `120` |
 | `zdot_ssh_tmux` | `1`. An SSH login attaches to the tmux session `main`. A `csh` workspace and a Cursor, VS Code, or North Code terminal do not. Set `0` to stop this. |
 | `zdot_company` | Not set. Use a folder name from `config/zsh/companies/`. |

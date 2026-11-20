@@ -220,6 +220,30 @@ expect "install-dotfiles: moves the old secrets out of the repo" \
     "export ZDOT_OLD_SECRET=yes 0"
 rm -rf "$copy/config/zsh/private"
 
+# install: on Linux with a bash login shell and no terminal for chsh, the script adds the zsh block to ~/.bashrc.
+# The stubs make the computer look like Linux with Homebrew. The zsh in PATH is the real zsh.
+linux_bin="$tmp_dir/linux-bin"
+linux_home="$tmp_dir/linux-home"
+mkdir -p "$linux_bin" "$linux_home"
+printf '#!/bin/sh\necho Linux\n' >"$linux_bin/uname"
+printf '#!/bin/sh\necho "test:x:1000:1000::%s:/bin/bash"\n' "$linux_home" >"$linux_bin/getent"
+printf '#!/bin/sh\nexit 0\n' >"$linux_bin/brew"
+chmod +x "$linux_bin"/*
+chmod 664 "$copy/config/ssh/config"
+install_status=0
+for _ in 1 2; do
+    env -i HOME="$linux_home" PATH="$linux_bin:/usr/bin:/bin:$(dirname "$zsh_bin")" \
+        "$copy/scripts/install.sh" </dev/null >"$tmp_dir/install-out" 2>&1 || install_status=$?
+done
+expect "install: 2 runs on Linux succeed" "$install_status" 0
+[ "$install_status" -eq 0 ] || sed 's/^/      /' "$tmp_dir/install-out"
+expect "install: the ~/.bashrc block is added 1 time" "$(grep -c '^# zdotfiles: start zsh\.' "$linux_home/.bashrc")" 1
+bash_status=0
+bash -n "$linux_home/.bashrc" || bash_status=$?
+expect "install: the ~/.bashrc block is valid bash" "$bash_status" 0
+expect "install: Linux gets no Ghostty config" "$(find "$linux_home/.config" -name 'ghostty*' | wc -l | tr -d ' ')" 0
+expect "install: the ssh config gets mode 600" "$(find "$copy/config/ssh/config" -perm 0600)" "$copy/config/ssh/config"
+
 # sshkill: a host or a ref selects the SSH workspaces. A local workspace and an unknown host match nothing.
 cat >"$tmp_dir/workspaces.json" <<'EOF'
 {"workspaces": [{"ref": "workspace:1", "remote": {"destination": null}},
