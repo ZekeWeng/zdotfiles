@@ -18,10 +18,14 @@ if command -v fd >/dev/null 2>&1; then
 fi
 
 # Clipboard
+# macOS has pbcopy. Linux has no pbcopy, so tmux or an OSC 52 sequence sends the text to the local terminal.
+# The OSC 52 command has no parentheses, because fzf ends execute-silent(...) at the first ")".
 if command -v pbcopy >/dev/null 2>&1; then
     zdot_fzf_clipboard="pbcopy"
+elif [ -n "${TMUX:-}" ]; then
+    zdot_fzf_clipboard="tmux load-buffer -w -"
 else
-    zdot_fzf_clipboard="cat >/dev/null"
+    zdot_fzf_clipboard='base64 | tr -d "\n" | xargs printf "\033]52;c;%s\a" >/dev/tty'
 fi
 
 # Options
