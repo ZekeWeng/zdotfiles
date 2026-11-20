@@ -52,7 +52,7 @@ Linux has no Keychain. There, `secret-set` encrypts each token with a passphrase
 
 ## Local changes
 
-Git ignores the `.local` files and the `local` files in `config/`. Put the hosts, the keys, and the changes for one computer in these files. Put each token in the Keychain with `secret-set NAME`. Do not put tokens in a file.
+Git ignores the `.local` files and the `local` files in `config/`. Put the hosts, the keys, and the changes for one computer in these files. Put each token in the Keychain with `secret-set NAME`. Do not put tokens in a file. For the list of secrets and the setup steps, see [Set up tokens and secrets](SECRETS.md).
 
 Set these values in `~/.zshenv.local`:
 
