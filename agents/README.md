@@ -63,7 +63,7 @@ Each skill folder is in a section folder, such as `skills/dev/fix`. Company skil
 
 | Skill | Use |
 |-------|-----|
-| `journal` | Write the daily journal in `~/Repos/Journal`: the tasks, the day summary, and a standup. |
+| `journal` | Write the daily journal in `~/work/personal/Journal`: the tasks, the day summary, and a standup. |
 
 The company template has `linear`.
 
