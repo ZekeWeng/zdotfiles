@@ -8,3 +8,5 @@
 ] | map({action: "tool.use", resource: ., effect: "deny"})) as $deny
 # The last statement that matches wins. Thus, the deny policies go to the end of the list.
 | .policies = ((.policies // []) - $deny) + $deny
+# The plugin blocks the grep calls that the policies cannot block. $plugin is the path of its folder.
+| .plugins = ((.plugins // []) - [$plugin]) + [$plugin]

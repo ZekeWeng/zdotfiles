@@ -30,6 +30,8 @@ The script also adds deny rules for secrets to the settings of OpenCode and Clau
 
 OpenCode gets `tool.use` policies, not `permissions` rules. A project config or an agent can allow a `permissions` rule again, but it cannot allow a global policy again. In Claude Code, a deny rule wins over each allow rule.
 
+A policy cannot block the OpenCode grep tool, because the policy resource of a grep call is the regex, not the folder. Thus, the script also adds the plugin in `permissions/opencode-plugin` to `plugins`. The plugin stops each grep call that searches a folder with a secret file in it, such as `~` or `~/.config`, or a folder in a secret folder. Search a smaller folder, such as a repo.
+
 The rules stop an accident, not an attack. An agent can still read a secret with a different command, such as a Python script. The real protection is that no shell exports a token: `secret-set` puts each token in the Keychain, and each read asks for your password. If you remove a rule from `secrets.json`, also remove it from the settings yourself.
 
 ## Company layer

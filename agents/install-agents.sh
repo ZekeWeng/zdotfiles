@@ -257,6 +257,7 @@ check_company() {
 }
 
 # Add the deny rules in permissions/secrets.json to the JSON settings file in $2. The jq filter in $1 adds them.
+# The OpenCode filter also adds the plugin in permissions/opencode-plugin.
 # The other settings stay. A rule that is in the file already moves to the end of its list.
 merge_rules() {
     if ! command -v jq >/dev/null 2>&1; then
@@ -270,7 +271,8 @@ merge_rules() {
     mkdir -p "$(dirname "$2")"
     next_file="$2.next.$$"
     if ! { if [ -s "$2" ]; then cat "$2"; else echo '{}'; fi; } |
-        jq --slurpfile rules "$src/permissions/secrets.json" -f "$1" >"$next_file" 2>/dev/null; then
+        jq --slurpfile rules "$src/permissions/secrets.json" --arg plugin "$src/permissions/opencode-plugin" \
+            -f "$1" >"$next_file" 2>/dev/null; then
         rm -f "$next_file"
         echo "skip  $2 (the file is not valid JSON. Fix it. Run the script again.)"
         return

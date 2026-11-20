@@ -210,15 +210,19 @@ duplicate_links="$(find "$tmp_dir/duplicate-home" -type l 2>/dev/null | wc -l | 
 expect "install-agents: the stopped install makes no skill links" "$duplicate_links" 0
 rm -rf "$copy/agents/skills/writing/fix"
 
-# install-agents: OpenCode gets a deny policy for each secret rule, after its other policies. Its other settings stay.
+# install-agents: OpenCode gets a deny policy for each secret rule, after its other policies, and the grep plugin.
+# Its other settings stay.
 # Claude Code gets a deny rule for each secret rule. The second run changes nothing.
 agents_home="$tmp_dir/rules-home"
 jq_path="$real_claude:/usr/bin:/bin:$(dirname "$(command -v jq)")"
 secret_rules="$copy/agents/permissions/secrets.json"
 mkdir -p "$agents_home/.config/opencode"
-echo '{"a": 1, "policies": [{"action": "tool.use", "resource": "*", "effect": "allow"}]}' \
+echo '{"a": 1, "policies": [{"action": "tool.use", "resource": "*", "effect": "allow"}], "plugins": ["other"]}' \
     >"$agents_home/.config/opencode/opencode.json"
 install_agents "$agents_home" "$jq_path" >/dev/null
+expect "install-agents: OpenCode keeps its plugins and gets the grep plugin" \
+    "$(jq -c '.plugins' "$agents_home/.config/opencode/opencode.json")" \
+    "[\"other\",\"$(cd "$copy" && pwd -P)/agents/permissions/opencode-plugin\"]"
 # Each file gets 3 OpenCode policies: read, edit, and shell. The first file is a folder that ends in "**".
 expect "install-agents: OpenCode keeps its settings and gets the deny policies last" \
     "$(jq -c '[.a, (.policies | length), .policies[0].effect, (.policies[1:4] | map(.resource)),
