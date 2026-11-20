@@ -42,6 +42,9 @@ for path_dir in $search_path; do
     fi
 done
 IFS="$old_ifs"
+# write_override and merge_rules write each new file next to its target first. If the script stops, delete it.
+next_file=""
+trap 'rm -f "$next_file"' EXIT
 
 fail() {
     echo "error: $1" >&2
@@ -154,8 +157,7 @@ write_override() {
         return
     fi
     mkdir -p "$(dirname "$2")"
-    new_copy="$2.next.$$"
-    trap 'rm -f "$new_copy"' EXIT
+    next_file="$2.next.$$"
     {
         if [ -n "$1" ]; then
             echo "$marker_prefix $1 -->"
@@ -171,13 +173,13 @@ write_override() {
             echo
             cat "$src/companies/$1/RULES.md"
         fi
-    } >"$new_copy"
-    if cmp -s "$new_copy" "$2"; then
-        rm -f "$new_copy"
+    } >"$next_file"
+    if cmp -s "$next_file" "$2"; then
+        rm -f "$next_file"
         echo "ok    $2"
         return
     fi
-    mv "$new_copy" "$2"
+    mv "$next_file" "$2"
     echo "write $2"
 }
 
@@ -266,23 +268,22 @@ merge_rules() {
         echo "skip  $2 (the path is a symlink. Add the rules in $1 yourself.)"
         return
     fi
-    new_settings="$2.next.$$"
-    trap 'rm -f "$new_settings"' EXIT
+    mkdir -p "$(dirname "$2")"
+    next_file="$2.next.$$"
     if ! { if [ -s "$2" ]; then cat "$2"; else echo '{}'; fi; } |
-        jq --slurpfile rules "$1" --arg home "$HOME" "$3" >"$new_settings" 2>/dev/null; then
-        rm -f "$new_settings"
+        jq --slurpfile rules "$1" --arg home "$HOME" "$3" >"$next_file" 2>/dev/null; then
+        rm -f "$next_file"
         echo "skip  $2 (the file is not valid JSON. Fix it. Run the script again.)"
         return
     fi
-    if [ -f "$2" ] && cmp -s "$new_settings" "$2"; then
-        rm -f "$new_settings"
+    if [ -f "$2" ] && cmp -s "$next_file" "$2"; then
+        rm -f "$next_file"
         echo "ok    $2"
         return
     fi
-    mkdir -p "$(dirname "$2")"
     # cat keeps the mode of a file that exists.
-    cat "$new_settings" >"$2"
-    rm -f "$new_settings"
+    cat "$next_file" >"$2"
+    rm -f "$next_file"
     echo "write $2"
 }
 
