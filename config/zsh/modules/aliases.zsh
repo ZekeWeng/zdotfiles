@@ -173,6 +173,54 @@ secret-rm() {
     [ -f "$file" ] || { echo "secret-rm: $1 does not exist." >&2; return 1; }
     command rm -f -- "$file"
 }
+# The token lists: config/zsh/secrets.list, and config/zsh/companies/COMPANY/secrets.list if zdot_company is set.
+# Each line is "NAME description". A line that starts with "#" is a comment.
+zdot_secret_dir="${${(%):-%x}:A:h:h}"
+# Print the lines of the token lists, with no comments and no empty lines.
+zdot_secret_lists() {
+    local list
+    for list in "$zdot_secret_dir/secrets.list" "$zdot_secret_dir/companies/${zdot_company:-}/secrets.list"; do
+        [ -f "$list" ] && grep -v '^[[:space:]]*\(#\|$\)' "$list"
+    done
+    return 0
+}
+# Succeed if the token named $1 is stored. It does not read the token, so it does not ask for a password.
+zdot_secret_exists() {
+    local store file
+    store="$(zdot_secret_store secret-check)" || return
+    if [ "$store" = keychain ]; then
+        security find-generic-password -s zdot -a "$1" >/dev/null 2>&1
+        return
+    fi
+    file="$(zdot_secret_file secret-check "$1")" && [ -f "$file" ]
+}
+# "secret-check" shows if each token in the lists is stored. It fails if a token is missing.
+secret-check() {
+    local line name missing=0
+    for line in "${(@f)$(zdot_secret_lists)}"; do
+        [ -n "$line" ] || continue
+        name="${line%%[[:space:]]*}"
+        if zdot_secret_exists "$name"; then
+            echo "ok       $name"
+        else
+            echo "missing  $line"
+            missing=1
+        fi
+    done
+    return "$missing"
+}
+# "secret-setup" runs secret-set for each token in the lists that is missing.
+secret-setup() {
+    local line name
+    for line in "${(@f)$(zdot_secret_lists)}"; do
+        [ -n "$line" ] || continue
+        name="${line%%[[:space:]]*}"
+        zdot_secret_exists "$name" && continue
+        echo "$line"
+        secret-set "$name" || return
+    done
+    secret-check
+}
 # "with-secret GITHUB_TOKEN gh pr list" gives the token to one command as the variable GITHUB_TOKEN.
 with-secret() {
     [ "$#" -ge 2 ] || { echo "usage: with-secret NAME COMMAND [ARGS...]" >&2; return 2; }

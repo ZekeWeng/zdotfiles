@@ -293,6 +293,20 @@ expect "secret: the security calls and the scope of the token" "$secret_out" \
     "add-generic-password -U -s zdot -a A -T  -w;set-generic-password-partition-list -S  -s zdot -a A;\
 delete-generic-password -s zdot -a A;tok;[];2;"
 
+# secret-check: it reads the general list and the company list, and it does not read a token.
+# secret-setup runs secret-set only for the missing token. The security stub has only the token A.
+lists_dir="$tmp_dir/secret-lists"
+mkdir -p "$lists_dir/companies/co"
+printf '# C  a comment\nA  token a\n\n' >"$lists_dir/secrets.list"
+echo 'B  token b' >"$lists_dir/companies/co/secrets.list"
+lists_out="$(env PATH="$stub_path" "$zsh_bin" -fc ". $src/config/zsh/modules/aliases.zsh
+    zdot_secret_dir=$lists_dir zdot_company=co
+    security() { case \$* in add* | set*) echo set ;; *-w*) echo read ;; 'find-generic-password -s zdot -a A') ;;
+        *) return 1 ;; esac }
+    secret-check || echo \$?; secret-setup" 2>&1 | tr '\n' ';')"
+expect "secret-check: the lists, and secret-setup sets only the missing token" "$lists_out" \
+    "ok       A;missing  B  token b;1;B  token b;set;ok       A;missing  B  token b;"
+
 # secret: with no security command, each function uses an age file with mode 600. A name cannot be a path.
 # The age stub copies the token. The PATH has no security command, so the functions use age.
 age_bin="$tmp_dir/age-bin"

@@ -73,6 +73,8 @@ To add a company, copy `config/zsh/companies/_template` to `config/zsh/companies
 | `reload` | Starts the shell again with the new config. |
 | `secret-set NAME` | Puts a token in the Keychain, or in an `age` file on Linux. Each read asks for a password. On macOS, click Allow, not Always Allow. |
 | `with-secret NAME CMD` | Runs `CMD` with the token in the variable `NAME`. |
+| `secret-check` | Shows if each token in the token lists is stored. It does not read the tokens. |
+| `secret-setup` | Runs `secret-set` for each token in the token lists that is missing. |
 | `csh HOST` | Opens a cmux SSH workspace. Each split, such as Cmd+D, is a new shell on `HOST`. The shells continue after a disconnect. |
 | `tsh HOST` | Shows the tmux sessions of `HOST` as cmux workspaces. Each split is a tmux pane. Turn on the "Remote tmux" beta setting first. |
 | `sshkill HOST` | Ends the cmux SSH workspaces for `HOST`. Without `HOST`, it ends each one. |

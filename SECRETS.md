@@ -12,6 +12,8 @@ No shell exports a token. Each shell loads the files in `~/.config/zsh/private/`
 | `secret NAME` | Prints the token. Each read asks for your password or the `age` passphrase. |
 | `secret-rm NAME` | Deletes the token. |
 | `with-secret NAME CMD` | Runs `CMD` with the token in the variable `NAME`. Only that command gets the token. |
+| `secret-check` | Shows if each token in the token lists is stored. It does not read the tokens, so it asks for no password. |
+| `secret-setup` | Runs `secret-set` for each token in the token lists that is missing. |
 
 On macOS, click **Allow** when the Keychain asks. Do not click **Always Allow**, because then each process can read the token with no password.
 
@@ -20,6 +22,15 @@ For a tool that you use often, add a function to `config/zsh/companies/COMPANY/a
 ```sh
 hf() { with-secret HF_TOKEN command hf "$@"; }
 ```
+
+## Token lists
+
+The token lists name each token that you store with `secret-set`. They have only names and descriptions, not tokens.
+
+- `config/zsh/secrets.list`: the general tokens. Each line starts with `#`. Remove the `#` from each token that you need.
+- `config/zsh/companies/COMPANY/secrets.list`: the tokens of the company. Git does not track it.
+
+Each line is `NAME description`. When you add a token to a computer, also add its name to a list. Then `secret-setup` on the next computer asks for it.
 
 ## Each computer needs its own setup
 
@@ -31,8 +42,8 @@ The secrets do not go to a new computer with the repo. The Keychain items, the `
 2. If you work for a company, set `zdot_company=COMPANY` in `~/.zshenv.local`.
 3. If you work for a company, copy `config/zsh/local/company.secrets.example` to `~/.config/zsh/private/COMPANY.secrets.zsh`. Set the mode to 600 with `chmod 600`.
 4. Make a new SSH key with `ssh-keygen -t ed25519`. Do not copy a key from a different computer.
-5. Do the steps in [General secrets](#general-secrets).
-6. Do the steps in the company list, if there is one.
+5. Do the CLI logins in [General secrets](#general-secrets), and in the company list if there is one.
+6. Run `secret-setup`. It asks for each token in the token lists.
 7. Open a new terminal.
 8. Do the checks in [Check the setup](#check-the-setup).
 
@@ -59,6 +70,7 @@ Prefer the login of a CLI or a browser sign-in to a long-lived token. A CLI logi
 
 ## Check the setup
 
+- `secret-check` shows `ok` for each token.
 - `env | grep -iE 'token|secret|api_key|password'` prints nothing.
 - `grep -l export ~/.config/zsh/private/*.zsh` prints nothing, or only files with no tokens.
 - `stat -f '%Lp' ~/.config/zsh/private/*.zsh` prints `600` for each file. On Linux, use `stat -c '%a'`.
